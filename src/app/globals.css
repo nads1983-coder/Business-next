@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+@theme inline {
+  --color-background: oklch(0.985 0.004 95);
+  --color-foreground: oklch(0.21 0.02 260);
+  --color-card: oklch(1 0 0);
+  --color-card-foreground: oklch(0.21 0.02 260);
+  --color-popover: oklch(1 0 0);
+  --color-popover-foreground: oklch(0.21 0.02 260);
+  --color-primary: oklch(0.44 0.13 175);
+  --color-primary-foreground: oklch(0.99 0.003 95);
+  --color-secondary: oklch(0.93 0.025 170);
+  --color-secondary-foreground: oklch(0.24 0.04 175);
+  --color-muted: oklch(0.95 0.01 245);
+  --color-muted-foreground: oklch(0.48 0.025 260);
+  --color-accent: oklch(0.93 0.05 80);
+  --color-accent-foreground: oklch(0.25 0.04 70);
+  --color-destructive: oklch(0.55 0.18 30);
+  --color-destructive-foreground: oklch(0.99 0.003 95);
+  --color-border: oklch(0.88 0.012 245);
+  --color-input: oklch(0.88 0.012 245);
+  --color-ring: oklch(0.44 0.13 175);
+  --radius: 0.5rem;
+  --font-sans: "Geist", "Geist Fallback", ui-sans-serif, system-ui, sans-serif;
+  --font-mono: "Geist Mono", "Geist Mono Fallback", ui-monospace, monospace;
+}
+
+* {
+  border-color: var(--color-border);
+}
+
+html {
+  background: var(--color-background);
+}
+
+body {
+  background: var(--color-background);
+  color: var(--color-foreground);
+  font-family: var(--font-sans);
+}
+
+a {
+  text-underline-offset: 4px;
+}
+
+button,
+input,
+select,
+textarea {
+  font: inherit;
+}
