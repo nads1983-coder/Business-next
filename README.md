@@ -27,7 +27,7 @@ npm install
 cp .env.example .env
 ```
 
-3. Set `DATABASE_URL` to a PostgreSQL database and set `AUTH_SECRET` to a long random value.
+3. Set `DATABASE_URL` to a PostgreSQL database, set `DIRECT_URL` when your provider uses a separate direct connection for migrations, and set `AUTH_SECRET` to a long random value.
 
 4. Apply migrations and seed:
 
@@ -54,6 +54,7 @@ Both use the password `BusinessNextDemo1!`.
 Deploy on Vercel with managed PostgreSQL and these required environment variables:
 
 - `DATABASE_URL`
+- `DIRECT_URL`
 - `AUTH_SECRET`
 - `NEXT_PUBLIC_APP_URL`
 - `RESEND_API_KEY`
