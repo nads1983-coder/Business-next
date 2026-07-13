@@ -3,6 +3,8 @@
 import { hash } from "bcryptjs";
 import { redirect } from "next/navigation";
 import { z } from "zod";
+import { createVerificationToken } from "@/lib/auth-tokens";
+import { sendVerificationEmail } from "@/lib/email";
 import { getPrisma } from "@/lib/prisma";
 
 const registerSchema = z.object({
@@ -36,7 +38,7 @@ export async function registerAction(_: unknown, formData: FormData) {
     };
   }
 
-  await prisma.user.create({
+  const user = await prisma.user.create({
     data: {
       name: parsed.data.name,
       email,
@@ -49,5 +51,8 @@ export async function registerAction(_: unknown, formData: FormData) {
     }
   });
 
-  redirect("/login?registered=1");
+  const token = await createVerificationToken(user.id);
+  await sendVerificationEmail({ email, token });
+
+  redirect("/check-email?type=verify");
 }

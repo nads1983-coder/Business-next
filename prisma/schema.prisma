@@ -50,6 +50,11 @@ enum SubscriptionTier {
   PRO
 }
 
+enum AuthEmailPurpose {
+  EMAIL_VERIFICATION
+  PASSWORD_RESET
+}
+
 model User {
   id                    String    @id @default(cuid())
   name                  String?
@@ -106,6 +111,15 @@ model VerificationToken {
   expires    DateTime
 
   @@unique([identifier, token])
+}
+
+model AuthEmailAttempt {
+  id        String           @id @default(cuid())
+  emailHash String
+  purpose   AuthEmailPurpose
+  createdAt DateTime         @default(now())
+
+  @@index([emailHash, purpose, createdAt])
 }
 
 model Business {

@@ -1,7 +1,5 @@
+import { ForgotPasswordForm } from "./forgot-password-form";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-import { Input } from "@/components/ui/input";
-import { Label } from "@/components/ui/label";
-import { Button } from "@/components/ui/button";
 
 export default function ForgotPasswordPage() {
   return (
@@ -9,20 +7,11 @@ export default function ForgotPasswordPage() {
       <CardHeader>
         <CardTitle>Reset your password</CardTitle>
         <CardDescription>
-          Enter your email address. Stage 1 includes the secure flow shape; email delivery is
-          configured through Resend in production.
+          Enter your email address. If there is an account, we will send a reset link.
         </CardDescription>
       </CardHeader>
       <CardContent>
-        <form className="space-y-4">
-          <div className="space-y-2">
-            <Label htmlFor="email">Email address</Label>
-            <Input id="email" type="email" autoComplete="email" required />
-          </div>
-          <Button type="submit" className="w-full">
-            Send reset link
-          </Button>
-        </form>
+        <ForgotPasswordForm />
       </CardContent>
     </Card>
   );
