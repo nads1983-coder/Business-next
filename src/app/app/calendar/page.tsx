@@ -1,6 +1,8 @@
 import { ComingSoonPage } from "@/components/coming-soon-page";
+import { requireProductAccess } from "@/lib/billing";
 
-export default function CalendarPage() {
+export default async function CalendarPage() {
+  await requireProductAccess();
   return (
     <ComingSoonPage
       title="Calendar"

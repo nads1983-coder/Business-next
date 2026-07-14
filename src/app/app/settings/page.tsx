@@ -1,11 +1,11 @@
 import { BusinessSettingsForm } from "./business-settings-form";
 import { productConfig } from "@/config/product";
 import { getPrisma } from "@/lib/prisma";
-import { requireUser } from "@/lib/session";
+import { requireProductAccess } from "@/lib/billing";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function SettingsPage() {
-  const user = await requireUser();
+  const { user } = await requireProductAccess();
   const prisma = getPrisma();
   const dbUser = await prisma.user.findUnique({ where: { id: user.id } });
   const business = await prisma.business.findFirst({

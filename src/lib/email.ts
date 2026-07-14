@@ -22,6 +22,10 @@ export function buildAppUrl(path: string, token: string) {
   return url.toString();
 }
 
+export function appUrl(path: string) {
+  return new URL(path, emailConfig.appUrl).toString();
+}
+
 async function sendEmail({
   to,
   subject,

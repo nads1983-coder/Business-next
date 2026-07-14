@@ -6,14 +6,14 @@ import { TaskActionForms } from "../task-action-forms";
 import { daysUntilText } from "@/lib/task-engine";
 import { plainCopy } from "@/content/plain-copy";
 import { getPrisma } from "@/lib/prisma";
-import { requireUser } from "@/lib/session";
+import { requireProductAccess } from "@/lib/billing";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default async function TaskDetailPage({ params }: { params: Promise<{ taskId: string }> }) {
   const { taskId } = await params;
-  const user = await requireUser();
+  const { user } = await requireProductAccess();
   const prisma = getPrisma();
   const task = await prisma.task.findFirst({
     where: { id: taskId, business: { userId: user.id } },

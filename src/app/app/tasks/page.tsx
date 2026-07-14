@@ -4,7 +4,7 @@ import { ArrowRight, ExternalLink } from "lucide-react";
 import { daysUntilText, taskDisplayBucket } from "@/lib/task-engine";
 import { plainCopy } from "@/content/plain-copy";
 import { getPrisma } from "@/lib/prisma";
-import { requireUser } from "@/lib/session";
+import { requireProductAccess } from "@/lib/billing";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -12,7 +12,7 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 const bucketOrder = ["Needs attention", "Coming up", "Completed", "Not applicable"];
 
 export default async function TasksPage() {
-  const user = await requireUser();
+  const { user } = await requireProductAccess();
   const prisma = getPrisma();
   const business = await prisma.business.findFirst({
     where: { userId: user.id },

@@ -1,0 +1,160 @@
+import Link from "next/link";
+import { format } from "date-fns";
+import { AlertCircle, CheckCircle2, ExternalLink } from "lucide-react";
+import { billingConfig } from "@/config/billing";
+import { getProductAccess } from "@/lib/billing";
+import { getPrisma } from "@/lib/prisma";
+import { requireUser } from "@/lib/session";
+import { Badge } from "@/components/ui/badge";
+import { Button } from "@/components/ui/button";
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { openBillingPortalAction, startCheckoutAction } from "./actions";
+
+function dateText(date?: Date | null) {
+  return date ? format(date, "d MMMM yyyy") : "Not set";
+}
+
+export default async function BillingPage() {
+  const user = await requireUser();
+  const prisma = getPrisma();
+  const [access, subscription] = await Promise.all([
+    getProductAccess(user.id),
+    prisma.subscription.findFirst({
+      where: { userId: user.id },
+      orderBy: { updatedAt: "desc" }
+    })
+  ]);
+
+  const hasStripeCustomer = Boolean(subscription?.stripeCustomerId);
+
+  return (
+    <div className="space-y-6">
+      <div>
+        <h1 className="text-3xl font-semibold tracking-normal">Billing</h1>
+        <p className="mt-2 max-w-3xl text-muted-foreground">
+          Manage your Business Next access, subscription and cancellation options.
+        </p>
+      </div>
+
+      <Card className="border-primary/30">
+        <CardHeader>
+          <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+            <div>
+              <CardTitle>Current access</CardTitle>
+              <CardDescription>{access.message}</CardDescription>
+            </div>
+            <Badge variant={access.allowed ? "calm" : "outline"}>{access.source}</Badge>
+          </div>
+        </CardHeader>
+        <CardContent className="grid gap-4 md:grid-cols-2">
+          <div>
+            <h2 className="text-sm font-medium">Plan</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{billingConfig.plan.name}</p>
+          </div>
+          <div>
+            <h2 className="text-sm font-medium">Subscription status</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {subscription?.billingStatus.replaceAll("_", " ").toLowerCase() ?? "No paid subscription"}
+            </p>
+          </div>
+          <div>
+            <h2 className="text-sm font-medium">Billing interval</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {subscription?.billingInterval.toLowerCase() ?? "None"}
+            </p>
+          </div>
+          <div>
+            <h2 className="text-sm font-medium">Next renewal or access review</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{dateText(subscription?.currentPeriodEnd)}</p>
+          </div>
+          <div>
+            <h2 className="text-sm font-medium">Trial end</h2>
+            <p className="mt-1 text-sm text-muted-foreground">{dateText(subscription?.trialEnd)}</p>
+          </div>
+          <div>
+            <h2 className="text-sm font-medium">Cancellation</h2>
+            <p className="mt-1 text-sm text-muted-foreground">
+              {subscription?.cancelAtPeriodEnd
+                ? `Cancellation is scheduled for ${dateText(subscription.currentPeriodEnd)}.`
+                : "No cancellation is scheduled."}
+            </p>
+          </div>
+        </CardContent>
+      </Card>
+
+      {!billingConfig.plan.checkoutEnabled ? (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <AlertCircle className="h-5 w-5 text-primary" aria-hidden="true" />
+              Paid billing is not live yet
+            </CardTitle>
+            <CardDescription>{billingConfig.plan.comingSoonWording}</CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild variant="secondary">
+              <Link href="/pricing">View pricing status</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      ) : (
+        <Card>
+          <CardHeader>
+            <CardTitle>Subscribe</CardTitle>
+            <CardDescription>
+              You will be sent to Stripe Checkout. Access is granted only after Business Next receives a verified Stripe webhook.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <form action={startCheckoutAction} className="space-y-4">
+              <input type="hidden" name="interval" value="monthly" />
+              <label className="flex items-start gap-2 text-sm">
+                <input className="mt-1" type="checkbox" name="acceptTerms" required />
+                <span>I accept the Business Next Terms of Use.</span>
+              </label>
+              <label className="flex items-start gap-2 text-sm">
+                <input className="mt-1" type="checkbox" name="acceptPrivacy" required />
+                <span>I accept the Privacy Notice.</span>
+              </label>
+              <label className="flex items-start gap-2 text-sm">
+                <input className="mt-1" type="checkbox" name="acceptSubscriptionTerms" required />
+                <span>I accept the Subscription and Cancellation Terms.</span>
+              </label>
+              <Button type="submit">Continue to Checkout</Button>
+            </form>
+          </CardContent>
+        </Card>
+      )}
+
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <CheckCircle2 className="h-5 w-5 text-primary" aria-hidden="true" />
+            Manage billing
+          </CardTitle>
+          <CardDescription>{billingConfig.plan.cancellationWording}</CardDescription>
+        </CardHeader>
+        <CardContent className="space-y-4">
+          {hasStripeCustomer ? (
+            <form action={openBillingPortalAction}>
+              <Button type="submit">
+                Open secure billing portal <ExternalLink className="h-4 w-4" aria-hidden="true" />
+              </Button>
+            </form>
+          ) : (
+            <p className="text-sm text-muted-foreground">
+              There is no Stripe billing profile linked to this account yet.
+            </p>
+          )}
+          <p className="text-sm text-muted-foreground">
+            Account deletion is separate from cancelling payment. For Stage 3, deletion is support-led so we can make sure an
+            active subscription is cancelled safely before any account data is removed.
+          </p>
+          <Button asChild variant="secondary">
+            <Link href="/support">Contact support</Link>
+          </Button>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}

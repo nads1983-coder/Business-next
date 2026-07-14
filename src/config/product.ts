@@ -1,6 +1,7 @@
 import {
   CalendarDays,
   CircleDollarSign,
+  CreditCard,
   FileText,
   HelpCircle,
   Home,
@@ -15,7 +16,7 @@ export const productConfig = {
     "What needs doing, when it needs doing, and what it means in plain English.",
   disclaimer:
     "Business Next helps you understand and organise your responsibilities. It does not replace advice from a qualified accountant, tax adviser or legal professional.",
-  supportEmail: "support@example.com",
+  supportEmail: "support@getcontentos.co",
   plans: {
     free: {
       name: "Free",
@@ -46,6 +47,7 @@ export const productConfig = {
     { label: "Documents", href: "/app/documents", icon: FileText },
     { label: "Ask", href: "/app/ask", icon: HelpCircle },
     { label: "Calendar", href: "/app/calendar", icon: CalendarDays },
+    { label: "Billing", href: "/app/billing", icon: CreditCard },
     { label: "Settings", href: "/app/settings", icon: Settings },
     { label: "Admin", href: "/app/admin", icon: ShieldCheck, adminOnly: true }
   ]

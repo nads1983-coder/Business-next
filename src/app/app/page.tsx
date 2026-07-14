@@ -8,7 +8,7 @@ import { plainCopy } from "@/content/plain-copy";
 import { productConfig } from "@/config/product";
 import { formatPoundsFromPence } from "@/lib/utils";
 import { getPrisma } from "@/lib/prisma";
-import { requireUser } from "@/lib/session";
+import { requireProductAccess } from "@/lib/billing";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -25,7 +25,7 @@ function missingProfileItems(profile: BusinessProfile) {
 }
 
 export default async function DashboardPage() {
-  const user = await requireUser();
+  const { user } = await requireProductAccess();
   const prisma = getPrisma();
   const business = await prisma.business.findFirst({
     where: { userId: user.id },

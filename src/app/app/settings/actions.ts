@@ -4,7 +4,7 @@ import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { syncBusinessTasks } from "@/lib/task-engine";
 import { getPrisma } from "@/lib/prisma";
-import { requireUser } from "@/lib/session";
+import { requireProductAccess } from "@/lib/billing";
 
 const settingsSchema = z.object({
   businessId: z.string().min(1),
@@ -26,7 +26,7 @@ const settingsSchema = z.object({
 const toDate = (value?: string) => (value ? new Date(`${value}T00:00:00.000Z`) : null);
 
 export async function updateBusinessSettingsAction(_: unknown, formData: FormData) {
-  const user = await requireUser();
+  const { user } = await requireProductAccess();
   const parsed = settingsSchema.safeParse({
     businessId: formData.get("businessId"),
     legalBusinessName: formData.get("legalBusinessName"),

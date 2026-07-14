@@ -3,7 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { z } from "zod";
 import { getPrisma } from "@/lib/prisma";
-import { requireUser } from "@/lib/session";
+import { requireProductAccess } from "@/lib/billing";
 
 const taskActionSchema = z.object({
   taskId: z.string().min(1),
@@ -25,7 +25,7 @@ async function getOwnedTask(taskId: string, userId: string) {
 }
 
 export async function completeTaskAction(formData: FormData) {
-  const user = await requireUser();
+  const { user } = await requireProductAccess();
   const parsed = taskActionSchema.parse({
     taskId: formData.get("taskId"),
     note: formData.get("note") || undefined
@@ -57,7 +57,7 @@ export async function completeTaskAction(formData: FormData) {
 }
 
 export async function markTaskNotApplicableAction(formData: FormData) {
-  const user = await requireUser();
+  const { user } = await requireProductAccess();
   const parsed = taskActionSchema.parse({
     taskId: formData.get("taskId"),
     note: formData.get("note") || undefined
@@ -89,7 +89,7 @@ export async function markTaskNotApplicableAction(formData: FormData) {
 }
 
 export async function restoreTaskAction(formData: FormData) {
-  const user = await requireUser();
+  const { user } = await requireProductAccess();
   const parsed = taskActionSchema.parse({
     taskId: formData.get("taskId"),
     note: formData.get("note") || undefined

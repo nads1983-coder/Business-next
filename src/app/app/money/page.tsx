@@ -1,6 +1,8 @@
 import { ComingSoonPage } from "@/components/coming-soon-page";
+import { requireProductAccess } from "@/lib/billing";
 
-export default function MoneyPage() {
+export default async function MoneyPage() {
+  await requireProductAccess();
   return (
     <ComingSoonPage
       title="Money"

@@ -85,6 +85,72 @@ enum ReminderInterval {
   OVERDUE
 }
 
+enum BillingInterval {
+  MONTHLY
+  ANNUAL
+  NONE
+}
+
+enum BillingSubscriptionStatus {
+  CONFIGURATION_ONLY
+  INCOMPLETE
+  INCOMPLETE_EXPIRED
+  TRIALING
+  ACTIVE
+  PAST_DUE
+  CANCELED
+  UNPAID
+  PAUSED
+}
+
+enum EntitlementKind {
+  PAID
+  TRIAL
+  FOUNDER
+  COMPLIMENTARY
+  ADMIN
+}
+
+enum EntitlementStatus {
+  ACTIVE
+  INACTIVE
+}
+
+enum BillingEventType {
+  CHECKOUT_STARTED
+  CHECKOUT_COMPLETED
+  CUSTOMER_PORTAL_OPENED
+  SUBSCRIPTION_CREATED
+  SUBSCRIPTION_UPDATED
+  SUBSCRIPTION_CANCELLED
+  INVOICE_PAYMENT_SUCCEEDED
+  INVOICE_PAYMENT_FAILED
+  TRIAL_WILL_END
+  REFUND_OR_REVERSAL
+  ENTITLEMENT_GRANTED
+  ENTITLEMENT_REVOKED
+  EMAIL_QUEUED
+  EMAIL_SKIPPED
+  WEBHOOK_IGNORED
+  WEBHOOK_FAILED
+}
+
+enum LegalDocumentType {
+  TERMS_OF_USE
+  PRIVACY_NOTICE
+  SUBSCRIPTION_TERMS
+}
+
+enum AnalyticsEventName {
+  PRICING_PAGE_VIEWED
+  CHECKOUT_STARTED
+  CHECKOUT_CANCELLED
+  SUBSCRIPTION_ACTIVATED
+  CUSTOMER_PORTAL_OPENED
+  CANCELLATION_SCHEDULED
+  SUBSCRIPTION_ENDED
+}
+
 model User {
   id                    String    @id @default(cuid())
   name                  String?
@@ -108,6 +174,11 @@ model User {
   conversations            AIConversation[]
   taskHistory              TaskHistory[]
   complianceContentChanges ComplianceRuleContentVersion[]
+  entitlements             UserEntitlement[]
+  stripeWebhookEvents      StripeWebhookEvent[]
+  billingEvents            BillingEvent[]
+  legalAcceptances         LegalAcceptance[]
+  analyticsEvents          AnalyticsEvent[]
 }
 
 model Account {
@@ -431,18 +502,38 @@ model OfficialSource {
 }
 
 model Subscription {
-  id                   String           @id @default(cuid())
-  userId               String
-  businessId           String?
-  tier                 SubscriptionTier @default(FREE)
-  stripeCustomerId     String?
-  stripeSubscriptionId String?
-  status               String           @default("configuration-only")
-  createdAt            DateTime         @default(now())
-  updatedAt            DateTime         @updatedAt
+  id                       String                    @id @default(cuid())
+  userId                   String
+  businessId               String?
+  tier                     SubscriptionTier          @default(FREE)
+  stripeCustomerId         String?
+  stripeSubscriptionId     String?
+  stripePriceId            String?
+  stripeProductId          String?
+  status                   String                    @default("configuration-only")
+  billingStatus            BillingSubscriptionStatus @default(CONFIGURATION_ONLY)
+  billingInterval          BillingInterval           @default(NONE)
+  currentPeriodEnd         DateTime?
+  cancelAtPeriodEnd        Boolean                   @default(false)
+  trialStart               DateTime?
+  trialEnd                 DateTime?
+  purchasedAt              DateTime?
+  cancelledAt              DateTime?
+  endedAt                  DateTime?
+  latestStripeEventId      String?
+  legalTermsVersion        String?
+  legalPrivacyVersion      String?
+  legalSubscriptionVersion String?
+  legalAcceptedAt          DateTime?
+  createdAt                DateTime                  @default(now())
+  updatedAt                DateTime                  @updatedAt
 
   user     User      @relation(fields: [userId], references: [id], onDelete: Cascade)
   business Business? @relation(fields: [businessId], references: [id], onDelete: SetNull)
+
+  @@unique([stripeCustomerId])
+  @@unique([stripeSubscriptionId])
+  @@index([userId, billingStatus])
 }
 
 model AuditLog {
@@ -453,4 +544,88 @@ model AuditLog {
   createdAt DateTime @default(now())
 
   user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+}
+
+model UserEntitlement {
+  id          String            @id @default(cuid())
+  userId      String
+  kind        EntitlementKind
+  status      EntitlementStatus @default(ACTIVE)
+  reason      String
+  source      String
+  startsAt    DateTime          @default(now())
+  endsAt      DateTime?
+  grantedById String?
+  createdAt   DateTime          @default(now())
+  updatedAt   DateTime          @updatedAt
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, kind, source])
+  @@index([userId, status])
+}
+
+model StripeWebhookEvent {
+  id                   String   @id
+  type                 String
+  livemode             Boolean
+  userId               String?
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  processedAt          DateTime @default(now())
+  processingStatus     String   @default("processed")
+  summary              String
+  errorMessage         String?
+  payload              Json?
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([type, processedAt])
+  @@index([userId, processedAt])
+}
+
+model BillingEvent {
+  id                   String           @id @default(cuid())
+  userId               String?
+  type                 BillingEventType
+  stripeEventId        String?
+  stripeCustomerId     String?
+  stripeSubscriptionId String?
+  summary              String
+  metadata             Json?
+  createdAt            DateTime         @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([userId, createdAt])
+  @@index([type, createdAt])
+  @@index([stripeEventId])
+}
+
+model LegalAcceptance {
+  id         String            @id @default(cuid())
+  userId     String
+  document   LegalDocumentType
+  version    String
+  acceptedAt DateTime          @default(now())
+  source     String
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@unique([userId, document, version])
+  @@index([userId, acceptedAt])
+}
+
+model AnalyticsEvent {
+  id        String             @id @default(cuid())
+  userId    String?
+  name      AnalyticsEventName
+  path      String?
+  metadata  Json?
+  createdAt DateTime           @default(now())
+
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([name, createdAt])
+  @@index([userId, createdAt])
 }
