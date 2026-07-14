@@ -1,8 +1,8 @@
 import { hash } from "bcryptjs";
 import { getPrisma } from "../src/lib/prisma";
-import { buildInitialTasks } from "../src/lib/task-engine";
+import { syncBusinessTasks, RULE_CHECKED_AT } from "../src/lib/task-engine";
 
-const checkedAt = new Date("2026-07-13T00:00:00.000Z");
+const checkedAt = RULE_CHECKED_AT;
 
 async function main() {
   const prisma = getPrisma();
@@ -18,11 +18,11 @@ async function main() {
         notes: "Used for plain-English record keeping and Self Assessment prompts."
       },
       {
-        title: "Running a limited company: your responsibilities",
-        url: "https://www.gov.uk/running-a-limited-company",
+        title: "Accounts and tax returns for private limited companies",
+        url: "https://www.gov.uk/prepare-file-annual-accounts-for-limited-company",
         publisher: "GOV.UK",
         checkedAt,
-        notes: "Used for director responsibility and company accounts prompts."
+        notes: "Used for limited-company accounts, Corporation Tax and Company Tax Return dates."
       },
       {
         title: "File your confirmation statement with Companies House",
@@ -32,11 +32,18 @@ async function main() {
         notes: "Used for company details confirmation tasks."
       },
       {
-        title: "Register for VAT",
-        url: "https://www.gov.uk/register-for-vat",
+        title: "Sending a VAT Return",
+        url: "https://www.gov.uk/submit-vat-return",
         publisher: "GOV.UK",
         checkedAt,
-        notes: "Used for VAT registration review prompts."
+        notes: "Used for VAT Return deadline calculation."
+      },
+      {
+        title: "Register as an employer",
+        url: "https://www.gov.uk/register-employer",
+        publisher: "GOV.UK",
+        checkedAt,
+        notes: "Used for PAYE employer registration prompts."
       }
     ]
   });
@@ -70,17 +77,36 @@ async function main() {
     skipDuplicates: true,
     data: [
       {
-        key: "vat-registration-review",
-        plainName: "Check whether VAT registration may be needed",
+        key: "limited-company-first-accounts",
+        plainName: "File first company accounts",
         description:
-          "Review sales against current official VAT registration guidance. Business Next stores the source and checked date instead of hardcoding a permanent rule.",
-        effectiveFrom: new Date("2026-04-01T00:00:00.000Z"),
-        sourceUrl: "https://www.gov.uk/register-for-vat",
+          "First private limited company accounts are due 21 months after Companies House registration.",
+        effectiveFrom: new Date("2026-07-14T00:00:00.000Z"),
+        sourceUrl: "https://www.gov.uk/prepare-file-annual-accounts-for-limited-company",
         checkedAt,
         metadata: {
-          displayOnly: true,
-          plainEnglishTerm: "Sales level where VAT registration may be needed"
+          ruleVersion: "stage-2-2026-07-14"
         }
+      },
+      {
+        key: "sole-trader-self-assessment-return",
+        plainName: "Send online Self Assessment tax return",
+        description:
+          "Online Self Assessment tax returns are due by 31 January after the relevant tax year.",
+        effectiveFrom: new Date("2026-07-14T00:00:00.000Z"),
+        sourceUrl: "https://www.gov.uk/self-assessment-tax-returns/deadlines",
+        checkedAt,
+        metadata: { ruleVersion: "stage-2-2026-07-14" }
+      },
+      {
+        key: "vat-return",
+        plainName: "Send VAT Return",
+        description:
+          "VAT Returns are usually due one calendar month and 7 days after the VAT accounting period ends.",
+        effectiveFrom: new Date("2026-07-14T00:00:00.000Z"),
+        sourceUrl: "https://www.gov.uk/submit-vat-return",
+        checkedAt,
+        metadata: { ruleVersion: "stage-2-2026-07-14" }
       }
     ]
   });
@@ -103,10 +129,13 @@ async function main() {
   ]) {
     const user = await prisma.user.upsert({
       where: { email: demo.email },
-      update: {},
+      update: {
+        role: demo.email === "limited-company@example.com" ? "ADMIN" : "USER"
+      },
       create: {
         email: demo.email,
         name: demo.name,
+        role: demo.email === "limited-company@example.com" ? "ADMIN" : "USER",
         passwordHash,
         emailVerified: new Date(),
         subscriptions: {
@@ -128,15 +157,21 @@ async function main() {
         profile: {
           create: {
             businessType: demo.businessType,
+            legalBusinessName: demo.businessName,
             worksAlone: "YES",
+            employsPeople: "NO",
             startedTradingOn: new Date("2026-04-06T00:00:00.000Z"),
             companyRegisteredOn:
               demo.businessType === "LIMITED_COMPANY"
                 ? new Date("2026-04-10T00:00:00.000Z")
                 : null,
+            firstAccountingPeriodEnd:
+              demo.businessType === "LIMITED_COMPANY"
+                ? new Date("2027-04-30T00:00:00.000Z")
+                : null,
             paysSelfThroughCompany:
               demo.businessType === "LIMITED_COMPANY" ? "NOT_SURE" : "NO",
-            registeredForVat: "NOT_SURE",
+            registeredForVat: "NO",
             usesAccountant: "NO",
             businessYearEndMonth: 3,
             wantsEmailReminders: true,
@@ -152,14 +187,7 @@ async function main() {
       }
     });
 
-    if (business.profile && business.tasks.length === 0) {
-      await prisma.task.createMany({
-        data: buildInitialTasks(business.profile).map((task) => ({
-          businessId: business.id,
-          ...task
-        }))
-      });
-    }
+    await syncBusinessTasks(business.id, user.id);
   }
 }
 

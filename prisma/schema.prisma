@@ -24,6 +24,7 @@ enum TaskStatus {
   COMPLETED
   NEEDS_INFORMATION
   OVERDUE
+  NOT_APPLICABLE
 }
 
 enum TaskUrgency {
@@ -55,6 +56,35 @@ enum AuthEmailPurpose {
   PASSWORD_RESET
 }
 
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum VatAccountingPeriod {
+  MONTHLY
+  QUARTERLY
+  ANNUALLY
+  NOT_SURE
+}
+
+enum TaskHistoryAction {
+  CREATED
+  RECALCULATED
+  COMPLETED
+  MARKED_NOT_APPLICABLE
+  RESTORED
+  NOTE_UPDATED
+}
+
+enum ReminderInterval {
+  THIRTY_DAYS
+  FOURTEEN_DAYS
+  SEVEN_DAYS
+  ONE_DAY
+  OVERDUE
+}
+
 model User {
   id                    String    @id @default(cuid())
   name                  String?
@@ -66,15 +96,18 @@ model User {
   resetTokenExpiresAt   DateTime?
   consentEmailReminders Boolean   @default(false)
   consentProductUpdates Boolean   @default(false)
+  role                  UserRole  @default(USER)
   createdAt             DateTime  @default(now())
   updatedAt             DateTime  @updatedAt
 
-  accounts      Account[]
-  sessions      Session[]
-  businesses    Business[]
-  subscriptions Subscription[]
-  auditLogs     AuditLog[]
-  conversations AIConversation[]
+  accounts                 Account[]
+  sessions                 Session[]
+  businesses               Business[]
+  subscriptions            Subscription[]
+  auditLogs                AuditLog[]
+  conversations            AIConversation[]
+  taskHistory              TaskHistory[]
+  complianceContentChanges ComplianceRuleContentVersion[]
 }
 
 model Account {
@@ -142,43 +175,100 @@ model Business {
 }
 
 model BusinessProfile {
-  id                     String       @id @default(cuid())
-  businessId             String       @unique
-  businessType           BusinessType @default(NOT_SURE)
-  worksAlone             AnswerChoice @default(NOT_SURE)
-  startedTradingOn       DateTime?
-  companyRegisteredOn    DateTime?
-  paysSelfThroughCompany AnswerChoice @default(NOT_SURE)
-  registeredForVat       AnswerChoice @default(NOT_SURE)
-  usesAccountant         AnswerChoice @default(NOT_SURE)
-  businessYearEndMonth   Int?
-  wantsEmailReminders    Boolean      @default(false)
-  salesSoFarPence        Int          @default(0)
-  costsSoFarPence        Int          @default(0)
-  onboardingCompletedAt  DateTime?
-  createdAt              DateTime     @default(now())
-  updatedAt              DateTime     @updatedAt
+  id                       String              @id @default(cuid())
+  businessId               String              @unique
+  businessType             BusinessType        @default(NOT_SURE)
+  legalBusinessName        String?
+  tradingName              String?
+  companyNumber            String?
+  worksAlone               AnswerChoice        @default(NOT_SURE)
+  startedTradingOn         DateTime?
+  companyRegisteredOn      DateTime?
+  accountingReferenceDate  DateTime?
+  firstAccountingPeriodEnd DateTime?
+  paysSelfThroughCompany   AnswerChoice        @default(NOT_SURE)
+  registeredForVat         AnswerChoice        @default(NOT_SURE)
+  vatRegisteredOn          DateTime?
+  vatAccountingPeriod      VatAccountingPeriod @default(NOT_SURE)
+  vatPeriodEndsOn          DateTime?
+  employsPeople            AnswerChoice        @default(NOT_SURE)
+  firstPayday              DateTime?
+  usesAccountant           AnswerChoice        @default(NOT_SURE)
+  businessYearEndMonth     Int?
+  wantsEmailReminders      Boolean             @default(false)
+  salesSoFarPence          Int                 @default(0)
+  costsSoFarPence          Int                 @default(0)
+  onboardingCompletedAt    DateTime?
+  createdAt                DateTime            @default(now())
+  updatedAt                DateTime            @updatedAt
 
   business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
 }
 
 model Task {
-  id                  String      @id @default(cuid())
-  businessId          String
-  title               String
-  plainEnglishSummary String
-  dueDate             DateTime?
-  urgency             TaskUrgency @default(NORMAL)
-  status              TaskStatus  @default(COMING_UP)
-  whatYouNeed         String[]
-  checklist           String[]
-  officialSourceUrl   String?
-  adviceBoundary      String
-  completedAt         DateTime?
-  createdAt           DateTime    @default(now())
-  updatedAt           DateTime    @updatedAt
+  id                     String      @id @default(cuid())
+  businessId             String
+  key                    String?
+  title                  String
+  plainEnglishSummary    String
+  dueDate                DateTime?
+  urgency                TaskUrgency @default(NORMAL)
+  status                 TaskStatus  @default(COMING_UP)
+  nextAction             String      @default("")
+  whatThisMeans          String      @default("")
+  whyYouMayNeedIt        String      @default("")
+  calculationInput       Json?
+  calculationExplanation String      @default("")
+  ruleVersion            String      @default("stage-1")
+  sourceTitle            String?
+  sourceCheckedAt        DateTime?
+  missingInformation     String[]
+  whatYouNeed            String[]
+  checklist              String[]
+  officialSourceUrl      String?
+  adviceBoundary         String
+  completedAt            DateTime?
+  completedNote          String?
+  notApplicableAt        DateTime?
+  notApplicableReason    String?
+  createdAt              DateTime    @default(now())
+  updatedAt              DateTime    @updatedAt
 
-  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  business           Business           @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  history            TaskHistory[]
+  reminderDeliveries ReminderDelivery[]
+
+  @@unique([businessId, key])
+  @@index([businessId, status, dueDate])
+}
+
+model TaskHistory {
+  id        String            @id @default(cuid())
+  taskId    String
+  userId    String?
+  action    TaskHistoryAction
+  note      String?
+  metadata  Json?
+  createdAt DateTime          @default(now())
+
+  task Task  @relation(fields: [taskId], references: [id], onDelete: Cascade)
+  user User? @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([taskId, createdAt])
+}
+
+model ReminderDelivery {
+  id         String           @id @default(cuid())
+  taskId     String
+  interval   ReminderInterval
+  sentTo     String
+  sentAt     DateTime         @default(now())
+  providerId String?
+
+  task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
+
+  @@unique([taskId, interval])
+  @@index([sentAt])
 }
 
 model Deadline {
@@ -305,7 +395,27 @@ model ComplianceRule {
   createdAt     DateTime     @default(now())
   updatedAt     DateTime     @updatedAt
 
+  contentVersions ComplianceRuleContentVersion[]
+
   @@unique([key, effectiveFrom])
+}
+
+model ComplianceRuleContentVersion {
+  id               String   @id @default(cuid())
+  complianceRuleId String
+  plainName        String
+  description      String
+  sourceUrl        String
+  checkedAt        DateTime
+  active           Boolean  @default(true)
+  changedByUserId  String?
+  changeNote       String?
+  createdAt        DateTime @default(now())
+
+  complianceRule ComplianceRule @relation(fields: [complianceRuleId], references: [id], onDelete: Cascade)
+  changedBy      User?          @relation(fields: [changedByUserId], references: [id], onDelete: SetNull)
+
+  @@index([complianceRuleId, createdAt])
 }
 
 model OfficialSource {

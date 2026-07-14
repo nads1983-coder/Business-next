@@ -56,3 +56,24 @@ export function passwordResetEmailHtml(href: string) {
     expiresText: "This link works for 30 minutes and can only be used once."
   });
 }
+
+export function deadlineReminderEmailHtml({
+  taskTitle,
+  dueDate,
+  nextAction,
+  href
+}: {
+  taskTitle: string;
+  dueDate: string;
+  nextAction: string;
+  href: string;
+}) {
+  return baseEmail({
+    title: taskTitle,
+    intro: `This Business Next reminder is about a deadline due ${dueDate}. Next step: ${nextAction}`,
+    buttonLabel: "Open task",
+    href,
+    expiresText:
+      "This is a deadline reminder, not accounting, tax or legal advice. Check the official source in the task if you are unsure."
+  });
+}

@@ -1,10 +1,16 @@
 import Link from "next/link";
 import { productConfig } from "@/config/product";
+import { getPrisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/session";
 import { SignOutButton } from "@/components/sign-out-button";
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
-  await requireUser();
+  const user = await requireUser();
+  const dbUser = await getPrisma().user.findUnique({
+    where: { id: user.id },
+    select: { role: true }
+  });
+  const navigation = productConfig.navigation.filter((item) => !("adminOnly" in item) || dbUser?.role === "ADMIN");
 
   return (
     <div className="min-h-screen bg-background">
@@ -19,7 +25,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
       <div className="mx-auto grid max-w-7xl gap-6 px-4 py-6 md:grid-cols-[220px_1fr]">
         <nav aria-label="Main navigation" className="md:sticky md:top-20 md:h-fit">
           <ul className="grid grid-cols-2 gap-2 md:grid-cols-1">
-            {productConfig.navigation.map((item) => (
+            {navigation.map((item) => (
               <li key={item.href}>
                 <Link
                   href={item.href}

@@ -27,18 +27,40 @@ export function OnboardingForm() {
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>({
     businessType: "NOT_SURE",
-    worksAlone: "NOT_SURE",
-    paysSelfThroughCompany: "NOT_SURE",
+    legalBusinessName: "",
+    tradingName: "",
+    companyNumber: "",
+    startedTradingOn: "",
+    companyRegisteredOn: "",
+    firstAccountingPeriodEnd: "",
     registeredForVat: "NOT_SURE",
+    vatRegisteredOn: "",
+    vatPeriodEndsOn: "",
+    employsPeople: "NOT_SURE",
+    firstPayday: "",
     usesAccountant: "NOT_SURE",
     wantsEmailReminders: "YES",
     salesSoFar: "0",
-    costsSoFar: "0"
+    costsSoFar: "0",
+    canUpdateLater: "YES"
   });
-  const question = onboardingQuestions[step];
+  const visibleQuestions = useMemo(
+    () =>
+      onboardingQuestions.filter((item) => {
+        if ("businessTypes" in item && item.businessTypes) {
+          if (!item.businessTypes.includes(answers.businessType as never)) return false;
+        }
+        if ("requires" in item && item.requires) {
+          if (answers[item.requires.id] !== item.requires.value) return false;
+        }
+        return true;
+      }),
+    [answers]
+  );
+  const question = visibleQuestions[Math.min(step, visibleQuestions.length - 1)];
   const progress = useMemo(
-    () => Math.round(((step + 1) / onboardingQuestions.length) * 100),
-    [step]
+    () => Math.round(((step + 1) / visibleQuestions.length) * 100),
+    [step, visibleQuestions.length]
   );
 
   function updateAnswer(value: string) {
@@ -56,7 +78,7 @@ export function OnboardingForm() {
       <div>
         <div className="mb-2 flex items-center justify-between text-sm text-muted-foreground">
           <span>
-            Question {step + 1} of {onboardingQuestions.length}
+            Question {step + 1} of {visibleQuestions.length}
           </span>
           <span>{progress}%</span>
         </div>
@@ -98,9 +120,22 @@ export function OnboardingForm() {
           {question.type === "date" ? (
             <Input
               type="date"
+              aria-label={question.label}
               value={answers[question.id] ?? ""}
               onChange={(event) => updateAnswer(event.target.value)}
             />
+          ) : null}
+
+          {question.type === "text" ? (
+            <div className="space-y-2">
+              <Label htmlFor={question.id}>{question.label}</Label>
+              <Input
+                id={question.id}
+                type="text"
+                value={answers[question.id] ?? ""}
+                onChange={(event) => updateAnswer(event.target.value)}
+              />
+            </div>
           ) : null}
 
           {question.type === "month" ? (
@@ -146,11 +181,11 @@ export function OnboardingForm() {
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           Back
         </Button>
-        {step < onboardingQuestions.length - 1 ? (
+        {step < visibleQuestions.length - 1 ? (
           <Button
             type="button"
             onClick={() =>
-              setStep((current) => Math.min(onboardingQuestions.length - 1, current + 1))
+              setStep((current) => Math.min(visibleQuestions.length - 1, current + 1))
             }
           >
             Next

@@ -11,11 +11,20 @@ export const plainCopy = {
     COMING_UP: "Coming up",
     COMPLETED: "Completed",
     NEEDS_INFORMATION: "Needs information",
-    OVERDUE: "Overdue"
+    OVERDUE: "Overdue",
+    NOT_APPLICABLE: "Not applicable"
   },
   urgency: {
     LOW: "Low",
     NORMAL: "Normal",
     HIGH: "High"
+  },
+  history: {
+    CREATED: "Created",
+    RECALCULATED: "Recalculated",
+    COMPLETED: "Marked complete",
+    MARKED_NOT_APPLICABLE: "Marked not applicable",
+    RESTORED: "Restored",
+    NOTE_UPDATED: "Note updated"
   }
 } as const;

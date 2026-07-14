@@ -5,6 +5,7 @@ import {
   HelpCircle,
   Home,
   ListChecks,
+  ShieldCheck,
   Settings
 } from "lucide-react";
 
@@ -45,6 +46,7 @@ export const productConfig = {
     { label: "Documents", href: "/app/documents", icon: FileText },
     { label: "Ask", href: "/app/ask", icon: HelpCircle },
     { label: "Calendar", href: "/app/calendar", icon: CalendarDays },
-    { label: "Settings", href: "/app/settings", icon: Settings }
+    { label: "Settings", href: "/app/settings", icon: Settings },
+    { label: "Admin", href: "/app/admin", icon: ShieldCheck, adminOnly: true }
   ]
 } as const;

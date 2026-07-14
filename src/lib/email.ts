@@ -1,6 +1,6 @@
 import { Resend } from "resend";
 import { emailConfig } from "@/config/email";
-import { passwordResetEmailHtml, verificationEmailHtml } from "@/lib/email-html";
+import { deadlineReminderEmailHtml, passwordResetEmailHtml, verificationEmailHtml } from "@/lib/email-html";
 
 let resendClient: Resend | null = null;
 
@@ -54,6 +54,36 @@ async function sendEmail({
   if (error) {
     throw new Error(error.message);
   }
+}
+
+export async function sendDeadlineReminderEmail({
+  email,
+  taskTitle,
+  dueDate,
+  nextAction,
+  taskId,
+  interval
+}: {
+  email: string;
+  taskTitle: string;
+  dueDate: string;
+  nextAction: string;
+  taskId: string;
+  interval: string;
+}) {
+  const url = new URL(`/app/tasks/${taskId}`, emailConfig.appUrl);
+
+  await sendEmail({
+    to: email,
+    subject: `Business Next reminder: ${taskTitle}`,
+    html: deadlineReminderEmailHtml({
+      taskTitle,
+      dueDate,
+      nextAction,
+      href: url.toString()
+    }),
+    idempotencyKey: `deadline-${taskId}-${interval}`
+  });
 }
 
 export async function sendVerificationEmail({
