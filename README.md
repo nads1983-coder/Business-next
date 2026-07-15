@@ -60,7 +60,15 @@ Deploy on Vercel with managed PostgreSQL and these required environment variable
 - `RESEND_API_KEY`
 - `EMAIL_FROM`
 
-Later-stage placeholders are included for Stripe, OpenAI and object storage. Do not expose secret keys in client-side code.
+Stage 3 billing is a controlled Stripe test-mode foundation. Live payments are intentionally disabled. Checkout is available only when all of these server-side variables are present:
+
+- `BUSINESS_NEXT_BILLING_ENABLED=true`
+- `STRIPE_SECRET_KEY` with an `sk_test_` value
+- `STRIPE_WEBHOOK_SECRET`
+- `STRIPE_TEST_PRICE_ID_MONTHLY`
+- `STRIPE_TEST_PRICE_ID_ANNUAL` only when annual billing is approved
+
+Do not use `sk_live_` keys or live Stripe price IDs during the test-mode launch phase. Do not expose secret keys in client-side code.
 
 Before production deployment:
 

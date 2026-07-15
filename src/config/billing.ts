@@ -6,6 +6,7 @@ export type BillingPlan = {
   description: string;
   currency: "gbp";
   displayPrice: string;
+  stripeMode: "test";
   monthlyStripePriceId?: string;
   annualStripePriceId?: string;
   annualEnabled: boolean;
@@ -18,9 +19,20 @@ export type BillingPlan = {
   founderAccessName: string;
 };
 
-const monthlyStripePriceId = process.env.STRIPE_PRICE_ID_MONTHLY || undefined;
-const annualStripePriceId = process.env.STRIPE_PRICE_ID_ANNUAL || undefined;
+const monthlyStripePriceId = process.env.STRIPE_TEST_PRICE_ID_MONTHLY || undefined;
+const annualStripePriceId = process.env.STRIPE_TEST_PRICE_ID_ANNUAL || undefined;
 const checkoutExplicitlyEnabled = process.env.BUSINESS_NEXT_BILLING_ENABLED === "true";
+const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
+const webhookSecretConfigured = Boolean(process.env.STRIPE_WEBHOOK_SECRET);
+const stripeTestSecretConfigured = Boolean(stripeSecretKey?.startsWith("sk_test_"));
+const stripeLiveSecretConfigured = Boolean(stripeSecretKey?.startsWith("sk_live_"));
+const testBillingConfigured = Boolean(
+  checkoutExplicitlyEnabled &&
+    monthlyStripePriceId &&
+    webhookSecretConfigured &&
+    stripeTestSecretConfigured &&
+    !stripeLiveSecretConfigured
+);
 
 export const billingConfig = {
   plan: {
@@ -30,12 +42,13 @@ export const billingConfig = {
       "Plain-English deadline guidance for first-time UK founders who want to know what to do next.",
     currency: "gbp",
     displayPrice: "Price to be confirmed",
+    stripeMode: "test",
     monthlyStripePriceId,
     annualStripePriceId,
     annualEnabled: Boolean(annualStripePriceId),
     trialDays: undefined,
     active: true,
-    checkoutEnabled: Boolean(checkoutExplicitlyEnabled && monthlyStripePriceId),
+    checkoutEnabled: testBillingConfigured,
     founderAccessName: "Founder access",
     features: [
       "Personalised business deadlines in plain English",
@@ -66,6 +79,18 @@ export function getApprovedPriceId(interval: BillingInterval) {
   return billingConfig.plan.monthlyStripePriceId;
 }
 
+export function getApprovedStripePriceIds() {
+  return [billingConfig.plan.monthlyStripePriceId, billingConfig.plan.annualStripePriceId].filter(Boolean) as string[];
+}
+
+export function isApprovedStripePriceId(priceId?: string | null) {
+  return Boolean(priceId && getApprovedStripePriceIds().includes(priceId));
+}
+
 export function isCheckoutAvailable() {
   return billingConfig.plan.checkoutEnabled;
+}
+
+export function isStripeTestModeReady() {
+  return testBillingConfigured;
 }

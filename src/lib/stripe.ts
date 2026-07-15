@@ -11,6 +11,9 @@ export function getStripe() {
   if (!secretKey) {
     throw new Error("STRIPE_SECRET_KEY is required before Stripe can be used.");
   }
+  if (secretKey.startsWith("sk_live_")) {
+    throw new Error("Stripe live mode is disabled for the controlled test-mode launch phase.");
+  }
 
   stripeClient = new Stripe(secretKey, {
     apiVersion: "2026-06-24.dahlia",

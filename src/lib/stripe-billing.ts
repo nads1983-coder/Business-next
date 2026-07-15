@@ -2,7 +2,13 @@ import "server-only";
 
 import Stripe from "stripe";
 import type { BillingSubscriptionStatus, Prisma } from "@prisma/client";
-import { billingConfig, getApprovedPriceId, isCheckoutAvailable, type BillingInterval } from "@/config/billing";
+import {
+  billingConfig,
+  getApprovedPriceId,
+  isApprovedStripePriceId,
+  isCheckoutAvailable,
+  type BillingInterval
+} from "@/config/billing";
 import { analyticsEvents, recordAnalyticsEvent } from "@/lib/analytics";
 import { appUrl } from "@/lib/email";
 import { getPrisma } from "@/lib/prisma";
@@ -227,6 +233,10 @@ async function syncSubscriptionFromStripe({
 }) {
   const item = stripeSubscription.items.data[0];
   const price = item?.price;
+  if (!isApprovedStripePriceId(price?.id)) {
+    throw new Error("Stripe subscription price is not approved for this test-mode launch phase.");
+  }
+
   const currentPeriodEnd = item?.current_period_end;
   const billingInterval = price?.recurring?.interval === "year" ? "ANNUAL" : "MONTHLY";
   const billingStatus = stripeStatusToBillingStatus(stripeSubscription.status);
@@ -311,6 +321,25 @@ export async function processStripeEvent(event: Stripe.Event) {
   const existing = await prisma.stripeWebhookEvent.findUnique({ where: { id: event.id } });
   if (existing) {
     return { duplicate: true, summary: existing.summary };
+  }
+  if (event.livemode) {
+    await prisma.stripeWebhookEvent.create({
+      data: {
+        id: event.id,
+        type: event.type,
+        livemode: event.livemode,
+        processingStatus: "failed",
+        summary: "Live-mode Stripe webhook rejected.",
+        errorMessage: "Stripe live mode is disabled for the controlled test-mode launch phase.",
+        payload: event as unknown as Prisma.InputJsonValue
+      }
+    });
+    await recordBillingEvent({
+      type: "WEBHOOK_FAILED",
+      stripeEventId: event.id,
+      summary: "Live-mode Stripe webhook rejected."
+    });
+    throw new Error("Stripe live mode is disabled for the controlled test-mode launch phase.");
   }
 
   let userId: string | null = null;
