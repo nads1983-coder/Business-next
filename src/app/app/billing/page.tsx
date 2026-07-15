@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import { AlertCircle, CheckCircle2, ExternalLink } from "lucide-react";
-import { billingConfig } from "@/config/billing";
+import { billingConfig, isControlledBillingTestUser } from "@/config/billing";
 import { getProductAccess } from "@/lib/billing";
 import { getPrisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/session";
@@ -26,6 +26,7 @@ export default async function BillingPage() {
   ]);
 
   const hasStripeCustomer = Boolean(subscription?.stripeCustomerId);
+  const canStartControlledCheckout = billingConfig.plan.checkoutEnabled && isControlledBillingTestUser(user.email);
 
   return (
     <div className="space-y-6">
@@ -82,14 +83,18 @@ export default async function BillingPage() {
         </CardContent>
       </Card>
 
-      {!billingConfig.plan.checkoutEnabled ? (
+      {!canStartControlledCheckout ? (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-primary" aria-hidden="true" />
-              Paid billing is not live yet
+              Paid Checkout is in controlled test mode
             </CardTitle>
-            <CardDescription>{billingConfig.plan.comingSoonWording}</CardDescription>
+            <CardDescription>
+              {billingConfig.plan.checkoutEnabled
+                ? "Checkout is configured but limited to the approved test account until public launch is approved."
+                : billingConfig.plan.comingSoonWording}
+            </CardDescription>
           </CardHeader>
           <CardContent>
             <Button asChild variant="secondary">
@@ -100,14 +105,19 @@ export default async function BillingPage() {
       ) : (
         <Card>
           <CardHeader>
-            <CardTitle>Subscribe</CardTitle>
+            <CardTitle>Subscribe to {billingConfig.plan.name}</CardTitle>
             <CardDescription>
-              You will be sent to Stripe Checkout. Access is granted only after Business Next receives a verified Stripe webhook.
+              {billingConfig.plan.displayPrice}. Monthly recurring billing, no annual option and no free trial. You will
+              be sent to Stripe Checkout. Access is granted only after Business Next receives a verified test-mode webhook.
             </CardDescription>
           </CardHeader>
           <CardContent>
             <form action={startCheckoutAction} className="space-y-4">
               <input type="hidden" name="interval" value="monthly" />
+              <p className="text-sm text-muted-foreground">
+                You can cancel at any time. Cancellation stops future renewal payments and normally takes effect at the end of
+                the current paid monthly period, with access continuing until then.
+              </p>
               <label className="flex items-start gap-2 text-sm">
                 <input className="mt-1" type="checkbox" name="acceptTerms" required />
                 <span>I accept the Business Next Terms of Use.</span>
@@ -118,7 +128,11 @@ export default async function BillingPage() {
               </label>
               <label className="flex items-start gap-2 text-sm">
                 <input className="mt-1" type="checkbox" name="acceptSubscriptionTerms" required />
-                <span>I accept the Subscription and Cancellation Terms.</span>
+                <span>
+                  I accept the Subscription and Cancellation Terms, including monthly recurring billing at{" "}
+                  {billingConfig.plan.displayPrice}, no annual plan, no free trial, and cancellation taking effect at the end
+                  of the current paid monthly period.
+                </span>
               </label>
               <Button type="submit">Continue to Checkout</Button>
             </form>

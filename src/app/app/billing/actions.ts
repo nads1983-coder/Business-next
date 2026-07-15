@@ -2,7 +2,7 @@
 
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { billingConfig } from "@/config/billing";
+import { billingConfig, isControlledBillingTestUser } from "@/config/billing";
 import { getPrisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/session";
 import { createCheckoutSession, createCustomerPortalSession } from "@/lib/stripe-billing";
@@ -19,6 +19,9 @@ export async function startCheckoutAction(formData: FormData) {
 
   if (!billingConfig.plan.checkoutEnabled) {
     redirect("/pricing?billing=not-ready");
+  }
+  if (!isControlledBillingTestUser(user.email)) {
+    redirect("/pricing?billing=controlled-test");
   }
 
   const parsed = checkoutSchema.parse({

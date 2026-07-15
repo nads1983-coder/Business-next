@@ -52,7 +52,7 @@ export default async function PricingPage() {
             <div>
               <p className="text-3xl font-semibold">{billingConfig.plan.displayPrice}</p>
               <p className="mt-1 text-sm text-muted-foreground">
-                {billingConfig.plan.checkoutEnabled ? "Monthly billing" : "Paid Checkout is not available yet"}
+                Monthly recurring billing. No annual plan and no free trial in this controlled test.
               </p>
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground">
@@ -63,13 +63,21 @@ export default async function PricingPage() {
                 </li>
               ))}
             </ul>
+            <div className="space-y-2 text-sm text-muted-foreground">
+              <p>Cancel at any time through the secure billing portal.</p>
+              <p>Cancellation stops future renewal payments and normally takes effect at the end of the current paid monthly period.</p>
+              <p>{productConfig.disclaimer}</p>
+            </div>
             <p className="text-sm text-muted-foreground">{billingConfig.plan.cancellationWording}</p>
             {billingConfig.plan.checkoutEnabled ? (
-              <Button asChild className="w-full">
-                <Link href="/app/billing">
-                  Continue to billing <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
-              </Button>
+              <div className="space-y-3 rounded-md border bg-secondary/50 p-4 text-sm text-muted-foreground">
+                <p>Stripe test-mode Checkout is configured but limited to the approved test account.</p>
+                <Button asChild className="w-full">
+                  <Link href="/app/billing">
+                    Test account billing <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                  </Link>
+                </Button>
+              </div>
             ) : (
               <div className="rounded-md border bg-secondary/50 p-4 text-sm text-muted-foreground">
                 {billingConfig.plan.comingSoonWording}
@@ -84,7 +92,9 @@ export default async function PricingPage() {
           ["Is Business Next accounting advice?", productConfig.disclaimer],
           ["Is Business Next connected to GOV.UK or HMRC?", "No. Business Next links to official sources where useful, but it is an independent product and is not affiliated with government."],
           ["Will it guarantee I avoid penalties?", "No. It helps you organise deadlines and tasks, but you are still responsible for checking your duties and getting professional advice when needed."],
-          ["Can I cancel?", "When paid billing is live, cancellation will be handled through the secure billing portal and explained before purchase."]
+          ["Can I cancel?", "Yes. The proposed monthly plan can be cancelled at any time through the secure billing portal. Cancellation stops future renewals and normally takes effect at the end of the current paid period."],
+          ["Can I pay annually?", "No. Annual billing is not offered in the initial controlled test."],
+          ["Is there a free trial?", "No. The initial controlled test uses one monthly Stripe test-mode price with no free trial."]
         ].map(([question, answer]) => (
           <Card key={question}>
             <CardHeader>

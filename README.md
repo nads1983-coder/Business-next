@@ -66,7 +66,9 @@ Stage 3 billing is a controlled Stripe test-mode foundation. Live payments are i
 - `STRIPE_SECRET_KEY` with an `sk_test_` value
 - `STRIPE_WEBHOOK_SECRET`
 - `STRIPE_TEST_PRICE_ID_MONTHLY`
-- `STRIPE_TEST_PRICE_ID_ANNUAL` only when annual billing is approved
+- `BUSINESS_NEXT_TEST_EMAIL` set to the single approved test purchaser email
+
+The controlled MVP offer is Business Next at £9 per month in GBP, monthly recurring billing only, with no annual plan and no free trial. Do not set `STRIPE_TEST_PRICE_ID_ANNUAL` for this phase.
 
 Do not use `sk_live_` keys or live Stripe price IDs during the test-mode launch phase. Do not expose secret keys in client-side code.
 

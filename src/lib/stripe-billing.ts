@@ -5,6 +5,7 @@ import type { BillingSubscriptionStatus, Prisma } from "@prisma/client";
 import {
   billingConfig,
   getApprovedPriceId,
+  isControlledBillingTestUser,
   isApprovedStripePriceId,
   isCheckoutAvailable,
   type BillingInterval
@@ -85,6 +86,9 @@ export async function createCheckoutSession({
 }) {
   if (!isCheckoutAvailable()) {
     throw new Error("Checkout is not enabled because Business Next pricing has not been approved.");
+  }
+  if (!isControlledBillingTestUser(user.email)) {
+    throw new Error("Checkout is limited to the approved test account until public launch is approved.");
   }
 
   const priceId = getApprovedPriceId(interval);

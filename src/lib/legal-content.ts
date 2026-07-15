@@ -2,7 +2,7 @@ import { billingConfig } from "@/config/billing";
 import { productConfig } from "@/config/product";
 
 export const legalNotice =
-  "Draft wording for owner/legal review before paid launch. This wording has not been reviewed by a solicitor.";
+  "Draft wording for owner and professional legal review before live paid launch. This wording has not been reviewed by a solicitor and does not activate live payments.";
 
 export const legalPages = {
   terms: {
@@ -34,26 +34,30 @@ export const legalPages = {
     version: billingConfig.legal.subscriptionTermsVersion,
     effectiveDate: billingConfig.legal.effectiveDate,
     sections: [
-      ["Pricing", "The final Business Next price has not yet been approved. Paid Checkout will remain disabled until pricing is confirmed."],
-      ["Recurring billing", "When paid billing is enabled, the price, billing period, taxes and cancellation terms must be shown before purchase."],
+      ["Pricing", "Proposed commercial policy for controlled testing: Business Next is £9 per month in GBP. Annual billing and free trials are not offered initially. This clause requires owner approval before public launch."],
+      ["Recurring monthly billing", "Legally required pre-contract information must clearly show the product name, total price, billing period, payment method, minimum contract length and cancellation conditions before the customer places an order. Business Next should confirm the contract in a durable format after purchase. This clause requires professional legal review."],
       ["Cancellation", billingConfig.plan.cancellationWording],
-      ["Access after cancellation", "If cancellation is scheduled at the end of a paid period, access normally continues until that period ends unless Stripe confirms a status that requires access to stop earlier."],
-      ["Payment problems", "If payment fails or a subscription becomes overdue, access may be limited and the billing page will provide a route to manage payment."]
+      ["Access after cancellation", "Proposed commercial policy: when cancellation is scheduled for the end of the current paid monthly period, product access normally continues until that period ends unless Stripe confirms a failed, unpaid, reversed or ended status that requires access to stop earlier. This clause requires owner and professional legal review."],
+      ["Payment problems", "If payment fails or a subscription becomes overdue, access may be limited and the billing page will provide a route to manage payment. Business Next will not delete customer business data solely because a renewal payment fails. This clause requires owner approval."],
+      ["Consumer rights", "Nothing in these terms is intended to remove or restrict statutory consumer rights. The exact cancellation-period and digital-service wording requires professional legal review before live consumer sales."],
+      ["Support contact", `For subscription, cancellation, refund or access questions, contact ${productConfig.supportEmail}. Do not send card details; Stripe handles card information.`]
     ]
   },
   refunds: {
     title: "Refund Policy",
-    version: "stage-3-draft-2026-07-14",
+    version: "stage-3-test-draft-2026-07-15",
     effectiveDate: billingConfig.legal.effectiveDate,
     sections: [
-      ["Before paid launch", "No live payments are enabled yet, so no customer refunds can be processed through Business Next."],
-      ["After paid launch", "Refund wording must be confirmed before live billing is activated. We will not invent statutory rights or promise refunds that have not been approved."],
-      ["How to ask", "Contact support with your account email and a short explanation. Do not send card details."]
+      ["Before live paid launch", "Live payments are not enabled. Stripe test-mode payments do not create real customer charges or real refunds."],
+      ["Proposed commercial policy", billingConfig.plan.refundWording],
+      ["Duplicate charges or service-access problems", "If Stripe records show a duplicate charge, incorrect charge or service-access problem caused by Business Next or its payment setup, Business Next should correct the issue and arrange any appropriate refund through Stripe. This clause requires owner approval and professional legal review."],
+      ["Statutory rights", "This refund policy must not remove or restrict statutory consumer rights. The exact wording for online service cancellation rights, digital access and any immediate-service consent requires professional legal review before live billing."],
+      ["How to ask", `Contact ${productConfig.supportEmail} with your account email and a short explanation. Do not send card details.`]
     ]
   },
   cookies: {
     title: "Cookie Information",
-    version: "stage-3-draft-2026-07-14",
+    version: "stage-3-test-draft-2026-07-15",
     effectiveDate: billingConfig.legal.effectiveDate,
     sections: [
       ["Essential cookies", "Business Next uses essential cookies for authentication, security and basic app operation."],
@@ -63,7 +67,7 @@ export const legalPages = {
   },
   support: {
     title: "Contact and Support",
-    version: "stage-3-draft-2026-07-14",
+    version: "stage-3-test-draft-2026-07-15",
     effectiveDate: billingConfig.legal.effectiveDate,
     sections: [
       ["Contact", `Email ${productConfig.supportEmail} for account, billing or product support.`],
