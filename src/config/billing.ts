@@ -1,3 +1,5 @@
+import { legalConfig } from "@/config/legal";
+
 export type BillingInterval = "monthly" | "annual";
 export type StripeBillingMode = "test" | "live";
 
@@ -25,12 +27,18 @@ export type BillingPlan = {
   founderAccessName: string;
 };
 
-const legalVersions = {
-  termsVersion: "stage-3-live-owner-draft-2026-07-15",
-  privacyVersion: "stage-3-live-owner-draft-2026-07-15",
-  subscriptionTermsVersion: "stage-3-live-owner-draft-2026-07-15",
-  effectiveDate: "15 July 2026"
-} as const;
+export type CheckoutGateCategory =
+  | "billing_enabled"
+  | "owner_email"
+  | "legal_owner"
+  | "legal_versions"
+  | "stripe_mode"
+  | "stripe_secret"
+  | "stripe_webhook"
+  | "stripe_product"
+  | "stripe_price"
+  | "approved_app_url"
+  | "mode_isolation";
 
 const approvedProductionAppUrl = "https://businesssorted.uk";
 const fallbackAppUrl = "https://files-mentioned-by-the-user-build-umber.vercel.app";
@@ -40,21 +48,28 @@ const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 const controlledTestEmail = process.env.BUSINESS_NEXT_TEST_EMAIL?.trim().toLowerCase() || undefined;
 const configuredAppUrl =
-  process.env.BUSINESS_NEXT_APPROVED_APP_URL ?? process.env.NEXT_PUBLIC_APP_URL ?? process.env.NEXTAUTH_URL;
+  process.env.BUSINESS_NEXT_APPROVED_APP_URL ??
+  process.env.NEXT_PUBLIC_APP_URL ??
+  process.env.NEXTAUTH_URL;
 
 const monthlyStripePriceId =
-  requestedMode === "live" ? process.env.STRIPE_LIVE_PRICE_ID_MONTHLY || undefined : process.env.STRIPE_TEST_PRICE_ID_MONTHLY || undefined;
+  requestedMode === "live"
+    ? process.env.STRIPE_LIVE_PRICE_ID_MONTHLY || undefined
+    : process.env.STRIPE_TEST_PRICE_ID_MONTHLY || undefined;
 const stripeProductId =
-  requestedMode === "live" ? process.env.STRIPE_LIVE_PRODUCT_ID || undefined : process.env.STRIPE_TEST_PRODUCT_ID || undefined;
+  requestedMode === "live"
+    ? process.env.STRIPE_LIVE_PRODUCT_ID || undefined
+    : process.env.STRIPE_TEST_PRODUCT_ID || undefined;
 const annualStripePriceId =
   requestedMode === "live" ? undefined : process.env.STRIPE_TEST_PRICE_ID_ANNUAL || undefined;
 
-const legalOwnerAccepted = Boolean(
-  process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED === "true" &&
-    process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED === legalVersions.termsVersion &&
-    process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED === legalVersions.privacyVersion &&
-    process.env.BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED === legalVersions.subscriptionTermsVersion
-);
+const legalOwnerFlagAccepted = process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED === "true";
+const legalVersionsAccepted =
+  process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED === legalConfig.termsVersion &&
+  process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED === legalConfig.privacyVersion &&
+  process.env.BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED ===
+    legalConfig.subscriptionTermsVersion;
+const legalOwnerAccepted = legalOwnerFlagAccepted && legalVersionsAccepted;
 
 const sharedBillingConfigured = Boolean(
   checkoutExplicitlyEnabled &&
@@ -67,7 +82,8 @@ const testBillingConfigured = Boolean(
   requestedMode === "test" &&
     sharedBillingConfigured &&
     stripeSecretKey?.startsWith("sk_test_") &&
-    !process.env.STRIPE_LIVE_PRICE_ID_MONTHLY
+    !process.env.STRIPE_LIVE_PRICE_ID_MONTHLY &&
+    !process.env.STRIPE_LIVE_PRODUCT_ID
 );
 
 const liveBillingConfigured = Boolean(
@@ -78,8 +94,47 @@ const liveBillingConfigured = Boolean(
     configuredAppUrl === approvedProductionAppUrl &&
     legalOwnerAccepted &&
     !process.env.STRIPE_TEST_PRICE_ID_MONTHLY &&
-    !process.env.STRIPE_TEST_PRICE_ID_ANNUAL
+    !process.env.STRIPE_TEST_PRICE_ID_ANNUAL &&
+    !process.env.STRIPE_TEST_PRODUCT_ID
 );
+
+export function getCheckoutGateDiagnostics() {
+  const failingCategories: CheckoutGateCategory[] = [];
+
+  if (!checkoutExplicitlyEnabled) failingCategories.push("billing_enabled");
+  if (!controlledTestEmail) failingCategories.push("owner_email");
+  if (!stripeWebhookSecret?.startsWith("whsec_")) failingCategories.push("stripe_webhook");
+  if (!monthlyStripePriceId) failingCategories.push("stripe_price");
+  if (!stripeSecretKey?.startsWith(requestedMode === "live" ? "sk_live_" : "sk_test_")) {
+    failingCategories.push("stripe_secret");
+  }
+
+  if (requestedMode === "live") {
+    if (!legalOwnerFlagAccepted) failingCategories.push("legal_owner");
+    if (!legalVersionsAccepted) failingCategories.push("legal_versions");
+    if (!stripeProductId) failingCategories.push("stripe_product");
+    if (configuredAppUrl !== approvedProductionAppUrl) failingCategories.push("approved_app_url");
+    if (
+      process.env.STRIPE_TEST_PRICE_ID_MONTHLY ||
+      process.env.STRIPE_TEST_PRICE_ID_ANNUAL ||
+      process.env.STRIPE_TEST_PRODUCT_ID
+    ) {
+      failingCategories.push("mode_isolation");
+    }
+  } else {
+    if (process.env.STRIPE_LIVE_PRICE_ID_MONTHLY || process.env.STRIPE_LIVE_PRODUCT_ID) {
+      failingCategories.push("mode_isolation");
+    }
+    if (process.env.BUSINESS_NEXT_STRIPE_MODE && process.env.BUSINESS_NEXT_STRIPE_MODE !== "test") {
+      failingCategories.push("stripe_mode");
+    }
+  }
+
+  return {
+    ready: requestedMode === "live" ? liveBillingConfigured : testBillingConfigured,
+    failingCategories
+  } as const;
+}
 
 export const billingConfig = {
   approvedProductionAppUrl,
@@ -101,7 +156,7 @@ export const billingConfig = {
     annualEnabled: false,
     trialDays: undefined,
     active: true,
-    checkoutEnabled: requestedMode === "live" ? liveBillingConfigured : testBillingConfigured,
+    checkoutEnabled: getCheckoutGateDiagnostics().ready,
     controlledTestEmail,
     founderAccessName: "Founder access",
     features: [
@@ -121,7 +176,7 @@ export const billingConfig = {
         : "The paid plan is prepared for controlled Stripe test-mode verification only. Public Checkout remains unavailable until owner approval and live-payment activation."
   } satisfies BillingPlan,
   legal: {
-    ...legalVersions,
+    ...legalConfig,
     requiresOwnerReview: !legalOwnerAccepted
   }
 } as const;
@@ -154,8 +209,10 @@ export function isCheckoutAvailable() {
 }
 
 export function isControlledBillingTestUser(email?: string | null) {
-  return Boolean(billingConfig.plan.controlledTestEmail && email?.toLowerCase() === billingConfig.plan.controlledTestEmail);
+  return Boolean(billingConfig.plan.controlledTestEmail && email?.trim().toLowerCase() === billingConfig.plan.controlledTestEmail);
 }
+
+export const isCheckoutOwnerEmail = isControlledBillingTestUser;
 
 export function isStripeTestModeReady() {
   return testBillingConfigured;
