@@ -20,6 +20,22 @@ function resetBillingEnv() {
   delete process.env.BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED;
 }
 
+function setLiveReadyEnv() {
+  process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
+  process.env.BUSINESS_NEXT_STRIPE_MODE = "live";
+  process.env.STRIPE_SECRET_KEY = "sk_live_ready";
+  process.env.STRIPE_WEBHOOK_SECRET = "whsec_ready";
+  process.env.STRIPE_LIVE_PRODUCT_ID = "prod_live";
+  process.env.STRIPE_LIVE_PRICE_ID_MONTHLY = "price_live_monthly";
+  process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://businesssorted.uk";
+  process.env.BUSINESS_NEXT_TEST_EMAIL = "owner@example.com";
+  process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED = "true";
+  process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
+  process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
+  process.env.BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED =
+    "stage-3-live-owner-draft-2026-07-15";
+}
+
 describe("billing configuration", () => {
   beforeEach(() => {
     vi.resetModules();
@@ -36,6 +52,16 @@ describe("billing configuration", () => {
     expect(billingConfig.plan.annualEnabled).toBe(false);
     expect(billingConfig.plan.trialDays).toBeUndefined();
     expect(getApprovedPriceId("annual")).toBeUndefined();
+  });
+
+  it("uses one reviewed live owner draft version for all billing legal gates", async () => {
+    const { billingConfig } = await import("./billing");
+    const { legalVersion } = await import("./legal");
+
+    expect(legalVersion).toBe("stage-3-live-owner-draft-2026-07-15");
+    expect(billingConfig.legal.termsVersion).toBe(legalVersion);
+    expect(billingConfig.legal.privacyVersion).toBe(legalVersion);
+    expect(billingConfig.legal.subscriptionTermsVersion).toBe(legalVersion);
   });
 
   it("requires test-mode Stripe config before billing is ready", async () => {
@@ -80,66 +106,64 @@ describe("billing configuration", () => {
   });
 
   it("requires explicit live mode, live key, live price, approved URL and owner legal acceptance for live readiness", async () => {
-    process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
-    process.env.BUSINESS_NEXT_STRIPE_MODE = "live";
-    process.env.STRIPE_SECRET_KEY = "sk_live_ready";
-    process.env.STRIPE_WEBHOOK_SECRET = "whsec_ready";
-    process.env.STRIPE_LIVE_PRODUCT_ID = "prod_live";
-    process.env.STRIPE_LIVE_PRICE_ID_MONTHLY = "price_live_monthly";
-    process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://businesssorted.uk";
-    process.env.BUSINESS_NEXT_TEST_EMAIL = "owner@example.com";
-    process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED = "true";
-    process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
-    process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
-    process.env.BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
+    setLiveReadyEnv();
 
-    const { billingConfig, isStripeLiveModeReady, getApprovedPriceId, isApprovedStripePriceId } = await import("./billing");
+    const {
+      billingConfig,
+      getApprovedPriceId,
+      getCheckoutGateDiagnostics,
+      isApprovedStripePriceId,
+      isStripeLiveModeReady
+    } = await import("./billing");
 
     expect(billingConfig.plan.stripeMode).toBe("live");
     expect(billingConfig.plan.stripeProductId).toBe("prod_live");
     expect(isStripeLiveModeReady()).toBe(true);
+    expect(getCheckoutGateDiagnostics()).toEqual({ ready: true, failingCategories: [] });
     expect(getApprovedPriceId("monthly")).toBe("price_live_monthly");
     expect(getApprovedPriceId("annual")).toBeUndefined();
     expect(isApprovedStripePriceId("price_live_monthly")).toBe(true);
   });
 
   it("does not become live-ready with test prices or unapproved URLs", async () => {
-    process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
-    process.env.BUSINESS_NEXT_STRIPE_MODE = "live";
-    process.env.STRIPE_SECRET_KEY = "sk_live_ready";
-    process.env.STRIPE_WEBHOOK_SECRET = "whsec_ready";
-    process.env.STRIPE_LIVE_PRODUCT_ID = "prod_live";
-    process.env.STRIPE_LIVE_PRICE_ID_MONTHLY = "price_live_monthly";
+    setLiveReadyEnv();
     process.env.STRIPE_TEST_PRICE_ID_MONTHLY = "price_test_monthly";
-    process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://files-mentioned-by-the-user-build-umber.vercel.app";
-    process.env.BUSINESS_NEXT_TEST_EMAIL = "owner@example.com";
-    process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED = "true";
-    process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
-    process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
-    process.env.BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
+    process.env.BUSINESS_NEXT_APPROVED_APP_URL =
+      "https://files-mentioned-by-the-user-build-umber.vercel.app";
 
-    const { isStripeLiveModeReady } = await import("./billing");
+    const { getCheckoutGateDiagnostics, isStripeLiveModeReady } = await import("./billing");
 
     expect(isStripeLiveModeReady()).toBe(false);
+    expect(getCheckoutGateDiagnostics().failingCategories).toEqual(
+      expect.arrayContaining(["approved_app_url", "mode_isolation"])
+    );
+  });
+
+  it("requires lowercase true for live billing flags", async () => {
+    setLiveReadyEnv();
+    process.env.BUSINESS_NEXT_BILLING_ENABLED = "TRUE";
+
+    const { getCheckoutGateDiagnostics } = await import("./billing");
+    expect(getCheckoutGateDiagnostics().failingCategories).toContain("billing_enabled");
   });
 
   it("requires current legal versions for live readiness", async () => {
-    process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
-    process.env.BUSINESS_NEXT_STRIPE_MODE = "live";
-    process.env.STRIPE_SECRET_KEY = "sk_live_ready";
-    process.env.STRIPE_WEBHOOK_SECRET = "whsec_ready";
-    process.env.STRIPE_LIVE_PRODUCT_ID = "prod_live";
-    process.env.STRIPE_LIVE_PRICE_ID_MONTHLY = "price_live_monthly";
-    process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://businesssorted.uk";
-    process.env.BUSINESS_NEXT_TEST_EMAIL = "owner@example.com";
-    process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED = "true";
+    setLiveReadyEnv();
     process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED = "old";
-    process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
-    process.env.BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
 
-    const { isStripeLiveModeReady, billingConfig } = await import("./billing");
+    const { billingConfig, getCheckoutGateDiagnostics, isStripeLiveModeReady } = await import("./billing");
 
     expect(isStripeLiveModeReady()).toBe(false);
     expect(billingConfig.legal.requiresOwnerReview).toBe(true);
+    expect(getCheckoutGateDiagnostics().failingCategories).toContain("legal_versions");
+  });
+
+  it("compares owner checkout email with trimming and casing normalization", async () => {
+    process.env.BUSINESS_NEXT_TEST_EMAIL = "  Owner@Example.com ";
+
+    const { isCheckoutOwnerEmail, isControlledBillingTestUser } = await import("./billing");
+    expect(isCheckoutOwnerEmail("owner@example.com")).toBe(true);
+    expect(isControlledBillingTestUser(" OWNER@example.com ")).toBe(true);
+    expect(isCheckoutOwnerEmail("someone@example.com")).toBe(false);
   });
 });

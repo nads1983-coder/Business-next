@@ -45,7 +45,7 @@ export const legalPages = {
   },
   refunds: {
     title: "Refund Policy",
-    version: "stage-3-test-draft-2026-07-15",
+    version: billingConfig.legal.subscriptionTermsVersion,
     effectiveDate: billingConfig.legal.effectiveDate,
     sections: [
       ["Before live paid launch", "Live payments are not enabled. Stripe test-mode payments do not create real customer charges or real refunds."],
@@ -57,7 +57,7 @@ export const legalPages = {
   },
   cookies: {
     title: "Cookie Information",
-    version: "stage-3-test-draft-2026-07-15",
+    version: billingConfig.legal.privacyVersion,
     effectiveDate: billingConfig.legal.effectiveDate,
     sections: [
       ["Essential cookies", "Business Sorted uses essential cookies for authentication, security and basic app operation."],
@@ -67,7 +67,7 @@ export const legalPages = {
   },
   support: {
     title: "Contact and Support",
-    version: "stage-3-test-draft-2026-07-15",
+    version: billingConfig.legal.termsVersion,
     effectiveDate: billingConfig.legal.effectiveDate,
     sections: [
       ["Contact", `Email ${productConfig.supportEmail} for account, billing or product support.`],

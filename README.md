@@ -92,6 +92,25 @@ The controlled MVP offer is Business Sorted at £9 per month in GBP, monthly rec
 
 Do not mix test and live Stripe keys or price IDs. Do not expose secret keys in client-side code.
 
+### Controlled Live Stripe Launch
+
+The current reviewed legal version is centralised in `src/config/legal.ts`:
+
+- `stage-3-live-owner-draft-2026-07-15`
+
+The Terms, Privacy Notice, Subscription Terms, Checkout legal gate and recorded legal acceptances must all use that same version. Checkout remains closed unless every non-secret gate matches exactly:
+
+- `BUSINESS_NEXT_BILLING_ENABLED` is lowercase `true`
+- `BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED` is lowercase `true`
+- `BUSINESS_NEXT_TERMS_VERSION_ACCEPTED` matches the current legal version
+- `BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED` matches the current legal version
+- `BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED` matches the current legal version
+- `BUSINESS_NEXT_STRIPE_MODE` is `live`
+- `BUSINESS_NEXT_APPROVED_APP_URL` is `https://businesssorted.uk`
+- `STRIPE_LIVE_PRICE_ID_MONTHLY` is present
+
+Live Stripe secrets, product IDs, price IDs and webhook secrets must be scoped to Vercel Production only. Preview must not have live Stripe variables capable of creating live charges. During the controlled launch, Checkout is additionally restricted to the email in `BUSINESS_NEXT_TEST_EMAIL`.
+
 Before production deployment:
 
 ```bash

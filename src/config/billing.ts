@@ -209,7 +209,10 @@ export function isCheckoutAvailable() {
 }
 
 export function isControlledBillingTestUser(email?: string | null) {
-  return Boolean(billingConfig.plan.controlledTestEmail && email?.trim().toLowerCase() === billingConfig.plan.controlledTestEmail);
+  return Boolean(
+    billingConfig.plan.controlledTestEmail &&
+      email?.trim().toLowerCase() === billingConfig.plan.controlledTestEmail
+  );
 }
 
 export const isCheckoutOwnerEmail = isControlledBillingTestUser;

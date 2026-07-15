@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import { AlertCircle, CheckCircle2, ExternalLink } from "lucide-react";
-import { billingConfig, isControlledBillingTestUser } from "@/config/billing";
+import { billingConfig, getCheckoutGateDiagnostics, isControlledBillingTestUser } from "@/config/billing";
 import { getProductAccess } from "@/lib/billing";
 import { getPrisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/session";
@@ -13,6 +13,20 @@ import { openBillingPortalAction, startCheckoutAction } from "./actions";
 function dateText(date?: Date | null) {
   return date ? format(date, "d MMMM yyyy") : "Not set";
 }
+
+const diagnosticLabels = {
+  billing_enabled: "Billing enabled",
+  owner_email: "Approved owner email",
+  legal_owner: "Owner legal approval",
+  legal_versions: "Accepted legal versions",
+  stripe_mode: "Live Stripe mode",
+  stripe_secret: "Stripe secret key",
+  stripe_webhook: "Stripe webhook secret",
+  stripe_product: "Stripe product",
+  stripe_price: "Live monthly price",
+  approved_app_url: "Approved app URL",
+  mode_isolation: "Stripe mode isolation"
+} as const;
 
 export default async function BillingPage() {
   const user = await requireUser();
@@ -27,6 +41,7 @@ export default async function BillingPage() {
 
   const hasStripeCustomer = Boolean(subscription?.stripeCustomerId);
   const canStartControlledCheckout = billingConfig.plan.checkoutEnabled && isControlledBillingTestUser(user.email);
+  const checkoutGate = getCheckoutGateDiagnostics();
 
   return (
     <div className="space-y-6">
@@ -97,6 +112,16 @@ export default async function BillingPage() {
             </CardDescription>
           </CardHeader>
           <CardContent>
+            {checkoutGate.failingCategories.length ? (
+              <div className="mb-4 rounded-md border bg-secondary/50 p-4 text-sm text-muted-foreground">
+                <p className="font-medium text-foreground">Controlled launch checks still needed</p>
+                <ul className="mt-2 list-disc space-y-1 pl-5">
+                  {checkoutGate.failingCategories.map((category) => (
+                    <li key={category}>{diagnosticLabels[category]}</li>
+                  ))}
+                </ul>
+              </div>
+            ) : null}
             <Button asChild variant="secondary">
               <Link href="/pricing">View pricing status</Link>
             </Button>

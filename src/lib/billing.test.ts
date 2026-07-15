@@ -16,6 +16,7 @@ describe("billing entitlement access", () => {
     findUnique.mockReset();
     process.env.BUSINESS_NEXT_BILLING_ENABLED = "false";
     delete process.env.STRIPE_PRICE_ID_MONTHLY;
+    delete process.env.STRIPE_LIVE_PRICE_ID_MONTHLY;
   });
 
   it("allows explicit founder access without pretending it is paid", async () => {
