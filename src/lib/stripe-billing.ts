@@ -254,10 +254,19 @@ async function syncSubscriptionFromStripe({
     typeof stripeSubscription.customer === "string"
       ? stripeSubscription.customer
       : stripeSubscription.customer.id;
+  const prisma = getPrisma();
+  const existingLocalSubscription = await prisma.subscription.findFirst({
+    where: {
+      OR: [{ stripeSubscriptionId: stripeSubscription.id }, { stripeCustomerId: customerId }]
+    },
+    select: { id: true }
+  });
+  const localSubscriptionId = existingLocalSubscription?.id ?? `subscription-${userId}-${stripeSubscription.id}`;
 
-  await getPrisma().subscription.upsert({
-    where: { stripeSubscriptionId: stripeSubscription.id },
+  await prisma.subscription.upsert({
+    where: { id: localSubscriptionId },
     create: {
+      id: localSubscriptionId,
       userId,
       stripeCustomerId: customerId,
       stripeSubscriptionId: stripeSubscription.id,
@@ -277,6 +286,7 @@ async function syncSubscriptionFromStripe({
     },
     update: {
       stripeCustomerId: customerId,
+      stripeSubscriptionId: stripeSubscription.id,
       stripePriceId: price?.id,
       stripeProductId: productId,
       status: stripeSubscription.status,
@@ -293,7 +303,7 @@ async function syncSubscriptionFromStripe({
   });
 
   if (billingStatus === "ACTIVE" || billingStatus === "TRIALING") {
-    await getPrisma().userEntitlement.upsert({
+    await prisma.userEntitlement.upsert({
       where: {
         userId_kind_source: {
           userId,
@@ -317,7 +327,7 @@ async function syncSubscriptionFromStripe({
   }
 
   if (billingStatus === "CANCELED" || billingStatus === "UNPAID" || billingStatus === "INCOMPLETE_EXPIRED") {
-    await getPrisma().userEntitlement.updateMany({
+    await prisma.userEntitlement.updateMany({
       where: { userId, source: stripeSubscription.id, kind: { in: ["PAID", "TRIAL"] } },
       data: { status: "INACTIVE", endsAt: new Date() }
     });

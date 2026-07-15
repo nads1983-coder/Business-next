@@ -343,6 +343,29 @@ describe("Stripe billing helpers", () => {
     );
   });
 
+  it("updates an existing Stripe customer row when a subscription webhook arrives", async () => {
+    process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
+    process.env.STRIPE_TEST_PRICE_ID_MONTHLY = "price_test_monthly";
+    mocks.prisma.subscription.findFirst.mockResolvedValueOnce({ id: "subscription-user_1" });
+
+    const { processStripeEvent } = await import("./stripe-billing");
+
+    await expect(processStripeEvent(subscriptionEvent())).resolves.toEqual({
+      duplicate: false,
+      summary: "Subscription reconciled as ACTIVE."
+    });
+    const upsertCall = mocks.prisma.subscription.upsert.mock.calls[0]?.[0];
+    expect(upsertCall.where).toEqual({ id: "subscription-user_1" });
+    expect(upsertCall.update).toEqual(
+      expect.objectContaining({
+        billingStatus: "ACTIVE",
+        stripeCustomerId: "cus_test",
+        stripeSubscriptionId: "sub_test",
+        stripePriceId: "price_test_monthly"
+      })
+    );
+  });
+
   it("activates access from an approved live subscription price in live mode", async () => {
     setLiveBillingEnv();
 
