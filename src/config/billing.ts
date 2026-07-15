@@ -38,12 +38,14 @@ export type CheckoutGateCategory =
   | "stripe_product"
   | "stripe_price"
   | "approved_app_url"
+  | "vercel_environment"
   | "mode_isolation";
 
 const approvedProductionAppUrl = "https://businesssorted.uk";
 const fallbackAppUrl = "https://files-mentioned-by-the-user-build-umber.vercel.app";
 const requestedMode = process.env.BUSINESS_NEXT_STRIPE_MODE === "live" ? "live" : "test";
 const checkoutExplicitlyEnabled = process.env.BUSINESS_NEXT_BILLING_ENABLED === "true";
+const vercelEnvironment = process.env.VERCEL_ENV;
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
 const controlledTestEmail = process.env.BUSINESS_NEXT_TEST_EMAIL?.trim().toLowerCase() || undefined;
@@ -92,6 +94,7 @@ const liveBillingConfigured = Boolean(
     stripeSecretKey?.startsWith("sk_live_") &&
     stripeProductId &&
     configuredAppUrl === approvedProductionAppUrl &&
+    vercelEnvironment === "production" &&
     legalOwnerAccepted &&
     !process.env.STRIPE_TEST_PRICE_ID_MONTHLY &&
     !process.env.STRIPE_TEST_PRICE_ID_ANNUAL &&
@@ -114,6 +117,7 @@ export function getCheckoutGateDiagnostics() {
     if (!legalVersionsAccepted) failingCategories.push("legal_versions");
     if (!stripeProductId) failingCategories.push("stripe_product");
     if (configuredAppUrl !== approvedProductionAppUrl) failingCategories.push("approved_app_url");
+    if (vercelEnvironment !== "production") failingCategories.push("vercel_environment");
     if (
       process.env.STRIPE_TEST_PRICE_ID_MONTHLY ||
       process.env.STRIPE_TEST_PRICE_ID_ANNUAL ||

@@ -25,6 +25,7 @@ const diagnosticLabels = {
   stripe_product: "Stripe product",
   stripe_price: "Live monthly price",
   approved_app_url: "Approved app URL",
+  vercel_environment: "Production Vercel environment",
   mode_isolation: "Stripe mode isolation"
 } as const;
 

@@ -65,6 +65,7 @@ function resetBillingEnv() {
   delete process.env.STRIPE_TEST_PRICE_ID_ANNUAL;
   delete process.env.STRIPE_LIVE_PRICE_ID_MONTHLY;
   delete process.env.STRIPE_LIVE_PRODUCT_ID;
+  delete process.env.VERCEL_ENV;
   delete process.env.BUSINESS_NEXT_APPROVED_APP_URL;
   delete process.env.BUSINESS_NEXT_TEST_EMAIL;
   delete process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED;
@@ -81,6 +82,7 @@ function setLiveBillingEnv() {
   process.env.STRIPE_LIVE_PRODUCT_ID = "prod_live";
   process.env.STRIPE_LIVE_PRICE_ID_MONTHLY = "price_live_monthly";
   process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://businesssorted.uk";
+  process.env.VERCEL_ENV = "production";
   process.env.BUSINESS_NEXT_TEST_EMAIL = "owner@example.com";
   process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED = "true";
   process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";

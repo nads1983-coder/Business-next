@@ -24,6 +24,16 @@ export async function startCheckoutAction(formData: FormData) {
     redirect("/pricing?billing=controlled-test");
   }
 
+  const prisma = getPrisma();
+  const billingUser = await prisma.user.findUnique({
+    where: { id: user.id },
+    select: { email: true, emailVerified: true }
+  });
+
+  if (!billingUser?.emailVerified || !isControlledBillingTestUser(billingUser.email)) {
+    redirect("/pricing?billing=controlled-test");
+  }
+
   const parsed = checkoutSchema.parse({
     interval: formData.get("interval") ?? "monthly",
     acceptTerms: formData.get("acceptTerms"),
@@ -31,7 +41,6 @@ export async function startCheckoutAction(formData: FormData) {
     acceptSubscriptionTerms: formData.get("acceptSubscriptionTerms")
   });
 
-  const prisma = getPrisma();
   await prisma.$transaction([
     prisma.legalAcceptance.upsert({
       where: {
@@ -84,7 +93,7 @@ export async function startCheckoutAction(formData: FormData) {
   ]);
 
   const url = await createCheckoutSession({
-    user,
+    user: { ...user, email: billingUser.email },
     interval: parsed.interval
   });
 

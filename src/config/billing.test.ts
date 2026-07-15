@@ -10,6 +10,7 @@ function resetBillingEnv() {
   delete process.env.STRIPE_TEST_PRICE_ID_ANNUAL;
   delete process.env.STRIPE_LIVE_PRICE_ID_MONTHLY;
   delete process.env.STRIPE_LIVE_PRODUCT_ID;
+  delete process.env.VERCEL_ENV;
   delete process.env.BUSINESS_NEXT_APPROVED_APP_URL;
   delete process.env.NEXT_PUBLIC_APP_URL;
   delete process.env.NEXTAUTH_URL;
@@ -28,6 +29,7 @@ function setLiveReadyEnv() {
   process.env.STRIPE_LIVE_PRODUCT_ID = "prod_live";
   process.env.STRIPE_LIVE_PRICE_ID_MONTHLY = "price_live_monthly";
   process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://businesssorted.uk";
+  process.env.VERCEL_ENV = "production";
   process.env.BUSINESS_NEXT_TEST_EMAIL = "owner@example.com";
   process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED = "true";
   process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
@@ -137,6 +139,16 @@ describe("billing configuration", () => {
     expect(getCheckoutGateDiagnostics().failingCategories).toEqual(
       expect.arrayContaining(["approved_app_url", "mode_isolation"])
     );
+  });
+
+  it("does not become live-ready outside Vercel Production", async () => {
+    setLiveReadyEnv();
+    process.env.VERCEL_ENV = "preview";
+
+    const { getCheckoutGateDiagnostics, isStripeLiveModeReady } = await import("./billing");
+
+    expect(isStripeLiveModeReady()).toBe(false);
+    expect(getCheckoutGateDiagnostics().failingCategories).toContain("vercel_environment");
   });
 
   it("requires lowercase true for live billing flags", async () => {
