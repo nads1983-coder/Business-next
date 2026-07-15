@@ -1,11 +1,17 @@
 import { productConfig } from "@/config/product";
+import { billingConfig } from "@/config/billing";
+
+const configuredAppUrl =
+  process.env.BUSINESS_NEXT_APPROVED_APP_URL ??
+  process.env.NEXT_PUBLIC_APP_URL ??
+  process.env.NEXTAUTH_URL;
 
 export const emailConfig = {
   from: process.env.EMAIL_FROM ?? "",
   appUrl:
-    process.env.NEXT_PUBLIC_APP_URL ??
-    process.env.NEXTAUTH_URL ??
-    "https://files-mentioned-by-the-user-build-umber.vercel.app",
+    billingConfig.plan.stripeMode === "live" && configuredAppUrl === billingConfig.approvedProductionAppUrl
+      ? billingConfig.approvedProductionAppUrl
+      : configuredAppUrl ?? billingConfig.fallbackAppUrl,
   verificationTokenMinutes: 60,
   resetTokenMinutes: 30,
   rateLimitWindowMinutes: 15,

@@ -2,11 +2,22 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 
 function resetBillingEnv() {
   process.env.BUSINESS_NEXT_BILLING_ENABLED = "false";
+  delete process.env.BUSINESS_NEXT_STRIPE_MODE;
   delete process.env.STRIPE_SECRET_KEY;
   delete process.env.STRIPE_WEBHOOK_SECRET;
   delete process.env.STRIPE_TEST_PRICE_ID_MONTHLY;
+  delete process.env.STRIPE_TEST_PRODUCT_ID;
   delete process.env.STRIPE_TEST_PRICE_ID_ANNUAL;
+  delete process.env.STRIPE_LIVE_PRICE_ID_MONTHLY;
+  delete process.env.STRIPE_LIVE_PRODUCT_ID;
+  delete process.env.BUSINESS_NEXT_APPROVED_APP_URL;
+  delete process.env.NEXT_PUBLIC_APP_URL;
+  delete process.env.NEXTAUTH_URL;
   delete process.env.BUSINESS_NEXT_TEST_EMAIL;
+  delete process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED;
+  delete process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED;
+  delete process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED;
+  delete process.env.BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED;
 }
 
 describe("billing configuration", () => {
@@ -29,6 +40,7 @@ describe("billing configuration", () => {
 
   it("requires test-mode Stripe config before billing is ready", async () => {
     process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
+    process.env.BUSINESS_NEXT_STRIPE_MODE = "test";
     process.env.STRIPE_SECRET_KEY = "sk_test_ready";
     process.env.STRIPE_WEBHOOK_SECRET = "whsec_ready";
     process.env.STRIPE_TEST_PRICE_ID_MONTHLY = "price_test_monthly";
@@ -55,8 +67,9 @@ describe("billing configuration", () => {
     expect(isApprovedStripePriceId("price_test_annual")).toBe(false);
   });
 
-  it("does not become ready with a live Stripe key", async () => {
+  it("does not become test-ready with a live Stripe key", async () => {
     process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
+    process.env.BUSINESS_NEXT_STRIPE_MODE = "test";
     process.env.STRIPE_SECRET_KEY = "sk_live_blocked";
     process.env.STRIPE_WEBHOOK_SECRET = "whsec_ready";
     process.env.STRIPE_TEST_PRICE_ID_MONTHLY = "price_test_monthly";
@@ -64,5 +77,69 @@ describe("billing configuration", () => {
     const { isStripeTestModeReady } = await import("./billing");
 
     expect(isStripeTestModeReady()).toBe(false);
+  });
+
+  it("requires explicit live mode, live key, live price, approved URL and owner legal acceptance for live readiness", async () => {
+    process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
+    process.env.BUSINESS_NEXT_STRIPE_MODE = "live";
+    process.env.STRIPE_SECRET_KEY = "sk_live_ready";
+    process.env.STRIPE_WEBHOOK_SECRET = "whsec_ready";
+    process.env.STRIPE_LIVE_PRODUCT_ID = "prod_live";
+    process.env.STRIPE_LIVE_PRICE_ID_MONTHLY = "price_live_monthly";
+    process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://businessnext.uk";
+    process.env.BUSINESS_NEXT_TEST_EMAIL = "owner@example.com";
+    process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED = "true";
+    process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
+    process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
+    process.env.BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
+
+    const { billingConfig, isStripeLiveModeReady, getApprovedPriceId, isApprovedStripePriceId } = await import("./billing");
+
+    expect(billingConfig.plan.stripeMode).toBe("live");
+    expect(billingConfig.plan.stripeProductId).toBe("prod_live");
+    expect(isStripeLiveModeReady()).toBe(true);
+    expect(getApprovedPriceId("monthly")).toBe("price_live_monthly");
+    expect(getApprovedPriceId("annual")).toBeUndefined();
+    expect(isApprovedStripePriceId("price_live_monthly")).toBe(true);
+  });
+
+  it("does not become live-ready with test prices or unapproved URLs", async () => {
+    process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
+    process.env.BUSINESS_NEXT_STRIPE_MODE = "live";
+    process.env.STRIPE_SECRET_KEY = "sk_live_ready";
+    process.env.STRIPE_WEBHOOK_SECRET = "whsec_ready";
+    process.env.STRIPE_LIVE_PRODUCT_ID = "prod_live";
+    process.env.STRIPE_LIVE_PRICE_ID_MONTHLY = "price_live_monthly";
+    process.env.STRIPE_TEST_PRICE_ID_MONTHLY = "price_test_monthly";
+    process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://files-mentioned-by-the-user-build-umber.vercel.app";
+    process.env.BUSINESS_NEXT_TEST_EMAIL = "owner@example.com";
+    process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED = "true";
+    process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
+    process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
+    process.env.BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
+
+    const { isStripeLiveModeReady } = await import("./billing");
+
+    expect(isStripeLiveModeReady()).toBe(false);
+  });
+
+  it("requires current legal versions for live readiness", async () => {
+    process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
+    process.env.BUSINESS_NEXT_STRIPE_MODE = "live";
+    process.env.STRIPE_SECRET_KEY = "sk_live_ready";
+    process.env.STRIPE_WEBHOOK_SECRET = "whsec_ready";
+    process.env.STRIPE_LIVE_PRODUCT_ID = "prod_live";
+    process.env.STRIPE_LIVE_PRICE_ID_MONTHLY = "price_live_monthly";
+    process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://businessnext.uk";
+    process.env.BUSINESS_NEXT_TEST_EMAIL = "owner@example.com";
+    process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED = "true";
+    process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED = "old";
+    process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
+    process.env.BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
+
+    const { isStripeLiveModeReady, billingConfig } = await import("./billing");
+
+    expect(isStripeLiveModeReady()).toBe(false);
+    expect(billingConfig.legal.requiresOwnerReview).toBe(true);
   });
 });

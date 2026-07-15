@@ -88,11 +88,11 @@ export default async function BillingPage() {
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-primary" aria-hidden="true" />
-              Paid Checkout is in controlled test mode
+              Paid Checkout is in controlled launch mode
             </CardTitle>
             <CardDescription>
               {billingConfig.plan.checkoutEnabled
-                ? "Checkout is configured but limited to the approved test account until public launch is approved."
+                ? "Checkout is configured but limited to the approved owner account until public launch is approved."
                 : billingConfig.plan.comingSoonWording}
             </CardDescription>
           </CardHeader>
@@ -108,7 +108,7 @@ export default async function BillingPage() {
             <CardTitle>Subscribe to {billingConfig.plan.name}</CardTitle>
             <CardDescription>
               {billingConfig.plan.displayPrice}. Monthly recurring billing, no annual option and no free trial. You will
-              be sent to Stripe Checkout. Access is granted only after Business Next receives a verified test-mode webhook.
+              be sent to Stripe Checkout. Access is granted only after Business Next receives a verified Stripe webhook.
             </CardDescription>
           </CardHeader>
           <CardContent>

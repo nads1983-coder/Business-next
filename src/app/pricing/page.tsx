@@ -71,10 +71,10 @@ export default async function PricingPage() {
             <p className="text-sm text-muted-foreground">{billingConfig.plan.cancellationWording}</p>
             {billingConfig.plan.checkoutEnabled ? (
               <div className="space-y-3 rounded-md border bg-secondary/50 p-4 text-sm text-muted-foreground">
-                <p>Stripe test-mode Checkout is configured but limited to the approved test account.</p>
+                <p>Stripe Checkout is configured but limited to the approved owner account for the controlled launch.</p>
                 <Button asChild className="w-full">
                   <Link href="/app/billing">
-                    Test account billing <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                    Owner billing <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </Link>
                 </Button>
               </div>

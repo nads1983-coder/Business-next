@@ -56,24 +56,50 @@ vi.mock("@/lib/stripe", () => ({
 
 function resetBillingEnv() {
   process.env.BUSINESS_NEXT_BILLING_ENABLED = "false";
+  delete process.env.BUSINESS_NEXT_STRIPE_MODE;
   process.env.STRIPE_SECRET_KEY = "sk_test_123";
   process.env.STRIPE_WEBHOOK_SECRET = "whsec_test";
   delete process.env.STRIPE_PRICE_ID_MONTHLY;
   delete process.env.STRIPE_TEST_PRICE_ID_MONTHLY;
+  delete process.env.STRIPE_TEST_PRODUCT_ID;
   delete process.env.STRIPE_TEST_PRICE_ID_ANNUAL;
+  delete process.env.STRIPE_LIVE_PRICE_ID_MONTHLY;
+  delete process.env.STRIPE_LIVE_PRODUCT_ID;
+  delete process.env.BUSINESS_NEXT_APPROVED_APP_URL;
   delete process.env.BUSINESS_NEXT_TEST_EMAIL;
+  delete process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED;
+  delete process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED;
+  delete process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED;
+  delete process.env.BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED;
+}
+
+function setLiveBillingEnv() {
+  process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
+  process.env.BUSINESS_NEXT_STRIPE_MODE = "live";
+  process.env.STRIPE_SECRET_KEY = "sk_live_123";
+  process.env.STRIPE_WEBHOOK_SECRET = "whsec_live";
+  process.env.STRIPE_LIVE_PRODUCT_ID = "prod_live";
+  process.env.STRIPE_LIVE_PRICE_ID_MONTHLY = "price_live_monthly";
+  process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://businessnext.uk";
+  process.env.BUSINESS_NEXT_TEST_EMAIL = "owner@example.com";
+  process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED = "true";
+  process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
+  process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
+  process.env.BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
 }
 
 function subscriptionEvent({
   id = "evt_test",
   status = "active",
   priceId = "price_test_monthly",
+  productId = "prod_test",
   livemode = false,
   cancelAtPeriodEnd = false
 }: {
   id?: string;
   status?: Stripe.Subscription.Status;
   priceId?: string;
+  productId?: string;
   livemode?: boolean;
   cancelAtPeriodEnd?: boolean;
 } = {}) {
@@ -99,7 +125,7 @@ function subscriptionEvent({
               current_period_end: 1_720_500_000,
               price: {
                 id: priceId,
-                product: "prod_test",
+                product: productId,
                 recurring: { interval: "month" }
               }
             }
@@ -197,8 +223,26 @@ describe("Stripe billing helpers", () => {
         user: { id: "user_1", email: "ordinary@example.com" },
         interval: "monthly"
       })
-    ).rejects.toThrow("Checkout is limited to the approved test account");
+    ).rejects.toThrow("Checkout is limited to the approved owner account");
     expect(mocks.stripeCheckoutCreate).not.toHaveBeenCalled();
+  });
+
+  it("starts live Checkout only for the configured owner email and live monthly price", async () => {
+    setLiveBillingEnv();
+
+    const { createCheckoutSession } = await import("./stripe-billing");
+
+    await expect(
+      createCheckoutSession({
+        user: { id: "user_1", email: "owner@example.com" },
+        interval: "monthly"
+      })
+    ).resolves.toBe("https://checkout.stripe.test/session");
+    expect(mocks.stripeCheckoutCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        line_items: [{ price: "price_live_monthly", quantity: 1 }]
+      })
+    );
   });
 
   it("rejects annual Checkout when no annual test price is approved", async () => {
@@ -229,21 +273,32 @@ describe("Stripe billing helpers", () => {
     });
   });
 
-  it("rejects live-mode webhook events before changing entitlements", async () => {
+  it("rejects live-mode webhook events when configured for test mode", async () => {
     const { processStripeEvent } = await import("./stripe-billing");
 
     await expect(processStripeEvent(subscriptionEvent({ id: "evt_live", livemode: true }))).rejects.toThrow(
-      "Stripe live mode is disabled"
+      "Stripe webhook livemode did not match"
     );
     expect(mocks.prisma.userEntitlement.upsert).not.toHaveBeenCalled();
     expect(mocks.prisma.stripeWebhookEvent.create).toHaveBeenCalledWith(
       expect.objectContaining({
         data: expect.objectContaining({
           processingStatus: "failed",
-          summary: "Live-mode Stripe webhook rejected."
+          summary: "Stripe webhook mode rejected."
         })
       })
     );
+  });
+
+  it("rejects test-mode webhook events when configured for live mode", async () => {
+    setLiveBillingEnv();
+
+    const { processStripeEvent } = await import("./stripe-billing");
+
+    await expect(
+      processStripeEvent(subscriptionEvent({ id: "evt_test_in_live", priceId: "price_live_monthly", livemode: false }))
+    ).rejects.toThrow("Stripe webhook livemode did not match");
+    expect(mocks.prisma.userEntitlement.upsert).not.toHaveBeenCalled();
   });
 
   it("treats repeated webhook ids as idempotent duplicates", async () => {
@@ -286,6 +341,42 @@ describe("Stripe billing helpers", () => {
     );
   });
 
+  it("activates access from an approved live subscription price in live mode", async () => {
+    setLiveBillingEnv();
+
+    const { processStripeEvent } = await import("./stripe-billing");
+
+    await expect(
+      processStripeEvent(
+        subscriptionEvent({
+          id: "evt_live_active",
+          priceId: "price_live_monthly",
+          productId: "prod_live",
+          livemode: true
+        })
+      )
+    ).resolves.toEqual({
+      duplicate: false,
+      summary: "Subscription reconciled as ACTIVE."
+    });
+    expect(mocks.prisma.subscription.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        create: expect.objectContaining({
+          billingStatus: "ACTIVE",
+          stripePriceId: "price_live_monthly"
+        })
+      })
+    );
+    expect(mocks.prisma.userEntitlement.upsert).toHaveBeenCalledWith(
+      expect.objectContaining({
+        create: expect.objectContaining({
+          kind: "PAID",
+          status: "ACTIVE"
+        })
+      })
+    );
+  });
+
   it("rejects subscription activation from an unapproved price ID", async () => {
     process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
     process.env.STRIPE_TEST_PRICE_ID_MONTHLY = "price_test_monthly";
@@ -295,6 +386,24 @@ describe("Stripe billing helpers", () => {
     await expect(processStripeEvent(subscriptionEvent({ priceId: "price_unapproved" }))).rejects.toThrow(
       "Stripe subscription price is not approved"
     );
+    expect(mocks.prisma.userEntitlement.upsert).not.toHaveBeenCalled();
+  });
+
+  it("rejects subscription activation from an unapproved product ID in live mode", async () => {
+    setLiveBillingEnv();
+
+    const { processStripeEvent } = await import("./stripe-billing");
+
+    await expect(
+      processStripeEvent(
+        subscriptionEvent({
+          id: "evt_wrong_product",
+          priceId: "price_live_monthly",
+          productId: "prod_wrong",
+          livemode: true
+        })
+      )
+    ).rejects.toThrow("Stripe subscription product is not approved");
     expect(mocks.prisma.userEntitlement.upsert).not.toHaveBeenCalled();
   });
 

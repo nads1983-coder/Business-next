@@ -6,8 +6,10 @@ import {
   billingConfig,
   getApprovedPriceId,
   isControlledBillingTestUser,
+  isApprovedStripeProductId,
   isApprovedStripePriceId,
   isCheckoutAvailable,
+  isStripeEventModeAllowed,
   type BillingInterval
 } from "@/config/billing";
 import { analyticsEvents, recordAnalyticsEvent } from "@/lib/analytics";
@@ -88,7 +90,7 @@ export async function createCheckoutSession({
     throw new Error("Checkout is not enabled because Business Next pricing has not been approved.");
   }
   if (!isControlledBillingTestUser(user.email)) {
-    throw new Error("Checkout is limited to the approved test account until public launch is approved.");
+    throw new Error("Checkout is limited to the approved owner account until public launch is approved.");
   }
 
   const priceId = getApprovedPriceId(interval);
@@ -238,7 +240,11 @@ async function syncSubscriptionFromStripe({
   const item = stripeSubscription.items.data[0];
   const price = item?.price;
   if (!isApprovedStripePriceId(price?.id)) {
-    throw new Error("Stripe subscription price is not approved for this test-mode launch phase.");
+    throw new Error("Stripe subscription price is not approved for this billing mode.");
+  }
+  const productId = typeof price?.product === "string" ? price.product : price?.product?.id;
+  if (!isApprovedStripeProductId(productId)) {
+    throw new Error("Stripe subscription product is not approved for this billing mode.");
   }
 
   const currentPeriodEnd = item?.current_period_end;
@@ -256,7 +262,7 @@ async function syncSubscriptionFromStripe({
       stripeCustomerId: customerId,
       stripeSubscriptionId: stripeSubscription.id,
       stripePriceId: price?.id,
-      stripeProductId: typeof price?.product === "string" ? price.product : price?.product?.id,
+      stripeProductId: productId,
       status: stripeSubscription.status,
       billingStatus,
       billingInterval,
@@ -272,7 +278,7 @@ async function syncSubscriptionFromStripe({
     update: {
       stripeCustomerId: customerId,
       stripePriceId: price?.id,
-      stripeProductId: typeof price?.product === "string" ? price.product : price?.product?.id,
+      stripeProductId: productId,
       status: stripeSubscription.status,
       billingStatus,
       billingInterval,
@@ -326,24 +332,24 @@ export async function processStripeEvent(event: Stripe.Event) {
   if (existing) {
     return { duplicate: true, summary: existing.summary };
   }
-  if (event.livemode) {
+  if (!isStripeEventModeAllowed(event.livemode)) {
     await prisma.stripeWebhookEvent.create({
       data: {
         id: event.id,
         type: event.type,
         livemode: event.livemode,
         processingStatus: "failed",
-        summary: "Live-mode Stripe webhook rejected.",
-        errorMessage: "Stripe live mode is disabled for the controlled test-mode launch phase.",
+        summary: "Stripe webhook mode rejected.",
+        errorMessage: "Stripe webhook livemode did not match the configured billing mode.",
         payload: event as unknown as Prisma.InputJsonValue
       }
     });
     await recordBillingEvent({
       type: "WEBHOOK_FAILED",
       stripeEventId: event.id,
-      summary: "Live-mode Stripe webhook rejected."
+      summary: "Stripe webhook mode rejected."
     });
-    throw new Error("Stripe live mode is disabled for the controlled test-mode launch phase.");
+    throw new Error("Stripe webhook livemode did not match the configured billing mode.");
   }
 
   let userId: string | null = null;

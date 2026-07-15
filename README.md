@@ -60,17 +60,37 @@ Deploy on Vercel with managed PostgreSQL and these required environment variable
 - `RESEND_API_KEY`
 - `EMAIL_FROM`
 
-Stage 3 billing is a controlled Stripe test-mode foundation. Live payments are intentionally disabled. Checkout is available only when all of these server-side variables are present:
+Stage 3 billing supports a controlled Stripe launch gate. Checkout remains owner-restricted through `BUSINESS_NEXT_TEST_EMAIL` until public activation is explicitly approved.
+
+For controlled test-mode billing, set these server-side variables:
 
 - `BUSINESS_NEXT_BILLING_ENABLED=true`
+- `BUSINESS_NEXT_STRIPE_MODE=test`
 - `STRIPE_SECRET_KEY` with an `sk_test_` value
 - `STRIPE_WEBHOOK_SECRET`
 - `STRIPE_TEST_PRICE_ID_MONTHLY`
 - `BUSINESS_NEXT_TEST_EMAIL` set to the single approved test purchaser email
 
-The controlled MVP offer is Business Next at £9 per month in GBP, monthly recurring billing only, with no annual plan and no free trial. Do not set `STRIPE_TEST_PRICE_ID_ANNUAL` for this phase.
+For controlled live billing, set these Production-only variables through Vercel's secure environment controls:
 
-Do not use `sk_live_` keys or live Stripe price IDs during the test-mode launch phase. Do not expose secret keys in client-side code.
+- `BUSINESS_NEXT_BILLING_ENABLED=true`
+- `BUSINESS_NEXT_STRIPE_MODE=live`
+- `STRIPE_SECRET_KEY` with an `sk_live_` value
+- `STRIPE_WEBHOOK_SECRET`
+- `STRIPE_LIVE_PRODUCT_ID`
+- `STRIPE_LIVE_PRICE_ID_MONTHLY`
+- `BUSINESS_NEXT_APPROVED_APP_URL=https://businessnext.uk`
+- `NEXT_PUBLIC_APP_URL=https://businessnext.uk`
+- `NEXTAUTH_URL=https://businessnext.uk`
+- `BUSINESS_NEXT_TEST_EMAIL` set to the approved owner purchaser email
+- `BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED=true`
+- `BUSINESS_NEXT_TERMS_VERSION_ACCEPTED`
+- `BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED`
+- `BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED`
+
+The controlled MVP offer is Business Next at £9 per month in GBP, monthly recurring billing only, with no annual plan and no free trial. Do not set `STRIPE_TEST_PRICE_ID_ANNUAL` or create an annual price for this phase.
+
+Do not mix test and live Stripe keys or price IDs. Do not expose secret keys in client-side code.
 
 Before production deployment:
 
