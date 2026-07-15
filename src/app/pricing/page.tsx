@@ -94,7 +94,7 @@ export default async function PricingPage() {
           ["Will it guarantee I avoid penalties?", "No. It helps you organise deadlines and tasks, but you are still responsible for checking your duties and getting professional advice when needed."],
           ["Can I cancel?", "Yes. The proposed monthly plan can be cancelled at any time through the secure billing portal. Cancellation stops future renewals and normally takes effect at the end of the current paid period."],
           ["Can I pay annually?", "No. Annual billing is not offered in the initial controlled test."],
-          ["Is there a free trial?", "No. The initial controlled test uses one monthly Stripe test-mode price with no free trial."]
+          ["Is there a free trial?", "No. The initial controlled launch uses one monthly Stripe price with no free trial."]
         ].map(([question, answer]) => (
           <Card key={question}>
             <CardHeader>

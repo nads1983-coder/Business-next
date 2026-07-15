@@ -107,9 +107,12 @@ The Terms, Privacy Notice, Subscription Terms, Checkout legal gate and recorded 
 - `BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED` matches the current legal version
 - `BUSINESS_NEXT_STRIPE_MODE` is `live`
 - `BUSINESS_NEXT_APPROVED_APP_URL` is `https://businesssorted.uk`
+- the Vercel runtime environment is Production
 - `STRIPE_LIVE_PRICE_ID_MONTHLY` is present
 
-Live Stripe secrets, product IDs, price IDs and webhook secrets must be scoped to Vercel Production only. Preview must not have live Stripe variables capable of creating live charges. During the controlled launch, Checkout is additionally restricted to the email in `BUSINESS_NEXT_TEST_EMAIL`.
+Live Stripe secrets, product IDs, price IDs and webhook secrets must be scoped to Vercel Production only. Preview must not have live Stripe variables capable of creating live charges, and the server-side live Checkout gate also requires `VERCEL_ENV=production`. During the controlled launch, Checkout is additionally restricted to the email in `BUSINESS_NEXT_TEST_EMAIL`.
+
+The safe Checkout gate diagnostic is available at `/api/billing/checkout-gate`. It reports only gate category names and public plan facts. It must never return configured values, connection strings, Stripe IDs, email addresses, API keys or webhook secrets.
 
 Before production deployment:
 
