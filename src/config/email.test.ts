@@ -13,15 +13,15 @@ describe("email and app URL configuration", () => {
     resetUrlEnv();
   });
 
-  it("uses the approved production URL when live mode is configured for businessnext.uk", async () => {
+  it("uses the approved production URL when live mode is configured for businesssorted.uk", async () => {
     process.env.BUSINESS_NEXT_STRIPE_MODE = "live";
-    process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://businessnext.uk";
-    process.env.NEXT_PUBLIC_APP_URL = "https://businessnext.uk";
-    process.env.NEXTAUTH_URL = "https://businessnext.uk";
+    process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://businesssorted.uk";
+    process.env.NEXT_PUBLIC_APP_URL = "https://businesssorted.uk";
+    process.env.NEXTAUTH_URL = "https://businesssorted.uk";
 
     const { emailConfig } = await import("./email");
 
-    expect(emailConfig.appUrl).toBe("https://businessnext.uk");
+    expect(emailConfig.appUrl).toBe("https://businesssorted.uk");
   });
 
   it("falls back to the deployment URL when the live production URL is not approved", async () => {

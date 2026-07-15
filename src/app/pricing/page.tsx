@@ -25,7 +25,7 @@ export default async function PricingPage() {
             Start with calm, plain-English business deadlines.
           </h1>
           <p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">
-            {productConfig.promise} Business Next is built for first-time UK founders who want a clear next step,
+            {productConfig.promise} Business Sorted is built for first-time UK founders who want a clear next step,
             not a pile of jargon.
           </p>
           <div className="mt-8 grid gap-4 md:grid-cols-2">
@@ -89,8 +89,8 @@ export default async function PricingPage() {
 
       <section className="mt-10 grid gap-4 md:grid-cols-2">
         {[
-          ["Is Business Next accounting advice?", productConfig.disclaimer],
-          ["Is Business Next connected to GOV.UK or HMRC?", "No. Business Next links to official sources where useful, but it is an independent product and is not affiliated with government."],
+          ["Is Business Sorted accounting advice?", productConfig.disclaimer],
+          ["Is Business Sorted connected to GOV.UK or HMRC?", "No. Business Sorted links to official sources where useful, but it is an independent product and is not affiliated with government."],
           ["Will it guarantee I avoid penalties?", "No. It helps you organise deadlines and tasks, but you are still responsible for checking your duties and getting professional advice when needed."],
           ["Can I cancel?", "Yes. The proposed monthly plan can be cancelled at any time through the secure billing portal. Cancellation stops future renewals and normally takes effect at the end of the current paid period."],
           ["Can I pay annually?", "No. Annual billing is not offered in the initial controlled test."],

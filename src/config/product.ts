@@ -11,11 +11,11 @@ import {
 } from "lucide-react";
 
 export const productConfig = {
-  name: "Business Next",
+  name: "Business Sorted",
   promise:
     "What needs doing, when it needs doing, and what it means in plain English.",
   disclaimer:
-    "Business Next helps you understand and organise your responsibilities. It does not replace advice from a qualified accountant, tax adviser or legal professional.",
+    "Business Sorted helps you understand and organise your responsibilities. It does not replace advice from a qualified accountant, tax adviser or legal professional.",
   supportEmail: "support@getcontentos.co",
   plans: {
     free: {

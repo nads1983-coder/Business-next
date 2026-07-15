@@ -33,7 +33,7 @@ export default async function BillingPage() {
       <div>
         <h1 className="text-3xl font-semibold tracking-normal">Billing</h1>
         <p className="mt-2 max-w-3xl text-muted-foreground">
-          Manage your Business Next access, subscription and cancellation options.
+          Manage your Business Sorted access, subscription and cancellation options.
         </p>
       </div>
 
@@ -108,7 +108,7 @@ export default async function BillingPage() {
             <CardTitle>Subscribe to {billingConfig.plan.name}</CardTitle>
             <CardDescription>
               {billingConfig.plan.displayPrice}. Monthly recurring billing, no annual option and no free trial. You will
-              be sent to Stripe Checkout. Access is granted only after Business Next receives a verified Stripe webhook.
+              be sent to Stripe Checkout. Access is granted only after Business Sorted receives a verified Stripe webhook.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -120,7 +120,7 @@ export default async function BillingPage() {
               </p>
               <label className="flex items-start gap-2 text-sm">
                 <input className="mt-1" type="checkbox" name="acceptTerms" required />
-                <span>I accept the Business Next Terms of Use.</span>
+                <span>I accept the Business Sorted Terms of Use.</span>
               </label>
               <label className="flex items-start gap-2 text-sm">
                 <input className="mt-1" type="checkbox" name="acceptPrivacy" required />

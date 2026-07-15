@@ -4,7 +4,7 @@ export const onboardingQuestions = [
   {
     id: "businessType",
     label: "What type of business do you have?",
-    help: "This decides which official deadlines Business Next can calculate.",
+    help: "This decides which official deadlines Business Sorted can calculate.",
     type: "choice",
     options: [
       { value: "SOLE_TRADER", label: "Sole trader" },
@@ -56,7 +56,7 @@ export const onboardingQuestions = [
   {
     id: "businessYearEndMonth",
     label: "What month does the business year end?",
-    help: "If you do not know the exact date, the month still helps Business Next avoid guessing.",
+    help: "If you do not know the exact date, the month still helps Business Sorted avoid guessing.",
     type: "month"
   },
   {
@@ -140,7 +140,7 @@ export const onboardingQuestions = [
   {
     id: "canUpdateLater",
     label: "You can update these details later",
-    help: "Changing important dates may change your deadline list. Business Next will show the effect before saving in Settings.",
+    help: "Changing important dates may change your deadline list. Business Sorted will show the effect before saving in Settings.",
     type: "choice",
     options: [{ value: "YES", label: "I understand" }]
   }

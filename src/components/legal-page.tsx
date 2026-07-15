@@ -17,7 +17,7 @@ export function LegalPage({
     <PublicPage narrow>
       <div className="space-y-6">
         <div>
-          <p className="text-sm font-medium text-primary">Business Next</p>
+          <p className="text-sm font-medium text-primary">Business Sorted</p>
           <h1 className="mt-1 text-3xl font-semibold tracking-normal">{title}</h1>
           <p className="mt-2 text-sm text-muted-foreground">
             Version {version} · Effective date {effectiveDate}

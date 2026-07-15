@@ -25,6 +25,18 @@ export function PublicPage({
       <div className={narrow ? "mx-auto max-w-3xl px-6 py-10" : "mx-auto max-w-6xl px-6 py-10"}>
         {children}
       </div>
+      <footer className="border-t">
+        <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
+          <p>{productConfig.name}</p>
+          <nav className="flex flex-wrap gap-4" aria-label="Legal">
+            <Link href="/terms" className="hover:text-foreground">Terms</Link>
+            <Link href="/privacy" className="hover:text-foreground">Privacy</Link>
+            <Link href="/subscription-terms" className="hover:text-foreground">Subscription terms</Link>
+            <Link href="/refunds" className="hover:text-foreground">Refunds</Link>
+            <Link href="/cookies" className="hover:text-foreground">Cookies</Link>
+          </nav>
+        </div>
+      </footer>
     </main>
   );
 }

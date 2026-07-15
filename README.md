@@ -1,11 +1,11 @@
-# Business Next
+# Business Sorted
 
-Business Next is a Stage 1 SaaS foundation for first-time UK business owners who need calm, plain-English help with business administration.
+Business Sorted is a Stage 1 SaaS foundation for first-time UK business owners who need calm, plain-English help with business administration.
 
 ## Stage 1 Includes
 
 - Next.js App Router with TypeScript, Tailwind and local shadcn-style UI primitives
-- Central product configuration for the temporary name, plans, navigation and support copy
+- Central product configuration for the product name, plans, navigation and support copy
 - PostgreSQL data model with Prisma for users, businesses, profiles, tasks, deadlines, reminders, sources, rules, subscriptions and audit logs
 - Email/password authentication with protected app routes
 - One-question-at-a-time business onboarding
@@ -47,7 +47,7 @@ Demo users created by the seed script:
 - `sole-trader@example.com`
 - `limited-company@example.com`
 
-Both use the password `BusinessNextDemo1!`.
+Both use the password `BusinessSortedDemo1!`.
 
 ## Production
 
@@ -79,16 +79,16 @@ For controlled live billing, set these Production-only variables through Vercel'
 - `STRIPE_WEBHOOK_SECRET`
 - `STRIPE_LIVE_PRODUCT_ID`
 - `STRIPE_LIVE_PRICE_ID_MONTHLY`
-- `BUSINESS_NEXT_APPROVED_APP_URL=https://businessnext.uk`
-- `NEXT_PUBLIC_APP_URL=https://businessnext.uk`
-- `NEXTAUTH_URL=https://businessnext.uk`
+- `BUSINESS_NEXT_APPROVED_APP_URL=https://businesssorted.uk`
+- `NEXT_PUBLIC_APP_URL=https://businesssorted.uk`
+- `NEXTAUTH_URL=https://businesssorted.uk`
 - `BUSINESS_NEXT_TEST_EMAIL` set to the approved owner purchaser email
 - `BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED=true`
 - `BUSINESS_NEXT_TERMS_VERSION_ACCEPTED`
 - `BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED`
 - `BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED`
 
-The controlled MVP offer is Business Next at £9 per month in GBP, monthly recurring billing only, with no annual plan and no free trial. Do not set `STRIPE_TEST_PRICE_ID_ANNUAL` or create an annual price for this phase.
+The controlled MVP offer is Business Sorted at £9 per month in GBP, monthly recurring billing only, with no annual plan and no free trial. Do not set `STRIPE_TEST_PRICE_ID_ANNUAL` or create an annual price for this phase.
 
 Do not mix test and live Stripe keys or price IDs. Do not expose secret keys in client-side code.
 
@@ -111,4 +111,4 @@ Seeded official sources are from GOV.UK and were checked on 13 July 2026:
 - https://www.gov.uk/file-your-confirmation-statement-with-companies-house
 - https://www.gov.uk/register-for-vat
 
-Business Next stores source URLs and checked dates. Rules are designed to be reviewed and updated without changing UI code.
+Business Sorted stores source URLs and checked dates. Rules are designed to be reviewed and updated without changing UI code.

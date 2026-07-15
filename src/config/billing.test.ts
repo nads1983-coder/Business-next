@@ -29,7 +29,7 @@ describe("billing configuration", () => {
   it("defines the controlled MVP offer as monthly GBP with no annual plan or trial", async () => {
     const { billingConfig, getApprovedPriceId } = await import("./billing");
 
-    expect(billingConfig.plan.name).toBe("Business Next");
+    expect(billingConfig.plan.name).toBe("Business Sorted");
     expect(billingConfig.plan.currency).toBe("gbp");
     expect(billingConfig.plan.displayPrice).toBe("£9 per month");
     expect(billingConfig.plan.monthlyPricePence).toBe(900);
@@ -86,7 +86,7 @@ describe("billing configuration", () => {
     process.env.STRIPE_WEBHOOK_SECRET = "whsec_ready";
     process.env.STRIPE_LIVE_PRODUCT_ID = "prod_live";
     process.env.STRIPE_LIVE_PRICE_ID_MONTHLY = "price_live_monthly";
-    process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://businessnext.uk";
+    process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://businesssorted.uk";
     process.env.BUSINESS_NEXT_TEST_EMAIL = "owner@example.com";
     process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED = "true";
     process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
@@ -130,7 +130,7 @@ describe("billing configuration", () => {
     process.env.STRIPE_WEBHOOK_SECRET = "whsec_ready";
     process.env.STRIPE_LIVE_PRODUCT_ID = "prod_live";
     process.env.STRIPE_LIVE_PRICE_ID_MONTHLY = "price_live_monthly";
-    process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://businessnext.uk";
+    process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://businesssorted.uk";
     process.env.BUSINESS_NEXT_TEST_EMAIL = "owner@example.com";
     process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED = "true";
     process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED = "old";

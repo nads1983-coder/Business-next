@@ -110,7 +110,7 @@ export function BusinessSettingsForm({
         </div>
       </div>
       <p className="text-sm text-muted-foreground">
-        Changing dates can move active deadlines. Business Next keeps completed and not-applicable history.
+        Changing dates can move active deadlines. Business Sorted keeps completed and not-applicable history.
       </p>
       {state?.message ? (
         <p className={state.ok ? "text-sm text-primary" : "text-sm text-destructive"}>{state.message}</p>

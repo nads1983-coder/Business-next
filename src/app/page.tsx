@@ -5,8 +5,28 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
 export default function MarketingPage() {
+  const structuredData = {
+    "@context": "https://schema.org",
+    "@type": "SoftwareApplication",
+    name: productConfig.name,
+    applicationCategory: "BusinessApplication",
+    operatingSystem: "Web",
+    url: "https://businesssorted.uk",
+    description: productConfig.promise,
+    offers: {
+      "@type": "Offer",
+      price: "9",
+      priceCurrency: "GBP",
+      availability: "https://schema.org/PreOrder"
+    }
+  };
+
   return (
     <main className="min-h-screen">
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={{ __html: JSON.stringify(structuredData) }}
+      />
       <section className="mx-auto flex min-h-screen max-w-6xl flex-col justify-center px-6 py-12">
         <div className="max-w-3xl">
           <p className="mb-4 text-sm font-medium text-primary">

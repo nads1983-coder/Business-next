@@ -53,11 +53,11 @@ export default async function SettingsPage() {
           <Card>
             <CardHeader>
               <CardTitle>Trust note</CardTitle>
-              <CardDescription>What Business Next can and cannot do.</CardDescription>
+              <CardDescription>What Business Sorted can and cannot do.</CardDescription>
             </CardHeader>
             <CardContent className="space-y-3 text-sm text-muted-foreground">
               <p>{productConfig.disclaimer}</p>
-              <p>Business Next does not file, submit or pay anything for you.</p>
+              <p>Business Sorted does not file, submit or pay anything for you.</p>
               <p>Check the linked official source or speak to a qualified professional when unsure.</p>
             </CardContent>
           </Card>

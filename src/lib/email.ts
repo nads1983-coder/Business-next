@@ -79,7 +79,7 @@ export async function sendDeadlineReminderEmail({
 
   await sendEmail({
     to: email,
-    subject: `Business Next reminder: ${taskTitle}`,
+    subject: `Business Sorted reminder: ${taskTitle}`,
     html: deadlineReminderEmailHtml({
       taskTitle,
       dueDate,

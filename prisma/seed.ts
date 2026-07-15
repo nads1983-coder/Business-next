@@ -111,7 +111,7 @@ async function main() {
     ]
   });
 
-  const passwordHash = await hash("BusinessNextDemo1!", 12);
+  const passwordHash = await hash("BusinessSortedDemo1!", 12);
 
   for (const demo of [
     {

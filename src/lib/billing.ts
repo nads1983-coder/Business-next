@@ -82,7 +82,7 @@ export async function getProductAccess(userId: string): Promise<ProductAccess> {
   return {
     allowed: false,
     source: "NONE",
-    message: "Choose a plan to continue using Business Next."
+    message: "Choose a plan to continue using Business Sorted."
   };
 }
 

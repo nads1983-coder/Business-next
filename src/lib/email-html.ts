@@ -50,7 +50,7 @@ export function verificationEmailHtml(href: string) {
 export function passwordResetEmailHtml(href: string) {
   return baseEmail({
     title: "Reset your password",
-    intro: "Use this link to choose a new password for your Business Next account.",
+    intro: "Use this link to choose a new password for your Business Sorted account.",
     buttonLabel: "Reset my password",
     href,
     expiresText: "This link works for 30 minutes and can only be used once."
@@ -70,7 +70,7 @@ export function deadlineReminderEmailHtml({
 }) {
   return baseEmail({
     title: taskTitle,
-    intro: `This Business Next reminder is about a deadline due ${dueDate}. Next step: ${nextAction}`,
+    intro: `This Business Sorted reminder is about a deadline due ${dueDate}. Next step: ${nextAction}`,
     buttonLabel: "Open task",
     href,
     expiresText:

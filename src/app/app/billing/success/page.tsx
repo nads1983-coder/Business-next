@@ -18,7 +18,7 @@ export default async function BillingSuccessPage() {
             Checkout received
           </CardTitle>
           <CardDescription>
-            Stripe has redirected you back to Business Next. Product access is updated only after a verified Stripe webhook is processed.
+            Stripe has redirected you back to Business Sorted. Product access is updated only after a verified Stripe webhook is processed.
           </CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">

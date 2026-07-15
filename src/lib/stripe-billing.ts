@@ -87,7 +87,7 @@ export async function createCheckoutSession({
   interval: BillingInterval;
 }) {
   if (!isCheckoutAvailable()) {
-    throw new Error("Checkout is not enabled because Business Next pricing has not been approved.");
+    throw new Error("Checkout is not enabled because Business Sorted pricing has not been approved.");
   }
   if (!isControlledBillingTestUser(user.email)) {
     throw new Error("Checkout is limited to the approved owner account until public launch is approved.");
@@ -386,7 +386,7 @@ export async function processStripeEvent(event: Stripe.Event) {
         subscriptionId: stripeSubscriptionId,
         metadataUserId: subscription.metadata?.businessNextUserId
       });
-      if (!userId) throw new Error("Could not associate Stripe subscription with a Business Next user.");
+      if (!userId) throw new Error("Could not associate Stripe subscription with a Business Sorted user.");
 
       const synced = await syncSubscriptionFromStripe({ userId, stripeSubscription: subscription, stripeEventId: event.id });
       summary = `Subscription reconciled as ${synced.billingStatus}.`;

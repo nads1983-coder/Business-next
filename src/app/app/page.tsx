@@ -70,7 +70,7 @@ export default async function DashboardPage() {
               We need a little more information
             </CardTitle>
             <CardDescription>
-              Add {missingItems.join(", ")} so Business Next can calculate every deadline without guessing.
+              Add {missingItems.join(", ")} so Business Sorted can calculate every deadline without guessing.
             </CardDescription>
           </CardHeader>
           <CardContent>

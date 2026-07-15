@@ -32,7 +32,7 @@ const legalVersions = {
   effectiveDate: "15 July 2026"
 } as const;
 
-const approvedProductionAppUrl = "https://businessnext.uk";
+const approvedProductionAppUrl = "https://businesssorted.uk";
 const fallbackAppUrl = "https://files-mentioned-by-the-user-build-umber.vercel.app";
 const requestedMode = process.env.BUSINESS_NEXT_STRIPE_MODE === "live" ? "live" : "test";
 const checkoutExplicitlyEnabled = process.env.BUSINESS_NEXT_BILLING_ENABLED === "true";
@@ -87,7 +87,7 @@ export const billingConfig = {
   legalOwnerAccepted,
   plan: {
     id: "business-next",
-    name: "Business Next",
+    name: "Business Sorted",
     description:
       "Plain-English deadline guidance for first-time UK founders who want to know what to do next.",
     currency: "gbp",
@@ -114,7 +114,7 @@ export const billingConfig = {
     cancellationWording:
       "You can cancel at any time in the secure billing portal. Cancellation stops future renewal payments and normally takes effect at the end of the current paid monthly billing period. Access continues until that paid period ends unless Stripe confirms that access should end sooner.",
     refundWording:
-      "Refund requests are reviewed through support. We will correct duplicate charges or service-access problems where Business Next or Stripe records show an error. This policy does not limit any statutory consumer rights you may have.",
+      "Refund requests are reviewed through support. We will correct duplicate charges or service-access problems where Business Sorted or Stripe records show an error. This policy does not limit any statutory consumer rights you may have.",
     comingSoonWording:
       requestedMode === "live"
         ? "Live billing is prepared but Checkout remains restricted to the approved owner email until the domain, legal acceptance, controlled purchase and final public activation are complete."

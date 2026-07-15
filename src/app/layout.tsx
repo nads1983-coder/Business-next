@@ -15,11 +15,22 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
+  metadataBase: new URL("https://businesssorted.uk"),
   title: {
     default: productConfig.name,
     template: `%s | ${productConfig.name}`
   },
-  description: productConfig.promise
+  description: productConfig.promise,
+  alternates: {
+    canonical: "/"
+  },
+  openGraph: {
+    title: productConfig.name,
+    description: productConfig.promise,
+    url: "https://businesssorted.uk",
+    siteName: productConfig.name,
+    type: "website"
+  }
 };
 
 export default function RootLayout({
