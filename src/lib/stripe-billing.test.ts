@@ -19,7 +19,8 @@ const mocks = vi.hoisted(() => ({
     },
     stripeWebhookEvent: {
       findUnique: vi.fn(),
-      create: vi.fn()
+      create: vi.fn(),
+      update: vi.fn()
     }
   }
 }));
@@ -152,6 +153,7 @@ describe("Stripe billing helpers", () => {
     mocks.prisma.userEntitlement.updateMany.mockResolvedValue({ count: 1 });
     mocks.prisma.stripeWebhookEvent.findUnique.mockResolvedValue(null);
     mocks.prisma.stripeWebhookEvent.create.mockResolvedValue({});
+    mocks.prisma.stripeWebhookEvent.update.mockResolvedValue({});
     mocks.stripeCustomerCreate.mockResolvedValue({ id: "cus_test" });
     mocks.stripeCheckoutCreate.mockResolvedValue({ url: "https://checkout.stripe.test/session" });
     mocks.stripePortalCreate.mockResolvedValue({ url: "https://billing.stripe.test/session" });
@@ -313,6 +315,35 @@ describe("Stripe billing helpers", () => {
       summary: "Already processed."
     });
     expect(mocks.prisma.subscription.upsert).not.toHaveBeenCalled();
+  });
+
+  it("reprocesses a previously failed webhook event instead of skipping it as a duplicate", async () => {
+    process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
+    process.env.STRIPE_TEST_PRICE_ID_MONTHLY = "price_test_monthly";
+    mocks.prisma.stripeWebhookEvent.findUnique.mockResolvedValue({
+      id: "evt_test",
+      processingStatus: "failed",
+      summary: "Webhook processing failed."
+    });
+
+    const { processStripeEvent } = await import("./stripe-billing");
+
+    await expect(processStripeEvent(subscriptionEvent())).resolves.toEqual({
+      duplicate: false,
+      summary: "Subscription reconciled as ACTIVE."
+    });
+    expect(mocks.prisma.subscription.upsert).toHaveBeenCalled();
+    expect(mocks.prisma.stripeWebhookEvent.update).toHaveBeenCalledWith(
+      expect.objectContaining({
+        where: { id: "evt_test" },
+        data: expect.objectContaining({
+          processingStatus: "processed",
+          errorMessage: null,
+          summary: "Subscription reconciled as ACTIVE."
+        })
+      })
+    );
+    expect(mocks.prisma.stripeWebhookEvent.create).not.toHaveBeenCalled();
   });
 
   it("activates access from an approved test subscription price", async () => {

@@ -339,21 +339,33 @@ async function syncSubscriptionFromStripe({
 export async function processStripeEvent(event: Stripe.Event) {
   const prisma = getPrisma();
   const existing = await prisma.stripeWebhookEvent.findUnique({ where: { id: event.id } });
-  if (existing) {
+  const retryingFailedEvent = existing?.processingStatus === "failed";
+  if (existing && !retryingFailedEvent) {
     return { duplicate: true, summary: existing.summary };
   }
   if (!isStripeEventModeAllowed(event.livemode)) {
-    await prisma.stripeWebhookEvent.create({
-      data: {
-        id: event.id,
-        type: event.type,
-        livemode: event.livemode,
-        processingStatus: "failed",
-        summary: "Stripe webhook mode rejected.",
-        errorMessage: "Stripe webhook livemode did not match the configured billing mode.",
-        payload: event as unknown as Prisma.InputJsonValue
-      }
-    });
+    const webhookEventData = {
+      id: event.id,
+      type: event.type,
+      livemode: event.livemode,
+      processingStatus: "failed",
+      summary: "Stripe webhook mode rejected.",
+      errorMessage: "Stripe webhook livemode did not match the configured billing mode.",
+      payload: event as unknown as Prisma.InputJsonValue
+    };
+    if (retryingFailedEvent) {
+      await prisma.stripeWebhookEvent.update({
+        where: { id: event.id },
+        data: {
+          ...webhookEventData,
+          processedAt: new Date()
+        }
+      });
+    } else {
+      await prisma.stripeWebhookEvent.create({
+        data: webhookEventData
+      });
+    }
     await recordBillingEvent({
       type: "WEBHOOK_FAILED",
       stripeEventId: event.id,
@@ -431,18 +443,32 @@ export async function processStripeEvent(event: Stripe.Event) {
       billingEventType = "REFUND_OR_REVERSAL";
     }
 
-    await prisma.stripeWebhookEvent.create({
-      data: {
-        id: event.id,
-        type: event.type,
-        livemode: event.livemode,
-        userId,
-        stripeCustomerId,
-        stripeSubscriptionId,
-        summary,
-        payload: event as unknown as Prisma.InputJsonValue
-      }
-    });
+    const webhookEventData = {
+      id: event.id,
+      type: event.type,
+      livemode: event.livemode,
+      userId,
+      stripeCustomerId,
+      stripeSubscriptionId,
+      summary,
+      payload: event as unknown as Prisma.InputJsonValue
+    };
+
+    if (retryingFailedEvent) {
+      await prisma.stripeWebhookEvent.update({
+        where: { id: event.id },
+        data: {
+          ...webhookEventData,
+          processingStatus: "processed",
+          errorMessage: null,
+          processedAt: new Date()
+        }
+      });
+    } else {
+      await prisma.stripeWebhookEvent.create({
+        data: webhookEventData
+      });
+    }
 
     await recordBillingEvent({
       userId,
@@ -456,19 +482,30 @@ export async function processStripeEvent(event: Stripe.Event) {
     return { duplicate: false, summary };
   } catch (error) {
     const message = error instanceof Error ? error.message : "Unknown webhook processing error.";
-    await prisma.stripeWebhookEvent.create({
-      data: {
-        id: event.id,
-        type: event.type,
-        livemode: event.livemode,
-        userId,
-        stripeCustomerId,
-        stripeSubscriptionId,
-        processingStatus: "failed",
-        summary: "Webhook processing failed.",
-        errorMessage: message
-      }
-    });
+    const webhookEventData = {
+      id: event.id,
+      type: event.type,
+      livemode: event.livemode,
+      userId,
+      stripeCustomerId,
+      stripeSubscriptionId,
+      processingStatus: "failed",
+      summary: "Webhook processing failed.",
+      errorMessage: message
+    };
+    if (retryingFailedEvent) {
+      await prisma.stripeWebhookEvent.update({
+        where: { id: event.id },
+        data: {
+          ...webhookEventData,
+          processedAt: new Date()
+        }
+      });
+    } else {
+      await prisma.stripeWebhookEvent.create({
+        data: webhookEventData
+      });
+    }
     await recordBillingEvent({
       userId,
       type: "WEBHOOK_FAILED",
