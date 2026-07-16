@@ -39,9 +39,12 @@ export function RegisterForm() {
           minLength={8}
           required
         />
-        <p className="text-xs text-muted-foreground">Use at least 8 characters.</p>
+        <p className="text-xs text-muted-foreground">Use at least 8 characters. You can reset it any time.</p>
       </div>
       {state?.message ? <p className="text-sm text-destructive">{state.message}</p> : null}
+      <p className="text-xs text-muted-foreground">
+        Next: a short setup flow that creates your deadline list. You can change the answers later.
+      </p>
       <SubmitButton />
     </form>
   );

@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft, CheckCircle2, ExternalLink, ShieldCheck } from "lucide-react";
 import { TaskActionForms } from "../task-action-forms";
 import { daysUntilText } from "@/lib/task-engine";
 import { plainCopy } from "@/content/plain-copy";
@@ -43,7 +43,10 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ tas
 
       <Card>
         <CardHeader>
-          <CardTitle>Your deadline</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <ShieldCheck className="h-5 w-5 text-primary" aria-hidden="true" />
+            Your deadline
+          </CardTitle>
           <CardDescription>
             {task.dueDate ? `${format(task.dueDate, "d MMMM yyyy")} · ${daysUntilText(task.dueDate)}` : "We need more information before showing a date."}
           </CardDescription>
@@ -70,6 +73,7 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ tas
         <Card>
           <CardHeader>
             <CardTitle>What this means</CardTitle>
+            <CardDescription>Plain-English context before the checklist.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-muted-foreground">
             <p>{task.whatThisMeans}</p>
@@ -83,6 +87,7 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ tas
         <Card>
           <CardHeader>
             <CardTitle>What to prepare</CardTitle>
+            <CardDescription>Gather these before you start so the task feels smaller.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-sm text-muted-foreground">
             <ul className="list-disc space-y-1 pl-5">
@@ -120,8 +125,13 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ tas
 
       <Card>
         <CardHeader>
-          <CardTitle>Task actions</CardTitle>
-          <CardDescription>These changes are private to your business account.</CardDescription>
+          <CardTitle className="flex items-center gap-2">
+            <CheckCircle2 className="h-5 w-5 text-primary" aria-hidden="true" />
+            Finish or tidy this task
+          </CardTitle>
+          <CardDescription>
+            These changes are private to your business account. You can add a note for your own memory.
+          </CardDescription>
         </CardHeader>
         <CardContent>
           <TaskActionForms taskId={task.id} canRestore={task.status === "NOT_APPLICABLE"} />
@@ -142,7 +152,7 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ tas
               </div>
             ))
           ) : (
-            <p>No history yet.</p>
+            <p>No history yet. When you complete, restore or mark a task as not applicable, the record will appear here.</p>
           )}
         </CardContent>
       </Card>

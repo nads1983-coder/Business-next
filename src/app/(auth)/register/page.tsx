@@ -6,9 +6,9 @@ export default function RegisterPage() {
   return (
     <Card className="w-full max-w-md">
       <CardHeader>
-        <CardTitle>Create your account</CardTitle>
+        <CardTitle>Create your Business Sorted account</CardTitle>
         <CardDescription>
-          Start with a few simple questions. You can change your answers later.
+          Start with your account, then answer a few business questions to see your first deadline list.
         </CardDescription>
       </CardHeader>
       <CardContent>

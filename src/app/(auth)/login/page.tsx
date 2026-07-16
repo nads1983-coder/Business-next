@@ -7,7 +7,7 @@ export default function LoginPage() {
     <Card className="w-full max-w-md">
       <CardHeader>
         <CardTitle>Welcome back</CardTitle>
-        <CardDescription>Sign in to see what needs doing next.</CardDescription>
+        <CardDescription>Sign in to see what needs attention, what can wait and what is already handled.</CardDescription>
       </CardHeader>
       <Suspense fallback={<div className="p-6 text-sm text-muted-foreground">Loading...</div>}>
         <LoginForm />

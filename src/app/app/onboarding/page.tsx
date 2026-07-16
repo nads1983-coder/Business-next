@@ -1,15 +1,21 @@
 import { OnboardingForm } from "./onboarding-form";
+import { onboardingDraftKey } from "@/lib/onboarding-draft";
+import { requireUser } from "@/lib/session";
 
-export default function OnboardingPage() {
+export default async function OnboardingPage() {
+  const user = await requireUser();
+
   return (
     <div className="space-y-6">
       <div>
-        <h1 className="text-3xl font-semibold tracking-normal">Set up your business</h1>
+        <p className="text-sm font-medium text-primary">Step 1 of 2</p>
+        <h1 className="mt-1 text-3xl font-semibold tracking-normal">Set up your business</h1>
         <p className="mt-2 max-w-2xl text-muted-foreground">
-          Answer simple questions and we will build your first task list.
+          Answer the minimum we need to create your first personalised deadline list. Use “not sure”
+          whenever you need to come back later.
         </p>
       </div>
-      <OnboardingForm />
+      <OnboardingForm draftStorageKey={onboardingDraftKey(user.id)} />
     </div>
   );
 }

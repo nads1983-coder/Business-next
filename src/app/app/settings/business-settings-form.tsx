@@ -2,7 +2,7 @@
 
 import { useActionState } from "react";
 import type { BusinessProfile } from "@prisma/client";
-import { Save } from "lucide-react";
+import { Save, ShieldCheck } from "lucide-react";
 import { updateBusinessSettingsAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -29,29 +29,44 @@ export function BusinessSettingsForm({
           event.preventDefault();
         }
       }}
-      className="grid gap-4"
+      className="grid gap-5"
     >
       <input type="hidden" name="businessId" value={businessId} />
+      <div className="rounded-md border bg-secondary/50 p-4 text-sm text-muted-foreground">
+        <p className="flex items-start gap-2 font-medium text-foreground">
+          <ShieldCheck className="mt-0.5 h-4 w-4 text-primary" aria-hidden="true" />
+          Why these details matter
+        </p>
+        <p className="mt-2">
+          Business Sorted uses these answers only to calculate and explain your deadline list. Choose
+          “not sure” where available, then come back when you have the detail.
+        </p>
+      </div>
       <div className="grid gap-4 md:grid-cols-2">
         <div className="space-y-2">
           <Label htmlFor="legalBusinessName">Legal business name</Label>
           <Input id="legalBusinessName" name="legalBusinessName" defaultValue={profile.legalBusinessName ?? ""} required />
+          <p className="text-xs text-muted-foreground">Used to label this profile clearly in your account.</p>
         </div>
         <div className="space-y-2">
           <Label htmlFor="tradingName">Trading name</Label>
           <Input id="tradingName" name="tradingName" defaultValue={profile.tradingName ?? ""} />
+          <p className="text-xs text-muted-foreground">Optional. Add it only if customers know you by a different name.</p>
         </div>
         <div className="space-y-2">
           <Label htmlFor="companyNumber">Company number</Label>
           <Input id="companyNumber" name="companyNumber" defaultValue={profile.companyNumber ?? ""} maxLength={8} />
+          <p className="text-xs text-muted-foreground">Helps you cross-check Companies House tasks.</p>
         </div>
         <div className="space-y-2">
           <Label htmlFor="companyRegisteredOn">Incorporation date</Label>
           <Input id="companyRegisteredOn" name="companyRegisteredOn" type="date" defaultValue={dateValue(profile.companyRegisteredOn)} />
+          <p className="text-xs text-muted-foreground">Used for first accounts and confirmation statement timing.</p>
         </div>
         <div className="space-y-2">
           <Label htmlFor="startedTradingOn">Date trading started</Label>
           <Input id="startedTradingOn" name="startedTradingOn" type="date" defaultValue={dateValue(profile.startedTradingOn)} />
+          <p className="text-xs text-muted-foreground">Used for tax-year tasks and registration prompts.</p>
         </div>
         <div className="space-y-2">
           <Label htmlFor="firstAccountingPeriodEnd">First accounting period end</Label>
@@ -88,6 +103,7 @@ export function BusinessSettingsForm({
         <div className="space-y-2">
           <Label htmlFor="vatPeriodEndsOn">VAT accounting period end</Label>
           <Input id="vatPeriodEndsOn" name="vatPeriodEndsOn" type="date" defaultValue={dateValue(profile.vatPeriodEndsOn)} />
+          <p className="text-xs text-muted-foreground">Used to calculate VAT return timing when VAT applies.</p>
         </div>
         <div className="space-y-2">
           <Label htmlFor="employsPeople">PAYE or employer status</Label>
@@ -110,7 +126,7 @@ export function BusinessSettingsForm({
         </div>
       </div>
       <p className="text-sm text-muted-foreground">
-        Changing dates can move active deadlines. Business Sorted keeps completed and not-applicable history.
+        Changing dates can move active deadlines. Business Sorted keeps completed and not-applicable history, then recalculates only the active list.
       </p>
       {state?.message ? (
         <p className={state.ok ? "text-sm text-primary" : "text-sm text-destructive"}>{state.message}</p>

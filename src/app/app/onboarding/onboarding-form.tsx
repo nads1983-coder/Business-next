@@ -1,8 +1,8 @@
 "use client";
 
-import { useActionState, useMemo, useState } from "react";
+import { useActionState, useEffect, useMemo, useState } from "react";
 import { useFormStatus } from "react-dom";
-import { ArrowLeft, ArrowRight, Check } from "lucide-react";
+import { ArrowLeft, ArrowRight, Check, Clock, ShieldCheck, Sparkles } from "lucide-react";
 import { completeOnboardingAction } from "./actions";
 import { onboardingQuestions } from "@/lib/onboarding";
 import { Button } from "@/components/ui/button";
@@ -11,6 +11,26 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
 type Answers = Record<string, string>;
+
+const initialAnswers: Answers = {
+  businessType: "NOT_SURE",
+  legalBusinessName: "",
+  tradingName: "",
+  companyNumber: "",
+  startedTradingOn: "",
+  companyRegisteredOn: "",
+  firstAccountingPeriodEnd: "",
+  registeredForVat: "NOT_SURE",
+  vatRegisteredOn: "",
+  vatPeriodEndsOn: "",
+  employsPeople: "NOT_SURE",
+  firstPayday: "",
+  usesAccountant: "NOT_SURE",
+  wantsEmailReminders: "YES",
+  salesSoFar: "0",
+  costsSoFar: "0",
+  canUpdateLater: "YES"
+};
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -22,28 +42,11 @@ function SubmitButton() {
   );
 }
 
-export function OnboardingForm() {
+export function OnboardingForm({ draftStorageKey }: { draftStorageKey: string }) {
   const [state, formAction] = useActionState(completeOnboardingAction, null);
   const [step, setStep] = useState(0);
-  const [answers, setAnswers] = useState<Answers>({
-    businessType: "NOT_SURE",
-    legalBusinessName: "",
-    tradingName: "",
-    companyNumber: "",
-    startedTradingOn: "",
-    companyRegisteredOn: "",
-    firstAccountingPeriodEnd: "",
-    registeredForVat: "NOT_SURE",
-    vatRegisteredOn: "",
-    vatPeriodEndsOn: "",
-    employsPeople: "NOT_SURE",
-    firstPayday: "",
-    usesAccountant: "NOT_SURE",
-    wantsEmailReminders: "YES",
-    salesSoFar: "0",
-    costsSoFar: "0",
-    canUpdateLater: "YES"
-  });
+  const [answers, setAnswers] = useState<Answers>(initialAnswers);
+  const [draftLoaded, setDraftLoaded] = useState(false);
   const visibleQuestions = useMemo(
     () =>
       onboardingQuestions.filter((item) => {
@@ -58,10 +61,35 @@ export function OnboardingForm() {
     [answers]
   );
   const question = visibleQuestions[Math.min(step, visibleQuestions.length - 1)];
+  const completedVisible = visibleQuestions.filter((item) => {
+    const value = answers[item.id];
+    return value !== undefined && value !== "";
+  }).length;
   const progress = useMemo(
-    () => Math.round(((step + 1) / visibleQuestions.length) * 100),
-    [step, visibleQuestions.length]
+    () => Math.round((completedVisible / visibleQuestions.length) * 100),
+    [completedVisible, visibleQuestions.length]
   );
+  const isOptional = "optional" in question && question.optional;
+
+  useEffect(() => {
+    const saved = window.localStorage.getItem(draftStorageKey);
+    window.setTimeout(() => {
+      if (saved) {
+        try {
+          setAnswers((current) => ({ ...current, ...JSON.parse(saved) }));
+        } catch {
+          window.localStorage.removeItem(draftStorageKey);
+        }
+      }
+      setDraftLoaded(true);
+    }, 0);
+  }, [draftStorageKey]);
+
+  useEffect(() => {
+    if (draftLoaded) {
+      window.localStorage.setItem(draftStorageKey, JSON.stringify(answers));
+    }
+  }, [answers, draftLoaded, draftStorageKey]);
 
   function updateAnswer(value: string) {
     setAnswers((current) => ({
@@ -75,14 +103,26 @@ export function OnboardingForm() {
       {Object.entries(answers).map(([key, value]) => (
         <input key={key} type="hidden" name={key} value={value} />
       ))}
-      <div>
-        <div className="mb-2 flex items-center justify-between text-sm text-muted-foreground">
-          <span>
-            Question {step + 1} of {visibleQuestions.length}
-          </span>
-          <span>{progress}%</span>
+      <div className="rounded-lg border bg-card p-4 shadow-sm">
+        <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
+          <div>
+            <p className="text-sm font-medium text-primary">Your first deadline list is close</p>
+            <p className="mt-1 text-sm text-muted-foreground" aria-live="polite">
+              {completedVisible} of {visibleQuestions.length} answers added. Draft saved on this device.
+            </p>
+          </div>
+          <div className="flex flex-wrap gap-2 text-xs text-muted-foreground">
+            <span className="inline-flex items-center gap-1 rounded-md bg-secondary px-2.5 py-1">
+              <Clock className="h-3.5 w-3.5" aria-hidden="true" />
+              About 2 minutes
+            </span>
+            <span className="inline-flex items-center gap-1 rounded-md bg-secondary px-2.5 py-1">
+              <ShieldCheck className="h-3.5 w-3.5" aria-hidden="true" />
+              You can change this later
+            </span>
+          </div>
         </div>
-        <div className="h-2 rounded-full bg-muted">
+        <div className="mt-4 h-2 rounded-full bg-muted" aria-hidden="true">
           <div
             className="h-2 rounded-full bg-primary transition-all"
             style={{ width: `${progress}%` }}
@@ -92,7 +132,17 @@ export function OnboardingForm() {
 
       <Card>
         <CardHeader>
-          <CardTitle>{question.label}</CardTitle>
+          <div className="flex items-start gap-3">
+            <div className="mt-0.5 rounded-md bg-secondary p-2 text-primary">
+              <Sparkles className="h-4 w-4" aria-hidden="true" />
+            </div>
+            <div>
+              <p className="text-sm text-muted-foreground">
+                Question {step + 1} of {visibleQuestions.length}
+              </p>
+              <CardTitle className="mt-1 leading-tight">{question.label}</CardTitle>
+            </div>
+          </div>
           <CardDescription>{question.help}</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
@@ -171,7 +221,7 @@ export function OnboardingForm() {
 
       {state?.message ? <p className="text-sm text-destructive">{state.message}</p> : null}
 
-      <div className="flex items-center justify-between gap-3">
+      <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
         <Button
           type="button"
           variant="outline"
@@ -181,19 +231,33 @@ export function OnboardingForm() {
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
           Back
         </Button>
-        {step < visibleQuestions.length - 1 ? (
-          <Button
-            type="button"
-            onClick={() =>
-              setStep((current) => Math.min(visibleQuestions.length - 1, current + 1))
-            }
-          >
-            Next
-            <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Button>
-        ) : (
-          <SubmitButton />
-        )}
+        <div className="flex flex-col gap-2 sm:flex-row">
+          {isOptional ? (
+            <Button
+              type="button"
+              variant="ghost"
+              onClick={() => {
+                updateAnswer("");
+                setStep((current) => Math.min(visibleQuestions.length - 1, current + 1));
+              }}
+            >
+              Skip for now
+            </Button>
+          ) : null}
+          {step < visibleQuestions.length - 1 ? (
+            <Button
+              type="button"
+              onClick={() =>
+                setStep((current) => Math.min(visibleQuestions.length - 1, current + 1))
+              }
+            >
+              Next
+              <ArrowRight className="h-4 w-4" aria-hidden="true" />
+            </Button>
+          ) : (
+            <SubmitButton />
+          )}
+        </div>
       </div>
     </form>
   );
