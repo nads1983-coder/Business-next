@@ -1,14 +1,22 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { billingConfig } from "@/config/billing";
 import { productConfig } from "@/config/product";
 import { analyticsEvents, recordAnalyticsEvent } from "@/lib/analytics";
+import { pageMetadata } from "@/lib/seo";
 import { PublicPage } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 
 export const dynamic = "force-dynamic";
+
+export const metadata: Metadata = pageMetadata({
+  title: "Business Sorted pricing",
+  description: "Pricing for Business Sorted, the plain-English UK business deadline and compliance assistant for first-time founders.",
+  path: "/pricing"
+});
 
 export default async function PricingPage() {
   recordAnalyticsEvent({

@@ -5,7 +5,16 @@ export default function robots(): MetadataRoute.Robots {
     rules: {
       userAgent: "*",
       allow: "/",
-      disallow: ["/app", "/api"]
+      disallow: [
+        "/app",
+        "/api",
+        "/login",
+        "/register",
+        "/forgot-password",
+        "/reset-password",
+        "/verify-email",
+        "/check-email"
+      ]
     },
     sitemap: "https://businesssorted.uk/sitemap.xml"
   };

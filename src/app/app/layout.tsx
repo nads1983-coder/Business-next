@@ -1,8 +1,17 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { productConfig } from "@/config/product";
+import { pageMetadata } from "@/lib/seo";
 import { getPrisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/session";
 import { SignOutButton } from "@/components/sign-out-button";
+
+export const metadata: Metadata = pageMetadata({
+  title: "Business Sorted app",
+  description: "Private Business Sorted account area.",
+  path: "/app",
+  noindex: true
+});
 
 export default async function AppLayout({ children }: { children: React.ReactNode }) {
   const user = await requireUser();

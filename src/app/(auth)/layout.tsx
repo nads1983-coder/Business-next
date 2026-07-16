@@ -1,5 +1,14 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { productConfig } from "@/config/product";
+import { pageMetadata } from "@/lib/seo";
+
+export const metadata: Metadata = pageMetadata({
+  title: "Account access",
+  description: "Sign in to Business Sorted or create an account.",
+  path: "/login",
+  noindex: true
+});
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
   return (

@@ -1,20 +1,24 @@
 import { legalNotice } from "@/lib/legal-content";
+import { JsonLd, breadcrumbSchema } from "@/lib/seo";
 import { PublicPage } from "@/components/public-page";
 import { Card, CardContent } from "@/components/ui/card";
 
 export function LegalPage({
   title,
+  path,
   version,
   effectiveDate,
   sections
 }: {
   title: string;
+  path: string;
   version: string;
   effectiveDate: string;
   sections: readonly (readonly [string, string])[];
 }) {
   return (
     <PublicPage narrow>
+      <JsonLd data={breadcrumbSchema([{ name: "Home", path: "/" }, { name: title, path }])} />
       <div className="space-y-6">
         <div>
           <p className="text-sm font-medium text-primary">Business Sorted</p>

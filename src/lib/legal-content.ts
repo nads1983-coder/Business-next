@@ -6,6 +6,7 @@ export const legalNotice =
 
 export const legalPages = {
   terms: {
+    path: "/terms",
     title: "Terms of Use",
     version: billingConfig.legal.termsVersion,
     effectiveDate: billingConfig.legal.effectiveDate,
@@ -18,6 +19,7 @@ export const legalPages = {
     ]
   },
   privacy: {
+    path: "/privacy",
     title: "Privacy Notice",
     version: billingConfig.legal.privacyVersion,
     effectiveDate: billingConfig.legal.effectiveDate,
@@ -30,6 +32,7 @@ export const legalPages = {
     ]
   },
   subscription: {
+    path: "/subscription-terms",
     title: "Subscription and Cancellation Terms",
     version: billingConfig.legal.subscriptionTermsVersion,
     effectiveDate: billingConfig.legal.effectiveDate,
@@ -44,6 +47,7 @@ export const legalPages = {
     ]
   },
   refunds: {
+    path: "/refunds",
     title: "Refund Policy",
     version: billingConfig.legal.subscriptionTermsVersion,
     effectiveDate: billingConfig.legal.effectiveDate,
@@ -56,6 +60,7 @@ export const legalPages = {
     ]
   },
   cookies: {
+    path: "/cookies",
     title: "Cookie Information",
     version: billingConfig.legal.privacyVersion,
     effectiveDate: billingConfig.legal.effectiveDate,
@@ -66,6 +71,7 @@ export const legalPages = {
     ]
   },
   support: {
+    path: "/support",
     title: "Contact and Support",
     version: billingConfig.legal.termsVersion,
     effectiveDate: billingConfig.legal.effectiveDate,

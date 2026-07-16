@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
 import { productConfig } from "@/config/product";
+import { siteUrl } from "@/lib/seo";
 import { AuthProvider } from "@/components/auth-provider";
 
 const geistSans = Geist({
@@ -15,21 +16,29 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://businesssorted.uk"),
+  metadataBase: new URL(siteUrl),
   title: {
-    default: productConfig.name,
+    default: "Business Sorted | UK business deadline tracker",
     template: `%s | ${productConfig.name}`
   },
-  description: productConfig.promise,
+  description:
+    "Plain-English UK business administration and compliance reminders for first-time founders, directors and small-business owners.",
   alternates: {
     canonical: "/"
   },
   openGraph: {
-    title: productConfig.name,
-    description: productConfig.promise,
-    url: "https://businesssorted.uk",
+    title: "Business Sorted | UK business deadline tracker",
+    description:
+      "Plain-English UK business administration and compliance reminders for first-time founders, directors and small-business owners.",
+    url: siteUrl,
     siteName: productConfig.name,
     type: "website"
+  },
+  twitter: {
+    card: "summary",
+    title: "Business Sorted | UK business deadline tracker",
+    description:
+      "Plain-English UK business administration and compliance reminders for first-time founders, directors and small-business owners."
   }
 };
 

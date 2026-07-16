@@ -16,6 +16,9 @@ export function PublicPage({
             {productConfig.name}
           </Link>
           <nav className="flex items-center gap-4 text-sm text-muted-foreground">
+            <Link href="/guides" className="hover:text-foreground">Guides</Link>
+            <Link href="/deadlines" className="hover:text-foreground">Deadlines</Link>
+            <Link href="/checklists" className="hover:text-foreground">Checklists</Link>
             <Link href="/pricing" className="hover:text-foreground">Pricing</Link>
             <Link href="/support" className="hover:text-foreground">Support</Link>
             <Link href="/login" className="hover:text-foreground">Sign in</Link>
@@ -29,6 +32,8 @@ export function PublicPage({
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
           <p>{productConfig.name}</p>
           <nav className="flex flex-wrap gap-4" aria-label="Legal">
+            <Link href="/about" className="hover:text-foreground">About</Link>
+            <Link href="/glossary" className="hover:text-foreground">Glossary</Link>
             <Link href="/terms" className="hover:text-foreground">Terms</Link>
             <Link href="/privacy" className="hover:text-foreground">Privacy</Link>
             <Link href="/subscription-terms" className="hover:text-foreground">Subscription terms</Link>
