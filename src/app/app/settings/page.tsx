@@ -3,6 +3,7 @@ import { productConfig } from "@/config/product";
 import { getPrisma } from "@/lib/prisma";
 import { requireProductAccess } from "@/lib/billing";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CompaniesHouseLookup } from "@/components/companies-house-lookup";
 
 export default async function SettingsPage() {
   const { user } = await requireProductAccess();
@@ -38,6 +39,14 @@ export default async function SettingsPage() {
             )}
           </CardContent>
         </Card>
+        {business?.profile?.businessType === "LIMITED_COMPANY" ? (
+          <CompaniesHouseLookup
+            businessId={business.id}
+            initialCompanyNumber={business.profile.companyNumber}
+            connectedAt={business.profile.companiesHouseConnectedAt}
+            lastSyncedAt={business.profile.companiesHouseLastSyncedAt}
+          />
+        ) : null}
         <div className="grid gap-4 lg:grid-cols-2">
           <Card>
             <CardHeader>

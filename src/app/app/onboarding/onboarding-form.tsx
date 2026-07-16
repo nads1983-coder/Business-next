@@ -7,6 +7,7 @@ import { completeOnboardingAction } from "./actions";
 import { onboardingQuestions } from "@/lib/onboarding";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { CompaniesHouseLookup } from "@/components/companies-house-lookup";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
@@ -98,6 +99,13 @@ export function OnboardingForm({ draftStorageKey }: { draftStorageKey: string })
     }));
   }
 
+  function updateAnswers(values: Answers) {
+    setAnswers((current) => ({
+      ...current,
+      ...values
+    }));
+  }
+
   return (
     <form action={formAction} className="mx-auto max-w-2xl space-y-6">
       {Object.entries(answers).map(([key, value]) => (
@@ -185,6 +193,21 @@ export function OnboardingForm({ draftStorageKey }: { draftStorageKey: string })
                 value={answers[question.id] ?? ""}
                 onChange={(event) => updateAnswer(event.target.value)}
               />
+              {question.id === "companyNumber" ? (
+                <CompaniesHouseLookup
+                  initialCompanyNumber={answers.companyNumber}
+                  onConfirm={(preview) =>
+                    updateAnswers({
+                      companyNumber: preview.companyNumber,
+                      legalBusinessName: preview.companyName,
+                      companyRegisteredOn: preview.incorporatedOn ?? "",
+                      businessYearEndMonth: preview.accountingReferenceMonth
+                        ? String(preview.accountingReferenceMonth)
+                        : answers.businessYearEndMonth
+                    })
+                  }
+                />
+              ) : null}
             </div>
           ) : null}
 

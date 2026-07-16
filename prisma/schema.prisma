@@ -251,7 +251,22 @@ model BusinessProfile {
   businessType             BusinessType        @default(NOT_SURE)
   legalBusinessName        String?
   tradingName              String?
-  companyNumber            String?
+  companyNumber                            String?
+  companiesHouseConnectedAt                DateTime?
+  companiesHouseLastSyncedAt               DateTime?
+  companiesHouseSyncStatus                 String?
+  companiesHouseSyncError                  String?
+  companiesHouseCompanyStatus              String?
+  companiesHouseCompanyType                String?
+  companiesHouseRegisteredOffice           String?
+  companiesHouseSicCodes                   String[]
+  companiesHouseAccountsNextDue            DateTime?
+  companiesHouseConfirmationNextDue        DateTime?
+  companiesHouseAccountsOverdue            Boolean?
+  companiesHouseConfirmationOverdue        Boolean?
+  companiesHouseAccountingReferenceDay     Int?
+  companiesHouseAccountingReferenceMonth   Int?
+  companiesHouseSnapshot                   Json?
   worksAlone               AnswerChoice        @default(NOT_SURE)
   startedTradingOn         DateTime?
   companyRegisteredOn      DateTime?
