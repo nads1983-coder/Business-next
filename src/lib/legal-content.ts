@@ -66,7 +66,7 @@ export const legalPages = {
     effectiveDate: billingConfig.legal.effectiveDate,
     sections: [
       ["Essential cookies", "Business Sorted uses essential cookies for authentication, security and basic app operation."],
-      ["Analytics", "Stage 3 uses internal, privacy-conscious event records. It does not add a paid analytics provider or duplicate analytics scripts."],
+      ["Analytics", "Business Sorted uses internal, privacy-conscious event records and a Plausible analytics script to understand public website use without adding duplicate analytics providers."],
       ["Stripe", "When paid billing is enabled, Stripe Checkout and the Customer Portal may use their own cookies and security checks on Stripe-hosted pages."]
     ]
   },
