@@ -16,9 +16,9 @@ export const publicNavItems: MobileNavItem[] = [
 export function PublicFooter() {
   return (
     <footer className="border-t">
-      <div className="mx-auto grid max-w-6xl gap-4 px-4 py-6 text-sm text-muted-foreground sm:px-6 lg:grid-cols-[minmax(0,1fr)_auto] lg:items-start">
-        <p className="max-w-3xl leading-6">{productConfig.tradingNameDisclosure}</p>
-        <nav className="flex min-w-0 flex-wrap gap-3 sm:gap-4" aria-label="Legal">
+      <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6 text-sm text-muted-foreground sm:px-6 lg:flex-row lg:items-start lg:justify-between">
+        <p className="max-w-3xl min-w-0 leading-6">{productConfig.tradingNameDisclosure}</p>
+        <nav className="flex min-w-0 max-w-3xl flex-wrap gap-3 sm:gap-4 lg:justify-end" aria-label="Legal">
           <Link href="/resources" className="hover:text-foreground">Resources</Link>
           <Link href="/tools" className="hover:text-foreground">Tools</Link>
           <Link href="/comparisons" className="hover:text-foreground">Comparisons</Link>
