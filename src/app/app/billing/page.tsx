@@ -146,16 +146,32 @@ export default async function BillingPage() {
               </p>
               <label className="flex items-start gap-2 text-sm">
                 <input className="mt-1" type="checkbox" name="acceptTerms" required />
-                <span>I accept the Business Sorted Terms and Conditions.</span>
+                <span>
+                  I accept the Business Sorted{" "}
+                  <Link href="/terms" className="text-primary underline">
+                    Terms and Conditions
+                  </Link>
+                  .
+                </span>
               </label>
               <label className="flex items-start gap-2 text-sm">
                 <input className="mt-1" type="checkbox" name="acceptPrivacy" required />
-                <span>I accept the Privacy Notice.</span>
+                <span>
+                  I accept the{" "}
+                  <Link href="/privacy" className="text-primary underline">
+                    Privacy Notice
+                  </Link>
+                  .
+                </span>
               </label>
               <label className="flex items-start gap-2 text-sm">
                 <input className="mt-1" type="checkbox" name="acceptSubscriptionTerms" required />
                 <span>
-                  I accept the Subscription and Cancellation Terms, including monthly recurring billing at{" "}
+                  I accept the{" "}
+                  <Link href="/subscription-terms" className="text-primary underline">
+                    Subscription and Cancellation Terms
+                  </Link>
+                  , including monthly recurring billing at{" "}
                   {billingConfig.plan.displayPrice}, no annual plan, no free trial, and cancellation taking effect at the end
                   of the current paid monthly period.
                 </span>
