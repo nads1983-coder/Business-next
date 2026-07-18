@@ -218,21 +218,6 @@ export function OnboardingForm({ draftStorageKey }: { draftStorageKey: string })
             </div>
           ) : null}
 
-          {question.type === "month" ? (
-            <select
-              value={answers[question.id] ?? ""}
-              onChange={(event) => updateAnswer(event.target.value)}
-              className="h-11 w-full rounded-md border border-input bg-background px-3 text-base md:text-sm"
-            >
-              <option value="">I am not sure</option>
-              {Array.from({ length: 12 }, (_, index) => (
-                <option value={index + 1} key={index + 1}>
-                  {new Date(2026, index, 1).toLocaleString("en-GB", { month: "long" })}
-                </option>
-              ))}
-            </select>
-          ) : null}
-
           {question.type === "money" ? (
             <div className="space-y-2">
               <Label htmlFor={question.id}>Amount in pounds</Label>

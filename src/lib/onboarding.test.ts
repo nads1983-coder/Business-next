@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { onboardingSchema } from "./onboarding";
+import { onboardingQuestions, onboardingSchema } from "./onboarding";
 
 describe("onboardingSchema", () => {
   it("accepts unsure answers where appropriate", () => {
@@ -33,5 +33,12 @@ describe("onboardingSchema", () => {
     });
 
     expect(result.success).toBe(false);
+  });
+
+  it("keeps specialist accounting-period questions out of onboarding", () => {
+    const questionIds = onboardingQuestions.map((question) => question.id);
+
+    expect(questionIds).not.toContain("firstAccountingPeriodEnd");
+    expect(questionIds).not.toContain("businessYearEndMonth");
   });
 });

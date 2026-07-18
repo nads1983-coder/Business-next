@@ -35,29 +35,17 @@ export const onboardingQuestions = [
   {
     id: "companyRegisteredOn",
     label: "When was the company incorporated?",
-    help: "This date is needed for first accounts and the first confirmation statement.",
-    type: "date",
-    businessTypes: ["LIMITED_COMPANY"]
-  },
-  {
-    id: "startedTradingOn",
-    label: "When did trading start?",
-    help: "This is the first date you started selling or doing paid work. It helps calculate tax-year deadlines.",
-    type: "date"
-  },
-  {
-    id: "firstAccountingPeriodEnd",
-    label: "When does the first accounting period end?",
-    help: "For limited companies, this helps calculate Corporation Tax and Company Tax Return dates. Leave blank if you are not sure.",
+    help: "Companies House can usually fill this in from your company number. If not, leave it blank and add it later.",
     type: "date",
     optional: true,
     businessTypes: ["LIMITED_COMPANY"]
   },
   {
-    id: "businessYearEndMonth",
-    label: "What month does the business year end?",
-    help: "If you do not know the exact date, the month still helps Business Sorted avoid guessing.",
-    type: "month"
+    id: "startedTradingOn",
+    label: "When did trading start?",
+    help: "This is the first date you started selling or doing paid work. If you are not sure yet, leave it blank and add it later.",
+    type: "date",
+    optional: true
   },
   {
     id: "registeredForVat",
