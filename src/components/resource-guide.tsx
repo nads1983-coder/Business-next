@@ -111,7 +111,7 @@ export function DirectAnswer({ article }: { article: ResourceArticle }) {
         <CardTitle className="text-lg">Direct answer</CardTitle>
       </CardHeader>
       <CardContent className="text-sm leading-6 text-muted-foreground">
-        <p>{article.summary}</p>
+        <p>{article.directAnswer}</p>
       </CardContent>
     </Card>
   );
@@ -170,6 +170,14 @@ export function ArticleSection({ section }: { section: ResourceArticle["content"
       <div className="space-y-4 text-base leading-7 text-muted-foreground">
         {section.body.map((paragraph) => (
           <p key={paragraph}>{paragraph}</p>
+        ))}
+        {section.subsections?.map((subsection) => (
+          <div key={subsection.heading} className="space-y-2">
+            <h3 className="text-lg font-semibold tracking-normal text-foreground">{subsection.heading}</h3>
+            {subsection.body.map((paragraph) => (
+              <p key={paragraph}>{paragraph}</p>
+            ))}
+          </div>
         ))}
       </div>
     </section>
