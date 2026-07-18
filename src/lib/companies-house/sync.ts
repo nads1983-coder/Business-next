@@ -1,6 +1,7 @@
 import "server-only";
 
-import type { BusinessProfile, Prisma, PrismaClient, Task } from "@prisma/client";
+import { createHash } from "crypto";
+import { Prisma, type BusinessProfile, type PrismaClient, type Task } from "@prisma/client";
 import { addDays, format } from "date-fns";
 import {
   CompaniesHouseError,
@@ -51,6 +52,31 @@ const companyTaskKeys = new Set([
 ]);
 
 const companiesHouseAutoCompletionRuleVersion = "companies-house-auto-complete-2026-07-18";
+const companiesHouseChangeRuleVersion = "companies-house-change-detection-2026-07-18";
+
+const companiesHouseMaterialChangeFields = [
+  "companyName",
+  "companyStatus",
+  "registeredOffice",
+  "companyType",
+  "sicCodes",
+  "accountingReferenceDay",
+  "accountingReferenceMonth",
+  "accountsNextDue",
+  "confirmationNextDue",
+  "accountsOverdue",
+  "confirmationOverdue"
+] satisfies Array<keyof CompaniesHousePreview>;
+
+const companiesHouseDeadlineFields = new Set<keyof CompaniesHousePreview>([
+  "companyStatus",
+  "accountingReferenceDay",
+  "accountingReferenceMonth",
+  "accountsNextDue",
+  "confirmationNextDue",
+  "accountsOverdue",
+  "confirmationOverdue"
+]);
 
 function positiveInteger(value: string | undefined, fallback: number) {
   const parsed = Number.parseInt(value ?? "", 10);
@@ -275,22 +301,134 @@ export function detectMaterialChanges(
 ) {
   if (!previous || typeof previous !== "object" || Array.isArray(previous)) return [];
   const prior = previous as Record<string, unknown>;
-  const watched: Array<keyof CompaniesHousePreview> = [
-    "companyStatus",
-    "registeredOffice",
-    "sicCodes",
-    "accountingReferenceDay",
-    "accountingReferenceMonth",
-    "accountsNextDue",
-    "confirmationNextDue",
-    "accountsOverdue",
-    "confirmationOverdue"
-  ];
 
-  return watched.filter((field) => (
+  return companiesHouseMaterialChangeFields.filter((field) => (
     Object.prototype.hasOwnProperty.call(prior, field) &&
-    JSON.stringify(prior[field]) !== JSON.stringify(next[field])
+    stableJson(prior[field]) !== stableJson(next[field])
   ));
+}
+
+function stableJson(value: unknown): string {
+  if (Array.isArray(value)) return `[${value.map(stableJson).join(",")}]`;
+  if (value && typeof value === "object") {
+    const record = value as Record<string, unknown>;
+    return `{${Object.keys(record)
+      .sort()
+      .map((key) => `${JSON.stringify(key)}:${stableJson(record[key])}`)
+      .join(",")}}`;
+  }
+  return JSON.stringify(value);
+}
+
+function valueHash(value: unknown) {
+  return createHash("sha256").update(stableJson(value)).digest("hex");
+}
+
+function nullableJson(value: unknown) {
+  return value === null ? Prisma.JsonNull : value as Prisma.InputJsonValue;
+}
+
+function changeAffectsDeadlines(field: keyof CompaniesHousePreview) {
+  return companiesHouseDeadlineFields.has(field);
+}
+
+export type CompaniesHouseChangeRecordInput = {
+  businessId: string;
+  companyNumber: string;
+  field: keyof CompaniesHousePreview;
+  previousValue: Prisma.JsonValue;
+  newValue: Prisma.JsonValue;
+  previousValueHash: string;
+  newValueHash: string;
+  detectedAt: Date;
+  sourceCheckedAt: Date;
+  affectsDeadlines: boolean;
+};
+
+export function buildCompaniesHouseChangeRecords({
+  businessId,
+  companyNumber,
+  previous,
+  next,
+  checkedAt
+}: {
+  businessId: string;
+  companyNumber: string;
+  previous: Prisma.JsonValue | null | undefined;
+  next: CompaniesHousePreview;
+  checkedAt: Date;
+}): CompaniesHouseChangeRecordInput[] {
+  if (!previous || typeof previous !== "object" || Array.isArray(previous)) return [];
+  const prior = previous as Record<string, Prisma.JsonValue>;
+
+  return detectMaterialChanges(previous, next).map((field) => {
+    const previousValue = prior[field] ?? null;
+    const newValue = (next[field] ?? null) as Prisma.JsonValue;
+
+    return {
+      businessId,
+      companyNumber: normaliseCompanyNumber(companyNumber),
+      field,
+      previousValue,
+      newValue,
+      previousValueHash: valueHash(previousValue),
+      newValueHash: valueHash(newValue),
+      detectedAt: checkedAt,
+      sourceCheckedAt: checkedAt,
+      affectsDeadlines: changeAffectsDeadlines(field)
+    };
+  });
+}
+
+async function recordCompaniesHouseChanges({
+  businessId,
+  companyNumber,
+  previous,
+  next,
+  checkedAt
+}: {
+  businessId: string;
+  companyNumber: string;
+  previous: Prisma.JsonValue | null | undefined;
+  next: CompaniesHousePreview;
+  checkedAt: Date;
+}) {
+  const prisma = getPrisma();
+  const changes = buildCompaniesHouseChangeRecords({ businessId, companyNumber, previous, next, checkedAt });
+  const saved: Array<{ id: string; field: string; affectsDeadlines: boolean }> = [];
+
+  for (const change of changes) {
+    const record = await prisma.companiesHouseChange.upsert({
+      where: {
+        businessId_companyNumber_field_previousValueHash_newValueHash: {
+          businessId: change.businessId,
+          companyNumber: change.companyNumber,
+          field: change.field,
+          previousValueHash: change.previousValueHash,
+          newValueHash: change.newValueHash
+        }
+      },
+      create: {
+        businessId: change.businessId,
+        companyNumber: change.companyNumber,
+        field: change.field,
+        previousValue: nullableJson(change.previousValue),
+        newValue: nullableJson(change.newValue),
+        previousValueHash: change.previousValueHash,
+        newValueHash: change.newValueHash,
+        detectedAt: change.detectedAt,
+        sourceCheckedAt: change.sourceCheckedAt,
+        affectsDeadlines: change.affectsDeadlines
+      },
+      update: {
+        sourceCheckedAt: change.sourceCheckedAt
+      },
+      select: { id: true, field: true, affectsDeadlines: true }
+    });
+    saved.push(record);
+  }
+
+  return saved;
 }
 
 function filingDate(filing: CompaniesHouseFilingItem) {
@@ -558,10 +696,20 @@ export async function syncCompaniesHouseForBusiness({
   try {
     const checkedAt = new Date();
     const preview = await previewCompany(profile.companyNumber);
-    const materialChanges = detectMaterialChanges(profile.companiesHouseSnapshot, preview);
+    const changeRecords = await recordCompaniesHouseChanges({
+      businessId: business.id,
+      companyNumber: preview.companyNumber,
+      previous: profile.companiesHouseSnapshot,
+      next: preview,
+      checkedAt
+    });
+    const materialChanges = changeRecords.map((change) => change.field);
     const { update } = profileUpdateFromPreview(profile, preview, { useCompaniesHouseValues: false });
     await prisma.businessProfile.update({ where: { id: profile.id }, data: update });
-    const taskSync = await syncBusinessTasks(business.id, userId);
+    const hasDeadlineChanges = changeRecords.some((change) => change.affectsDeadlines);
+    const taskSync = hasDeadlineChanges || force
+      ? await syncBusinessTasks(business.id, userId)
+      : { created: 0, updated: 0, skipped: 0, reason: "no_deadline_affecting_companies_house_changes" };
     const completed = await autoCompleteEligibleTasks({
       businessId: business.id,
       companyNumber: preview.companyNumber,
@@ -579,13 +727,16 @@ export async function syncCompaniesHouseForBusiness({
           businessId: business.id,
           companyNumber: preview.companyNumber,
           materialChanges,
+          changeRecordIds: changeRecords.map((change) => change.id),
+          changeRuleVersion: companiesHouseChangeRuleVersion,
+          deadlineRecalculationTriggered: hasDeadlineChanges || force,
           taskSync,
           autoCompletedTasks: completed
         }
       }
     });
 
-    return { skipped: false, materialChanges, taskSync, autoCompletedTasks: completed };
+    return { skipped: false, materialChanges, changeRecords: changeRecords.length, taskSync, autoCompletedTasks: completed };
   } catch (error) {
     const safeMessage = error instanceof CompaniesHouseError ? error.code : "sync_failed";
     await prisma.businessProfile.update({

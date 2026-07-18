@@ -23,6 +23,10 @@ const settingsSchema = z.object({
   wantsEmailReminders: z.enum(["YES", "NO"])
 });
 
+const acknowledgeCompaniesHouseChangeSchema = z.object({
+  changeId: z.string().min(1)
+});
+
 const toDate = (value?: string) => (value ? new Date(`${value}T00:00:00.000Z`) : null);
 
 export async function updateBusinessSettingsAction(_: unknown, formData: FormData) {
@@ -110,4 +114,55 @@ export async function updateBusinessSettingsAction(_: unknown, formData: FormDat
   revalidatePath("/app/settings");
   revalidatePath("/app/tasks");
   return { ok: true, message: `Saved. Deadlines recalculated: ${result.created} created, ${result.updated} updated, ${result.skipped} preserved.` };
+}
+
+export async function acknowledgeCompaniesHouseChangeAction(formData: FormData) {
+  const { user } = await requireProductAccess();
+  const parsed = acknowledgeCompaniesHouseChangeSchema.safeParse({
+    changeId: formData.get("changeId")
+  });
+
+  if (!parsed.success) {
+    throw new Error("Change record not found.");
+  }
+
+  const prisma = getPrisma();
+  const change = await prisma.companiesHouseChange.findFirst({
+    where: {
+      id: parsed.data.changeId,
+      business: { userId: user.id }
+    },
+    select: { id: true, businessId: true, field: true, companyNumber: true, acknowledgedAt: true }
+  });
+
+  if (!change) {
+    throw new Error("Change record not found.");
+  }
+
+  if (!change.acknowledgedAt) {
+    const acknowledgedAt = new Date();
+    await prisma.companiesHouseChange.update({
+      where: { id: change.id },
+      data: {
+        viewedAt: acknowledgedAt,
+        acknowledgedAt
+      }
+    });
+
+    await prisma.auditLog.create({
+      data: {
+        userId: user.id,
+        action: "companies_house_change_acknowledged",
+        metadata: {
+          businessId: change.businessId,
+          companyNumber: change.companyNumber,
+          field: change.field,
+          acknowledgedAt: acknowledgedAt.toISOString()
+        }
+      }
+    });
+  }
+
+  revalidatePath("/app");
+  revalidatePath("/app/settings");
 }

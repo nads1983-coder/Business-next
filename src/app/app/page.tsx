@@ -46,6 +46,11 @@ export default async function DashboardPage() {
       profile: true,
       tasks: {
         orderBy: [{ dueDate: "asc" }, { createdAt: "asc" }]
+      },
+      companiesHouseChanges: {
+        where: { acknowledgedAt: null },
+        orderBy: { detectedAt: "desc" },
+        take: 5
       }
     }
   });
@@ -79,6 +84,7 @@ export default async function DashboardPage() {
   ];
   const moneyLeft = business.profile.salesSoFarPence - business.profile.costsSoFarPence;
   const estimate = Math.max(Math.round(moneyLeft * 0.25), 0);
+  const pendingCompaniesHouseChanges = business.companiesHouseChanges.length;
 
   return (
     <div className="space-y-6">
@@ -119,6 +125,26 @@ export default async function DashboardPage() {
           <CardContent>
             <Button asChild>
               <Link href="/app/settings">Complete business details</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      ) : null}
+
+      {pendingCompaniesHouseChanges ? (
+        <Card className="border-primary/30">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 text-primary" aria-hidden="true" />
+              Company details changed
+            </CardTitle>
+            <CardDescription>
+              Companies House has updated {pendingCompaniesHouseChanges === 1 ? "one detail" : `${pendingCompaniesHouseChanges} details`}.
+              Review the before and after values before relying on the new information.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild>
+              <Link href="/app/settings">Review Companies House updates</Link>
             </Button>
           </CardContent>
         </Card>

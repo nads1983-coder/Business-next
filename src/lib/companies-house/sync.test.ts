@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { BusinessProfile, Task } from "@prisma/client";
 import {
+  buildCompaniesHouseChangeRecords,
   companiesHouseSnapshotUpdate,
   companiesHouseEligibleProfileWhere,
   companiesHouseSyncConfig,
@@ -212,6 +213,65 @@ describe("Companies House sync helpers", () => {
     );
 
     expect(changes).toEqual(["registeredOffice", "sicCodes"]);
+  });
+
+  it("builds dedupe-ready change records with deadline impact flags", () => {
+    const checkedAt = new Date("2026-07-18T10:00:00.000Z");
+    const preview = normaliseCompanyProfile({
+      company_name: "NEW NAME LIMITED",
+      company_number: "00001234",
+      company_status: "active",
+      registered_office_address: { address_line_1: "New office" },
+      sic_codes: ["70229"],
+      accounts: { next_due: "2027-11-15", overdue: false },
+      confirmation_statement: { next_due: "2027-01-29", overdue: false }
+    });
+
+    const changes = buildCompaniesHouseChangeRecords({
+      businessId: "business-1",
+      companyNumber: "1234",
+      previous: {
+        companyName: "OLD NAME LIMITED",
+        companyStatus: "active",
+        registeredOffice: "Old office",
+        sicCodes: ["62020"],
+        accountsNextDue: "2027-10-15",
+        confirmationNextDue: "2027-01-29"
+      },
+      next: preview,
+      checkedAt
+    });
+
+    expect(changes).toEqual([
+      expect.objectContaining({
+        businessId: "business-1",
+        companyNumber: "1234",
+        field: "companyName",
+        previousValue: "OLD NAME LIMITED",
+        newValue: "NEW NAME LIMITED",
+        detectedAt: checkedAt,
+        sourceCheckedAt: checkedAt,
+        affectsDeadlines: false,
+        previousValueHash: expect.any(String),
+        newValueHash: expect.any(String)
+      }),
+      expect.objectContaining({
+        field: "registeredOffice",
+        affectsDeadlines: false
+      }),
+      expect.objectContaining({
+        field: "sicCodes",
+        previousValue: ["62020"],
+        newValue: ["70229"],
+        affectsDeadlines: false
+      }),
+      expect.objectContaining({
+        field: "accountsNextDue",
+        previousValue: "2027-10-15",
+        newValue: "2027-11-15",
+        affectsDeadlines: true
+      })
+    ]);
   });
 
   it("only treats filing evidence as unambiguous when it is close to the task due date", () => {
