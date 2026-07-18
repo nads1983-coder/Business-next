@@ -1,7 +1,13 @@
 import { createHash } from "crypto";
 import type { BusinessProfile, ReminderDelivery, ReminderInterval, Task, TaskHistory, TaskUrgency } from "@prisma/client";
 import { differenceInCalendarDays, format } from "date-fns";
-import { sendDeadlineReminderEmail } from "@/lib/email";
+import {
+  documentDeliveryAlreadyBlocks,
+  documentReminderDecisionFor,
+  documentRenewalChannel,
+  documentTypeLabel
+} from "@/lib/document-renewals";
+import { sendDeadlineReminderEmail, sendDocumentRenewalReminderEmail } from "@/lib/email";
 import { getPrisma } from "@/lib/prisma";
 import { parseUkDate } from "@/lib/task-engine";
 
@@ -273,11 +279,53 @@ export async function runDeadlineReminders({
       }
     }
   });
+  const documents = await prisma.document.findMany({
+    where: {
+      renewalDate: { not: null },
+      archivedAt: null,
+      status: { notIn: ["ARCHIVED", "NO_LONGER_REQUIRED"] },
+      business: {
+        user: {
+          consentEmailReminders: true,
+          OR: [
+            { role: "ADMIN" },
+            {
+              entitlements: {
+                some: {
+                  status: "ACTIVE",
+                  kind: { in: ["FOUNDER", "COMPLIMENTARY", "TRIAL", "PAID"] },
+                  OR: [{ endsAt: null }, { endsAt: { gt: today } }]
+                }
+              }
+            },
+            {
+              subscriptions: {
+                some: { billingStatus: { in: ["ACTIVE", "TRIALING"] } }
+              }
+            }
+          ]
+        }
+      }
+    },
+    include: {
+      reminderDeliveries: true,
+      business: {
+        include: {
+          user: true,
+          profile: true
+        }
+      }
+    }
+  });
 
   let eligible = 0;
   let sent = 0;
   let skipped = 0;
   let failed = 0;
+  let documentEligible = 0;
+  let documentSent = 0;
+  let documentSkipped = 0;
+  let documentFailed = 0;
   const testEmail = process.env.BUSINESS_NEXT_TEST_EMAIL;
 
   for (const task of tasks) {
@@ -364,5 +412,107 @@ export async function runDeadlineReminders({
     sent += 1;
   }
 
-  return { eligible, sent, skipped, failed, dryRun, testMode: Boolean(testEmail), ruleVersion: reminderRuleVersion };
+  for (const document of documents) {
+    if (!document.business.profile?.wantsEmailReminders) {
+      documentSkipped += 1;
+      continue;
+    }
+
+    const decision = documentReminderDecisionFor({ document, today });
+    if (!decision.send) {
+      documentSkipped += 1;
+      continue;
+    }
+
+    documentEligible += 1;
+    if (documentDeliveryAlreadyBlocks(document.reminderDeliveries, decision, today)) {
+      documentSkipped += 1;
+      continue;
+    }
+
+    const targetEmail = testEmail || document.business.user.email;
+    if (!targetEmail) {
+      documentSkipped += 1;
+      continue;
+    }
+
+    if (!dryRun) {
+      try {
+        await sendDocumentRenewalReminderEmail({
+          email: targetEmail,
+          documentTitle: document.name,
+          businessName: document.business.name,
+          documentType: documentTypeLabel(document.kind),
+          renewalDate: format(decision.renewalDate, "d MMMM yyyy"),
+          timeRemaining: decision.daysRemainingText,
+          reason: decision.reason,
+          documentId: document.id,
+          idempotencyKey: `document-renewal-${decision.dedupeKey}`
+        });
+        await prisma.documentReminderDelivery.upsert({
+          where: { dedupeKey: decision.dedupeKey },
+          create: {
+            documentId: document.id,
+            interval: decision.interval,
+            stage: decision.stage,
+            channel: documentRenewalChannel,
+            dedupeKey: decision.dedupeKey,
+            ruleVersion: decision.ruleVersion,
+            renewalDate: decision.renewalDate,
+            reason: decision.reason,
+            status: "sent",
+            sentTo: targetEmail
+          },
+          update: {
+            status: "sent",
+            error: null,
+            sentTo: targetEmail,
+            sentAt: new Date()
+          }
+        });
+      } catch (error) {
+        documentFailed += 1;
+        await prisma.documentReminderDelivery.upsert({
+          where: { dedupeKey: decision.dedupeKey },
+          create: {
+            documentId: document.id,
+            interval: decision.interval,
+            stage: decision.stage,
+            channel: documentRenewalChannel,
+            dedupeKey: decision.dedupeKey,
+            ruleVersion: decision.ruleVersion,
+            renewalDate: decision.renewalDate,
+            reason: decision.reason,
+            status: "failed",
+            error: safeError(error),
+            sentTo: targetEmail
+          },
+          update: {
+            status: "failed",
+            error: safeError(error),
+            sentTo: targetEmail,
+            sentAt: new Date()
+          }
+        });
+        continue;
+      }
+    }
+    documentSent += 1;
+  }
+
+  return {
+    eligible,
+    sent,
+    skipped,
+    failed,
+    dryRun,
+    testMode: Boolean(testEmail),
+    ruleVersion: reminderRuleVersion,
+    documents: {
+      eligible: documentEligible,
+      sent: documentSent,
+      skipped: documentSkipped,
+      failed: documentFailed
+    }
+  };
 }

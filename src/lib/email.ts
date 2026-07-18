@@ -1,6 +1,11 @@
 import { Resend } from "resend";
 import { emailConfig } from "@/config/email";
-import { deadlineReminderEmailHtml, passwordResetEmailHtml, verificationEmailHtml } from "@/lib/email-html";
+import {
+  deadlineReminderEmailHtml,
+  documentRenewalReminderEmailHtml,
+  passwordResetEmailHtml,
+  verificationEmailHtml
+} from "@/lib/email-html";
 
 let resendClient: Resend | null = null;
 
@@ -96,6 +101,46 @@ export async function sendDeadlineReminderEmail({
       nextAction,
       reason,
       preparationSteps,
+      href: url.toString()
+    }),
+    idempotencyKey
+  });
+}
+
+export async function sendDocumentRenewalReminderEmail({
+  email,
+  documentTitle,
+  businessName,
+  documentType,
+  renewalDate,
+  timeRemaining,
+  reason,
+  documentId,
+  idempotencyKey
+}: {
+  email: string;
+  documentTitle: string;
+  businessName: string;
+  documentType: string;
+  renewalDate: string;
+  timeRemaining: string;
+  reason: string;
+  documentId: string;
+  idempotencyKey: string;
+}) {
+  const url = new URL("/app/documents", emailConfig.appUrl);
+  url.searchParams.set("document", documentId);
+
+  await sendEmail({
+    to: email,
+    subject: `Business Sorted document reminder: ${documentTitle}`,
+    html: documentRenewalReminderEmailHtml({
+      documentTitle,
+      businessName,
+      documentType,
+      renewalDate,
+      timeRemaining,
+      reason,
       href: url.toString()
     }),
     idempotencyKey

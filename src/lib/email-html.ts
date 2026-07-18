@@ -107,3 +107,36 @@ export function deadlineReminderEmailHtml({
       "Business Sorted provides general compliance-support information only. It is not legal, tax, accounting or financial advice, and Business Sorted has not filed anything on your behalf."
   });
 }
+
+export function documentRenewalReminderEmailHtml({
+  documentTitle,
+  businessName,
+  documentType,
+  renewalDate,
+  timeRemaining,
+  reason,
+  href
+}: {
+  documentTitle: string;
+  businessName: string;
+  documentType: string;
+  renewalDate: string;
+  timeRemaining: string;
+  reason: string;
+  href: string;
+}) {
+  return baseEmail({
+    title: escapeHtml(documentTitle),
+    intro: `
+      This Business Sorted reminder is for ${escapeHtml(businessName)}. The ${escapeHtml(documentType)} renewal date is ${escapeHtml(renewalDate)}, which ${escapeHtml(timeRemaining)}.
+      <br /><br />
+      You are receiving this because ${escapeHtml(reason)}.
+      <br /><br />
+      Open the document record to update the date, mark it renewed, archive it, or change future reminder settings.
+    `,
+    buttonLabel: "Open document",
+    href,
+    expiresText:
+      "Business Sorted provides general compliance-support information only. It is not legal, tax, accounting or financial advice, and Business Sorted has not renewed, filed or submitted anything on your behalf."
+  });
+}
