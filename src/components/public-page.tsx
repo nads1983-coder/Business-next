@@ -11,11 +11,11 @@ export function PublicPage({
   return (
     <main className="min-h-screen bg-background">
       <header className="border-b">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-6xl flex-col items-center gap-3 px-6 py-4 sm:flex-row sm:justify-between">
           <Link href="/" className="font-semibold">
             {productConfig.name}
           </Link>
-          <nav className="flex items-center gap-4 text-sm text-muted-foreground">
+          <nav className="flex flex-wrap items-center justify-center gap-4 text-sm text-muted-foreground">
             <Link href="/guides" className="hover:text-foreground">Guides</Link>
             <Link href="/deadlines" className="hover:text-foreground">Deadlines</Link>
             <Link href="/checklists" className="hover:text-foreground">Checklists</Link>

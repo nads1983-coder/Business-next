@@ -136,7 +136,7 @@ export const legalPages = {
     sections: [
       [
         "Who these terms apply to",
-        `These Subscription and Cancellation Terms apply to paid access to ${tradingName}, operated by ${operatorName}, and sit alongside the Terms and Conditions. If there is a conflict about billing or cancellation, these Subscription and Cancellation Terms apply for that issue.`
+        `${serviceName} is operated by ${operatorName}. These Subscription and Cancellation Terms apply to paid access to ${tradingName} and sit alongside the Terms and Conditions. If there is a conflict about billing or cancellation, these Subscription and Cancellation Terms apply for that issue.`
       ],
       [
         "Subscription arrangement",
@@ -188,7 +188,7 @@ export const legalPages = {
     sections: [
       [
         "How this policy fits with subscriptions",
-        `This Refund Policy applies to paid Business Sorted subscriptions operated by ${operatorName}. It should be read with the Subscription and Cancellation Terms. Cancelling a subscription stops future renewal payments; it does not automatically create a refund for amounts already paid.`
+        `${serviceName} is operated by ${operatorName}. This Refund Policy applies to paid Business Sorted subscriptions and should be read with the Subscription and Cancellation Terms. Cancelling a subscription stops future renewal payments; it does not automatically create a refund for amounts already paid.`
       ],
       [
         "General refund position",
