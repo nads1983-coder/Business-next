@@ -16,7 +16,7 @@ export const productConfig = {
     "What needs doing, when it needs doing, and what it means in plain English.",
   disclaimer:
     "Business Sorted helps you understand and organise your responsibilities. It does not replace advice from a qualified accountant, tax adviser or legal professional.",
-  supportEmail: "support@getcontentos.co",
+  supportEmail: "support@businesssorted.uk",
   plans: {
     free: {
       name: "Free",
