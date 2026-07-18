@@ -162,6 +162,26 @@ function profileUpdateFromPreview(
   return { update, conflicts };
 }
 
+export function companiesHouseSnapshotUpdate(preview: CompaniesHousePreview, syncedAt = new Date()) {
+  return {
+    companiesHouseConnectedAt: syncedAt,
+    companiesHouseLastSyncedAt: syncedAt,
+    companiesHouseSyncStatus: "connected",
+    companiesHouseSyncError: null,
+    companiesHouseCompanyStatus: preview.companyStatus,
+    companiesHouseCompanyType: preview.companyType,
+    companiesHouseRegisteredOffice: preview.registeredOffice,
+    companiesHouseSicCodes: preview.sicCodes,
+    companiesHouseAccountsNextDue: toDate(preview.accountsNextDue),
+    companiesHouseConfirmationNextDue: toDate(preview.confirmationNextDue),
+    companiesHouseAccountsOverdue: preview.accountsOverdue,
+    companiesHouseConfirmationOverdue: preview.confirmationOverdue,
+    companiesHouseAccountingReferenceDay: preview.accountingReferenceDay,
+    companiesHouseAccountingReferenceMonth: preview.accountingReferenceMonth,
+    companiesHouseSnapshot: preview.snapshot
+  } satisfies Prisma.BusinessProfileCreateInput | Prisma.BusinessProfileUpdateInput;
+}
+
 export function detectMaterialChanges(
   previous: Prisma.JsonValue | null | undefined,
   next: CompaniesHousePreview

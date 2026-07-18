@@ -2,6 +2,8 @@
 
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
+import { CompaniesHouseError, normaliseCompanyNumber } from "@/lib/companies-house/client";
+import { companiesHouseSnapshotUpdate, previewCompany } from "@/lib/companies-house/sync";
 import { syncBusinessTasks } from "@/lib/task-engine";
 import { onboardingSchema } from "@/lib/onboarding";
 import { getPrisma } from "@/lib/prisma";
@@ -9,6 +11,42 @@ import { requireUser } from "@/lib/session";
 
 const toDate = (value?: string) => (value ? new Date(`${value}T00:00:00.000Z`) : null);
 const toPence = (value: number) => Math.round(value * 100);
+
+async function companiesHouseOnboardingPatch(companyNumber?: string, confirmedCompanyNumber?: string) {
+  if (!companyNumber || !confirmedCompanyNumber) {
+    return { data: {}, audit: { connected: false, reason: "not_confirmed" } };
+  }
+
+  const normalisedCompanyNumber = normaliseCompanyNumber(companyNumber);
+  if (normaliseCompanyNumber(confirmedCompanyNumber) !== normalisedCompanyNumber) {
+    return { data: {}, audit: { connected: false, reason: "company_number_changed" } };
+  }
+
+  try {
+    const preview = await previewCompany(normalisedCompanyNumber);
+    if (preview.companyNumber !== normalisedCompanyNumber) {
+      return { data: {}, audit: { connected: false, reason: "company_number_mismatch" } };
+    }
+
+    return {
+      data: companiesHouseSnapshotUpdate(preview),
+      audit: {
+        connected: true,
+        companyNumber: preview.companyNumber,
+        companyStatus: preview.companyStatus,
+        source: "companies_house"
+      }
+    };
+  } catch (error) {
+    return {
+      data: {},
+      audit: {
+        connected: false,
+        reason: error instanceof CompaniesHouseError ? error.code : "lookup_failed"
+      }
+    };
+  }
+}
 
 export async function completeOnboardingAction(_: unknown, formData: FormData) {
   const user = await requireUser();
@@ -49,6 +87,10 @@ export async function completeOnboardingAction(_: unknown, formData: FormData) {
 
   const data = parsed.data;
   const businessName = data.tradingName || data.legalBusinessName;
+  const companiesHouse = await companiesHouseOnboardingPatch(
+    data.businessType === "LIMITED_COMPANY" ? data.companyNumber : undefined,
+    formData.get("companiesHouseConfirmedCompanyNumber")?.toString()
+  );
 
   const business = existing
     ? await prisma.business.update({
@@ -76,6 +118,7 @@ export async function completeOnboardingAction(_: unknown, formData: FormData) {
                 wantsEmailReminders: data.wantsEmailReminders === "YES",
                 salesSoFarPence: toPence(data.salesSoFar),
                 costsSoFarPence: toPence(data.costsSoFar),
+                ...companiesHouse.data,
                 onboardingCompletedAt: new Date()
               },
               update: {
@@ -96,6 +139,7 @@ export async function completeOnboardingAction(_: unknown, formData: FormData) {
                 wantsEmailReminders: data.wantsEmailReminders === "YES",
                 salesSoFarPence: toPence(data.salesSoFar),
                 costsSoFarPence: toPence(data.costsSoFar),
+                ...companiesHouse.data,
                 onboardingCompletedAt: new Date()
               }
             }
@@ -126,6 +170,7 @@ export async function completeOnboardingAction(_: unknown, formData: FormData) {
               wantsEmailReminders: data.wantsEmailReminders === "YES",
               salesSoFarPence: toPence(data.salesSoFar),
               costsSoFarPence: toPence(data.costsSoFar),
+              ...companiesHouse.data,
               onboardingCompletedAt: new Date()
             }
           }
@@ -143,7 +188,7 @@ export async function completeOnboardingAction(_: unknown, formData: FormData) {
     data: {
       userId: user.id,
       action: existing ? "business_profile_completed_stage_2" : "business_onboarding_completed",
-      metadata: { businessId: business.id, taskSync: result }
+      metadata: { businessId: business.id, taskSync: result, companiesHouse: companiesHouse.audit }
     }
   });
 

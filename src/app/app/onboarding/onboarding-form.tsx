@@ -47,6 +47,7 @@ export function OnboardingForm({ draftStorageKey }: { draftStorageKey: string })
   const [state, formAction] = useActionState(completeOnboardingAction, null);
   const [step, setStep] = useState(0);
   const [answers, setAnswers] = useState<Answers>(initialAnswers);
+  const [confirmedCompaniesHouseNumber, setConfirmedCompaniesHouseNumber] = useState("");
   const [draftLoaded, setDraftLoaded] = useState(false);
   const visibleQuestions = useMemo(
     () =>
@@ -97,6 +98,9 @@ export function OnboardingForm({ draftStorageKey }: { draftStorageKey: string })
       ...current,
       [question.id]: value
     }));
+    if (question.id === "companyNumber" && value.replace(/\s+/g, "").toUpperCase() !== confirmedCompaniesHouseNumber) {
+      setConfirmedCompaniesHouseNumber("");
+    }
   }
 
   function updateAnswers(values: Answers) {
@@ -111,6 +115,7 @@ export function OnboardingForm({ draftStorageKey }: { draftStorageKey: string })
       {Object.entries(answers).map(([key, value]) => (
         <input key={key} type="hidden" name={key} value={value} />
       ))}
+      <input type="hidden" name="companiesHouseConfirmedCompanyNumber" value={confirmedCompaniesHouseNumber} />
       <div className="rounded-lg border bg-card p-4 shadow-sm">
         <div className="flex flex-col gap-3 sm:flex-row sm:items-start sm:justify-between">
           <div>
@@ -196,7 +201,8 @@ export function OnboardingForm({ draftStorageKey }: { draftStorageKey: string })
               {question.id === "companyNumber" ? (
                 <CompaniesHouseLookup
                   initialCompanyNumber={answers.companyNumber}
-                  onConfirm={(preview) =>
+                  onConfirm={(preview) => {
+                    setConfirmedCompaniesHouseNumber(preview.companyNumber);
                     updateAnswers({
                       companyNumber: preview.companyNumber,
                       legalBusinessName: preview.companyName,
@@ -204,8 +210,8 @@ export function OnboardingForm({ draftStorageKey }: { draftStorageKey: string })
                       businessYearEndMonth: preview.accountingReferenceMonth
                         ? String(preview.accountingReferenceMonth)
                         : answers.businessYearEndMonth
-                    })
-                  }
+                    });
+                  }}
                 />
               ) : null}
             </div>

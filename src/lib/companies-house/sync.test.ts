@@ -1,6 +1,7 @@
 import { describe, expect, it } from "vitest";
 import type { BusinessProfile, Task } from "@prisma/client";
 import {
+  companiesHouseSnapshotUpdate,
   detectMaterialChanges,
   isUnambiguousFilingForTask,
   normaliseCompanyProfile,
@@ -99,6 +100,42 @@ describe("Companies House sync helpers", () => {
       { field: "legalBusinessName", current: "OLD NAME LIMITED", companiesHouse: "NEW NAME LIMITED" },
       { field: "companyRegisteredOn", current: "2026-01-01", companiesHouse: "2026-02-01" }
     ]);
+  });
+
+  it("builds a timestamped Companies House persistence patch from a verified preview", () => {
+    const preview = normaliseCompanyProfile({
+      company_name: "DEMO LIMITED",
+      company_number: "00001234",
+      company_status: "active",
+      type: "ltd",
+      accounts: {
+        accounting_reference_date: { day: "31", month: "12" },
+        next_due: "2027-10-15",
+        overdue: false
+      },
+      confirmation_statement: {
+        next_due: "2027-01-29",
+        overdue: false
+      }
+    });
+    const syncedAt = new Date("2026-07-18T10:00:00.000Z");
+
+    expect(companiesHouseSnapshotUpdate(preview, syncedAt)).toMatchObject({
+      companiesHouseConnectedAt: syncedAt,
+      companiesHouseLastSyncedAt: syncedAt,
+      companiesHouseSyncStatus: "connected",
+      companiesHouseSyncError: null,
+      companiesHouseCompanyStatus: "active",
+      companiesHouseCompanyType: "ltd",
+      companiesHouseAccountingReferenceDay: 31,
+      companiesHouseAccountingReferenceMonth: 12,
+      companiesHouseAccountsNextDue: new Date("2027-10-15T12:00:00.000Z"),
+      companiesHouseConfirmationNextDue: new Date("2027-01-29T12:00:00.000Z"),
+      companiesHouseSnapshot: expect.objectContaining({
+        companyName: "DEMO LIMITED",
+        companyNumber: "00001234"
+      })
+    });
   });
 
   it("detects material changes from the last confirmed snapshot", () => {
