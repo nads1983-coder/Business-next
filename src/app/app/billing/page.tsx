@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { format } from "date-fns";
 import { AlertCircle, CheckCircle2, ExternalLink } from "lucide-react";
-import { billingConfig, getCheckoutGateDiagnostics, isControlledBillingTestUser } from "@/config/billing";
+import { billingConfig, getCheckoutGateDiagnostics } from "@/config/billing";
 import { productConfig } from "@/config/product";
 import { getProductAccess } from "@/lib/billing";
 import { getPrisma } from "@/lib/prisma";
@@ -17,7 +17,6 @@ function dateText(date?: Date | null) {
 
 const diagnosticLabels = {
   billing_enabled: "Billing enabled",
-  owner_email: "Approved owner email",
   legal_owner: "Owner legal approval",
   legal_versions: "Accepted legal versions",
   stripe_mode: "Live Stripe mode",
@@ -42,7 +41,6 @@ export default async function BillingPage() {
   ]);
 
   const hasStripeCustomer = Boolean(subscription?.stripeCustomerId);
-  const canStartControlledCheckout = billingConfig.plan.checkoutEnabled && isControlledBillingTestUser(user.email);
   const checkoutGate = getCheckoutGateDiagnostics();
 
   return (
@@ -103,17 +101,15 @@ export default async function BillingPage() {
         </CardContent>
       </Card>
 
-      {!canStartControlledCheckout ? (
+      {!billingConfig.plan.checkoutEnabled ? (
         <Card>
           <CardHeader>
             <CardTitle className="flex items-center gap-2">
               <AlertCircle className="h-5 w-5 text-primary" aria-hidden="true" />
-              Paid Checkout is in controlled launch mode
+              Paid Checkout is not available yet
             </CardTitle>
             <CardDescription>
-              {billingConfig.plan.checkoutEnabled
-                ? "Checkout is configured but limited to the approved owner account until public launch is approved."
-                : billingConfig.plan.comingSoonWording}
+              {billingConfig.plan.comingSoonWording}
             </CardDescription>
           </CardHeader>
           <CardContent>

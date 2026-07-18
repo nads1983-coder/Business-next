@@ -23,8 +23,8 @@ const pricingFaqs = [
   ["Is Business Sorted connected to GOV.UK or HMRC?", "No. Business Sorted links to official sources where useful, but it is an independent product and is not affiliated with government."],
   ["Will it guarantee I avoid penalties?", "No. It helps you organise deadlines and tasks, but you are still responsible for checking your duties and getting professional advice when needed."],
   ["Can I cancel?", "Yes. The proposed monthly plan can be cancelled at any time through the secure billing portal. Cancellation stops future renewals and normally takes effect at the end of the current paid period."],
-  ["Can I pay annually?", "No. Annual billing is not offered in the initial controlled test."],
-  ["Is there a free trial?", "No. The initial controlled launch uses one monthly Stripe price with no free trial."]
+  ["Can I pay annually?", "No. Annual billing is not offered in the initial public launch."],
+  ["Is there a free trial?", "No. The public launch uses one monthly Stripe price with no free trial."]
 ] as const;
 
 export default async function PricingPage() {
@@ -94,7 +94,7 @@ export default async function PricingPage() {
             <div>
               <p className="text-3xl font-semibold">{billingConfig.plan.displayPrice}</p>
               <p className="mt-1 text-sm text-muted-foreground">
-                Monthly recurring billing. No annual plan and no free trial in this controlled test.
+                Monthly recurring billing. No annual plan and no free trial.
               </p>
             </div>
             <ul className="space-y-2 text-sm text-muted-foreground">
@@ -114,10 +114,10 @@ export default async function PricingPage() {
             <p className="text-sm text-muted-foreground">{billingConfig.plan.cancellationWording}</p>
             {billingConfig.plan.checkoutEnabled ? (
               <div className="space-y-3 rounded-md border bg-secondary/50 p-4 text-sm text-muted-foreground">
-                <p>Stripe Checkout is configured but limited to the approved owner account for the controlled launch.</p>
+                <p>Create an account or sign in, accept the required legal terms, then continue to secure Stripe Checkout.</p>
                 <Button asChild className="w-full">
                   <Link href="/app/billing">
-                    Owner billing <ArrowRight className="h-4 w-4" aria-hidden="true" />
+                    Continue to billing <ArrowRight className="h-4 w-4" aria-hidden="true" />
                   </Link>
                 </Button>
               </div>

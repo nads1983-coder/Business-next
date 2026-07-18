@@ -14,7 +14,6 @@ function resetBillingEnv() {
   delete process.env.BUSINESS_NEXT_APPROVED_APP_URL;
   delete process.env.NEXT_PUBLIC_APP_URL;
   delete process.env.NEXTAUTH_URL;
-  delete process.env.BUSINESS_NEXT_TEST_EMAIL;
   delete process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED;
   delete process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED;
   delete process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED;
@@ -30,7 +29,6 @@ function setLiveReadyEnv() {
   process.env.STRIPE_LIVE_PRICE_ID_MONTHLY = "price_live_monthly";
   process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://businesssorted.uk";
   process.env.VERCEL_ENV = "production";
-  process.env.BUSINESS_NEXT_TEST_EMAIL = "owner@example.com";
   process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED = "true";
   process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED = "1.0";
   process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED = "1.0";
@@ -43,7 +41,7 @@ describe("billing configuration", () => {
     resetBillingEnv();
   });
 
-  it("defines the controlled MVP offer as monthly GBP with no annual plan or trial", async () => {
+  it("defines the public launch offer as monthly GBP with no annual plan or trial", async () => {
     const { billingConfig, getApprovedPriceId } = await import("./billing");
 
     expect(billingConfig.plan.name).toBe("Business Sorted");
@@ -71,13 +69,10 @@ describe("billing configuration", () => {
     process.env.STRIPE_SECRET_KEY = "sk_test_ready";
     process.env.STRIPE_WEBHOOK_SECRET = "whsec_ready";
     process.env.STRIPE_TEST_PRICE_ID_MONTHLY = "price_test_monthly";
-    process.env.BUSINESS_NEXT_TEST_EMAIL = "tester@example.com";
 
-    const { isStripeTestModeReady, isControlledBillingTestUser } = await import("./billing");
+    const { isStripeTestModeReady } = await import("./billing");
 
     expect(isStripeTestModeReady()).toBe(true);
-    expect(isControlledBillingTestUser("tester@example.com")).toBe(true);
-    expect(isControlledBillingTestUser("ordinary@example.com")).toBe(false);
   });
 
   it("does not approve annual price IDs while annual billing is off", async () => {
@@ -167,14 +162,5 @@ describe("billing configuration", () => {
     expect(isStripeLiveModeReady()).toBe(false);
     expect(billingConfig.legal.requiresOwnerReview).toBe(true);
     expect(getCheckoutGateDiagnostics().failingCategories).toContain("legal_versions");
-  });
-
-  it("compares owner checkout email with trimming and casing normalization", async () => {
-    process.env.BUSINESS_NEXT_TEST_EMAIL = "  Owner@Example.com ";
-
-    const { isCheckoutOwnerEmail, isControlledBillingTestUser } = await import("./billing");
-    expect(isCheckoutOwnerEmail("owner@example.com")).toBe(true);
-    expect(isControlledBillingTestUser(" OWNER@example.com ")).toBe(true);
-    expect(isCheckoutOwnerEmail("someone@example.com")).toBe(false);
   });
 });

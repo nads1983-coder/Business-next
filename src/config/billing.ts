@@ -19,7 +19,6 @@ export type BillingPlan = {
   trialDays?: number;
   active: boolean;
   checkoutEnabled: boolean;
-  controlledTestEmail?: string;
   features: string[];
   cancellationWording: string;
   refundWording: string;
@@ -29,7 +28,6 @@ export type BillingPlan = {
 
 export type CheckoutGateCategory =
   | "billing_enabled"
-  | "owner_email"
   | "legal_owner"
   | "legal_versions"
   | "stripe_mode"
@@ -48,7 +46,6 @@ const checkoutExplicitlyEnabled = process.env.BUSINESS_NEXT_BILLING_ENABLED === 
 const vercelEnvironment = process.env.VERCEL_ENV;
 const stripeSecretKey = process.env.STRIPE_SECRET_KEY;
 const stripeWebhookSecret = process.env.STRIPE_WEBHOOK_SECRET;
-const controlledTestEmail = process.env.BUSINESS_NEXT_TEST_EMAIL?.trim().toLowerCase() || undefined;
 const configuredAppUrl =
   process.env.BUSINESS_NEXT_APPROVED_APP_URL ??
   process.env.NEXT_PUBLIC_APP_URL ??
@@ -76,8 +73,7 @@ const legalOwnerAccepted = legalOwnerFlagAccepted && legalVersionsAccepted;
 const sharedBillingConfigured = Boolean(
   checkoutExplicitlyEnabled &&
     monthlyStripePriceId &&
-    stripeWebhookSecret?.startsWith("whsec_") &&
-    controlledTestEmail
+    stripeWebhookSecret?.startsWith("whsec_")
 );
 
 const testBillingConfigured = Boolean(
@@ -105,7 +101,6 @@ export function getCheckoutGateDiagnostics() {
   const failingCategories: CheckoutGateCategory[] = [];
 
   if (!checkoutExplicitlyEnabled) failingCategories.push("billing_enabled");
-  if (!controlledTestEmail) failingCategories.push("owner_email");
   if (!stripeWebhookSecret?.startsWith("whsec_")) failingCategories.push("stripe_webhook");
   if (!monthlyStripePriceId) failingCategories.push("stripe_price");
   if (!stripeSecretKey?.startsWith(requestedMode === "live" ? "sk_live_" : "sk_test_")) {
@@ -161,7 +156,6 @@ export const billingConfig = {
     trialDays: undefined,
     active: true,
     checkoutEnabled: getCheckoutGateDiagnostics().ready,
-    controlledTestEmail,
     founderAccessName: "Founder access",
     features: [
       "Personalised Companies House, Self Assessment, Corporation Tax, VAT and PAYE task guidance",
@@ -176,8 +170,8 @@ export const billingConfig = {
       "Refund requests are reviewed through support. We will correct duplicate charges or service-access problems where Business Sorted or Stripe records show an error. This policy does not limit any statutory consumer rights you may have.",
     comingSoonWording:
       requestedMode === "live"
-        ? "Live billing is prepared but Checkout remains restricted to the approved owner email until the domain, legal acceptance, controlled purchase and final public activation are complete."
-        : "The paid plan is prepared for controlled Stripe test-mode verification only. Public Checkout remains unavailable until owner approval and live-payment activation."
+        ? "Live billing is prepared but Checkout is unavailable until the production billing configuration is complete."
+        : "The paid plan is prepared for Stripe test-mode verification only. Public Checkout requires live-payment activation."
   } satisfies BillingPlan,
   legal: {
     ...legalConfig,
@@ -211,15 +205,6 @@ export function isApprovedStripeProductId(productId?: string | null) {
 export function isCheckoutAvailable() {
   return billingConfig.plan.checkoutEnabled;
 }
-
-export function isControlledBillingTestUser(email?: string | null) {
-  return Boolean(
-    billingConfig.plan.controlledTestEmail &&
-      email?.trim().toLowerCase() === billingConfig.plan.controlledTestEmail
-  );
-}
-
-export const isCheckoutOwnerEmail = isControlledBillingTestUser;
 
 export function isStripeTestModeReady() {
   return testBillingConfigured;

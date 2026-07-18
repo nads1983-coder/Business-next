@@ -68,7 +68,6 @@ function resetBillingEnv() {
   delete process.env.STRIPE_LIVE_PRODUCT_ID;
   delete process.env.VERCEL_ENV;
   delete process.env.BUSINESS_NEXT_APPROVED_APP_URL;
-  delete process.env.BUSINESS_NEXT_TEST_EMAIL;
   delete process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED;
   delete process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED;
   delete process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED;
@@ -84,7 +83,6 @@ function setLiveBillingEnv() {
   process.env.STRIPE_LIVE_PRICE_ID_MONTHLY = "price_live_monthly";
   process.env.BUSINESS_NEXT_APPROVED_APP_URL = "https://businesssorted.uk";
   process.env.VERCEL_ENV = "production";
-  process.env.BUSINESS_NEXT_TEST_EMAIL = "owner@example.com";
   process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED = "true";
   process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED = "1.0";
   process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED = "1.0";
@@ -198,7 +196,6 @@ describe("Stripe billing helpers", () => {
   it("starts Checkout only with the configured test price ID", async () => {
     process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
     process.env.STRIPE_TEST_PRICE_ID_MONTHLY = "price_test_monthly";
-    process.env.BUSINESS_NEXT_TEST_EMAIL = "founder@example.com";
 
     const { createCheckoutSession } = await import("./stripe-billing");
 
@@ -215,10 +212,9 @@ describe("Stripe billing helpers", () => {
     );
   });
 
-  it("blocks configured Checkout for users outside the approved test account", async () => {
+  it("allows configured Checkout for ordinary users after public launch", async () => {
     process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
     process.env.STRIPE_TEST_PRICE_ID_MONTHLY = "price_test_monthly";
-    process.env.BUSINESS_NEXT_TEST_EMAIL = "approved@example.com";
 
     const { createCheckoutSession } = await import("./stripe-billing");
 
@@ -227,18 +223,22 @@ describe("Stripe billing helpers", () => {
         user: { id: "user_1", email: "ordinary@example.com" },
         interval: "monthly"
       })
-    ).rejects.toThrow("Checkout is limited to the approved owner account");
-    expect(mocks.stripeCheckoutCreate).not.toHaveBeenCalled();
+    ).resolves.toBe("https://checkout.stripe.test/session");
+    expect(mocks.stripeCheckoutCreate).toHaveBeenCalledWith(
+      expect.objectContaining({
+        line_items: [{ price: "price_test_monthly", quantity: 1 }]
+      })
+    );
   });
 
-  it("starts live Checkout only for the configured owner email and live monthly price", async () => {
+  it("starts live Checkout for any verified user with the approved live monthly price", async () => {
     setLiveBillingEnv();
 
     const { createCheckoutSession } = await import("./stripe-billing");
 
     await expect(
       createCheckoutSession({
-        user: { id: "user_1", email: "owner@example.com" },
+        user: { id: "user_1", email: "customer@example.com" },
         interval: "monthly"
       })
     ).resolves.toBe("https://checkout.stripe.test/session");
@@ -252,7 +252,6 @@ describe("Stripe billing helpers", () => {
   it("rejects annual Checkout when no annual test price is approved", async () => {
     process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
     process.env.STRIPE_TEST_PRICE_ID_MONTHLY = "price_test_monthly";
-    process.env.BUSINESS_NEXT_TEST_EMAIL = "founder@example.com";
 
     const { createCheckoutSession } = await import("./stripe-billing");
 

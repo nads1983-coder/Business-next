@@ -326,8 +326,6 @@ export async function runDeadlineReminders({
   let documentSent = 0;
   let documentSkipped = 0;
   let documentFailed = 0;
-  const testEmail = process.env.BUSINESS_NEXT_TEST_EMAIL;
-
   for (const task of tasks) {
     const decision = reminderDecisionForTask({ task, profile: task.business.profile, today });
     if (!decision.send) {
@@ -341,7 +339,7 @@ export async function runDeadlineReminders({
       continue;
     }
 
-    const targetEmail = testEmail || task.business.user.email;
+    const targetEmail = task.business.user.email;
     if (!targetEmail) {
       skipped += 1;
       continue;
@@ -430,7 +428,7 @@ export async function runDeadlineReminders({
       continue;
     }
 
-    const targetEmail = testEmail || document.business.user.email;
+    const targetEmail = document.business.user.email;
     if (!targetEmail) {
       documentSkipped += 1;
       continue;
@@ -506,7 +504,7 @@ export async function runDeadlineReminders({
     skipped,
     failed,
     dryRun,
-    testMode: Boolean(testEmail),
+    testMode: false,
     ruleVersion: reminderRuleVersion,
     documents: {
       eligible: documentEligible,

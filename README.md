@@ -61,18 +61,17 @@ Deploy on Vercel with managed PostgreSQL and these required environment variable
 - `EMAIL_FROM`
 - `EMAIL_REPLY_TO`
 
-Stage 3 billing supports a controlled Stripe launch gate. Checkout remains owner-restricted through `BUSINESS_NEXT_TEST_EMAIL` until public activation is explicitly approved.
+Billing uses live Stripe Checkout in production once the billing, legal, URL and Stripe mode gates are satisfied.
 
-For controlled test-mode billing, set these server-side variables:
+For local or preview test-mode billing, set these server-side variables:
 
 - `BUSINESS_NEXT_BILLING_ENABLED=true`
 - `BUSINESS_NEXT_STRIPE_MODE=test`
 - `STRIPE_SECRET_KEY` with an `sk_test_` value
 - `STRIPE_WEBHOOK_SECRET`
 - `STRIPE_TEST_PRICE_ID_MONTHLY`
-- `BUSINESS_NEXT_TEST_EMAIL` set to the single approved test purchaser email
 
-For controlled live billing, set these Production-only variables through Vercel's secure environment controls:
+For public live billing, set these Production-only variables through Vercel's secure environment controls:
 
 - `BUSINESS_NEXT_BILLING_ENABLED=true`
 - `BUSINESS_NEXT_STRIPE_MODE=live`
@@ -83,13 +82,12 @@ For controlled live billing, set these Production-only variables through Vercel'
 - `BUSINESS_NEXT_APPROVED_APP_URL=https://businesssorted.uk`
 - `NEXT_PUBLIC_APP_URL=https://businesssorted.uk`
 - `NEXTAUTH_URL=https://businesssorted.uk`
-- `BUSINESS_NEXT_TEST_EMAIL` set to the approved owner purchaser email
 - `BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED=true`
 - `BUSINESS_NEXT_TERMS_VERSION_ACCEPTED`
 - `BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED`
 - `BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED`
 
-The controlled MVP offer is Business Sorted at £9 per month in GBP, monthly recurring billing only, with no annual plan and no free trial. Do not set `STRIPE_TEST_PRICE_ID_ANNUAL` or create an annual price for this phase.
+The public launch offer is Business Sorted at £9 per month in GBP, monthly recurring billing only, with no annual plan and no free trial. Do not set `STRIPE_TEST_PRICE_ID_ANNUAL` or create an annual price for this phase.
 
 Do not mix test and live Stripe keys or price IDs. Do not expose secret keys in client-side code.
 
@@ -111,7 +109,7 @@ The Terms, Privacy Notice, Subscription Terms, Checkout legal gate and recorded 
 - the Vercel runtime environment is Production
 - `STRIPE_LIVE_PRICE_ID_MONTHLY` is present
 
-Live Stripe secrets, product IDs, price IDs and webhook secrets must be scoped to Vercel Production only. Preview must not have live Stripe variables capable of creating live charges, and the server-side live Checkout gate also requires `VERCEL_ENV=production`. During the controlled launch, Checkout is additionally restricted to the email in `BUSINESS_NEXT_TEST_EMAIL`.
+Live Stripe secrets, product IDs, price IDs and webhook secrets must be scoped to Vercel Production only. Preview must not have live Stripe variables capable of creating live charges, and the server-side live Checkout gate also requires `VERCEL_ENV=production`.
 
 The safe Checkout gate diagnostic is available at `/api/billing/checkout-gate`. It reports only gate category names and public plan facts. It must never return configured values, connection strings, Stripe IDs, email addresses, API keys or webhook secrets.
 

@@ -21,7 +21,7 @@ export function GET() {
         stripeMode: billingConfig.plan.stripeMode
       },
       legalVersion,
-      checkoutRestrictedToApprovedOwner: true
+      checkoutRestrictedToApprovedOwner: false
     },
     {
       headers: {
