@@ -216,12 +216,48 @@ describe("Companies House sync helpers", () => {
 
   it("only treats filing evidence as unambiguous when it is close to the task due date", () => {
     const task = {
+      createdAt: new Date("2026-07-01T12:00:00.000Z"),
       dueDate: new Date("2026-07-14T12:00:00.000Z"),
-      status: "DUE_SOON"
-    } as Pick<Task, "dueDate" | "status">;
+      status: "DUE_SOON",
+      history: []
+    } as Pick<Task, "createdAt" | "dueDate" | "status"> & { history: [] };
 
     expect(isUnambiguousFilingForTask(task, { category: "confirmation-statement", type: "CS01", date: "2026-07-15" })).toBeInstanceOf(Date);
     expect(isUnambiguousFilingForTask(task, { category: "confirmation-statement", type: "CS01", date: "2026-10-01" })).toBeNull();
+    expect(isUnambiguousFilingForTask(task, { category: "confirmation-statement", type: "CS01", date: "2026-06-30" })).toBeNull();
     expect(isUnambiguousFilingForTask({ ...task, status: "COMPLETED" }, { date: "2026-07-15" })).toBeNull();
+  });
+
+  it("suppresses repeated Companies House auto-completion after the same evidence is restored", () => {
+    const task = {
+      createdAt: new Date("2026-07-01T12:00:00.000Z"),
+      dueDate: new Date("2026-07-14T12:00:00.000Z"),
+      status: "COMING_UP",
+      history: [
+        {
+          action: "COMPLETED",
+          metadata: {
+            source: "companies_house",
+            evidenceKey: "00001234:confirmation-statement:CS01:2026-07-15:confirmation-statement"
+          }
+        },
+        { action: "RESTORED", metadata: null }
+      ]
+    } as Pick<Task, "createdAt" | "dueDate" | "status"> & {
+      history: Array<{ action: string; metadata: { source: string; evidenceKey: string } | null }>;
+    };
+
+    expect(
+      isUnambiguousFilingForTask(
+        task,
+        {
+          category: "confirmation-statement",
+          type: "CS01",
+          date: "2026-07-15",
+          description: "confirmation-statement"
+        },
+        "00001234"
+      )
+    ).toBeNull();
   });
 });

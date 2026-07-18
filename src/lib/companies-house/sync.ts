@@ -34,6 +34,11 @@ type ProfilePatchDecision = {
   useCompaniesHouseValues?: boolean;
 };
 
+type TaskHistoryEvidence = {
+  action: string;
+  metadata: Prisma.JsonValue | null;
+};
+
 const defaultCompaniesHouseSyncIntervalHours = 24;
 const defaultCompaniesHouseSyncBatchSize = 25;
 const maxCompaniesHouseSyncBatchSize = 50;
@@ -44,6 +49,8 @@ const companyTaskKeys = new Set([
   "limited-company-first-accounts",
   "limited-company-confirmation-statement"
 ]);
+
+const companiesHouseAutoCompletionRuleVersion = "companies-house-auto-complete-2026-07-18";
 
 function positiveInteger(value: string | undefined, fallback: number) {
   const parsed = Number.parseInt(value ?? "", 10);
@@ -286,39 +293,104 @@ export function detectMaterialChanges(
   ));
 }
 
-function relevantFiling(items: CompaniesHouseFilingItem[], kind: "accounts" | "confirmation") {
+function filingDate(filing: CompaniesHouseFilingItem) {
+  return toDate(filing.date);
+}
+
+function filingEvidenceKey(companyNumber: string, filing: CompaniesHouseFilingItem) {
+  return [
+    normaliseCompanyNumber(companyNumber),
+    filing.category ?? "unknown-category",
+    filing.type ?? "unknown-type",
+    filing.date ?? "unknown-date",
+    filing.description ?? "unknown-description"
+  ].join(":");
+}
+
+function filingKind(filing: CompaniesHouseFilingItem, kind: "accounts" | "confirmation") {
   const acceptedTypes =
     kind === "accounts"
       ? new Set(["AA", "AA01", "DCA"])
       : new Set(["CS01", "AR01"]);
-  return items.find((item) => {
-    const categoryMatch =
-      kind === "accounts"
-        ? item.category === "accounts"
-        : item.category === "confirmation-statement" || item.category === "annual-return";
-    return categoryMatch && !!item.date && (!item.type || acceptedTypes.has(item.type));
+  const categoryMatch =
+    kind === "accounts"
+      ? filing.category === "accounts"
+      : filing.category === "confirmation-statement" || filing.category === "annual-return";
+  return categoryMatch && !!filing.date && (!filing.type || acceptedTypes.has(filing.type));
+}
+
+function hasUsedCompaniesHouseEvidence(
+  task: { history: TaskHistoryEvidence[] },
+  evidenceKey: string
+) {
+  return task.history.some((item) => {
+    if (item.action !== "COMPLETED" || !item.metadata || typeof item.metadata !== "object" || Array.isArray(item.metadata)) {
+      return false;
+    }
+    const metadata = item.metadata as Record<string, unknown>;
+    return metadata.source === "companies_house" && metadata.evidenceKey === evidenceKey;
   });
 }
 
-export function isUnambiguousFilingForTask(task: Pick<Task, "dueDate" | "status">, filing: CompaniesHouseFilingItem) {
+export function isUnambiguousFilingForTask(
+  task: Pick<Task, "createdAt" | "dueDate" | "status"> & { history: TaskHistoryEvidence[] },
+  filing: CompaniesHouseFilingItem,
+  companyNumber = ""
+) {
   if (!task.dueDate || task.status === "COMPLETED" || task.status === "NOT_APPLICABLE" || !filing.date) {
     return null;
   }
 
-  const filedOn = toDate(filing.date);
+  const filedOn = filingDate(filing);
   if (!filedOn) return null;
+  if (filedOn < task.createdAt) return null;
 
   const latestReasonableFilingDate = addDays(task.dueDate, 45);
   if (filedOn > latestReasonableFilingDate) return null;
+  if (companyNumber && hasUsedCompaniesHouseEvidence(task, filingEvidenceKey(companyNumber, filing))) return null;
 
   return filedOn;
 }
 
-async function autoCompleteTask(task: Task, filing: CompaniesHouseFilingItem, userId: string | null | undefined) {
-  const filedOn = isUnambiguousFilingForTask(task, filing);
+function relevantFilingForTask(
+  task: Pick<Task, "createdAt" | "dueDate" | "status"> & { history: TaskHistoryEvidence[] },
+  items: CompaniesHouseFilingItem[],
+  kind: "accounts" | "confirmation",
+  companyNumber: string
+) {
+  return items
+    .filter((item) => filingKind(item, kind))
+    .map((item) => ({ item, filedOn: isUnambiguousFilingForTask(task, item, companyNumber) }))
+    .filter((entry): entry is { item: CompaniesHouseFilingItem; filedOn: Date } => !!entry.filedOn)
+    .sort((left, right) => {
+      const byDate = right.filedOn.getTime() - left.filedOn.getTime();
+      if (byDate !== 0) return byDate;
+      return filingEvidenceKey(companyNumber, left.item).localeCompare(filingEvidenceKey(companyNumber, right.item));
+    })[0]?.item ?? null;
+}
+
+async function autoCompleteTask({
+  task,
+  filing,
+  userId,
+  companyNumber,
+  checkedAt,
+  previousSnapshot,
+  nextSnapshot
+}: {
+  task: Task & { history: TaskHistoryEvidence[] };
+  filing: CompaniesHouseFilingItem;
+  userId: string | null | undefined;
+  companyNumber: string;
+  checkedAt: Date;
+  previousSnapshot: Prisma.JsonValue | null | undefined;
+  nextSnapshot: Prisma.InputJsonValue;
+}) {
+  const filedOn = isUnambiguousFilingForTask(task, filing, companyNumber);
   if (!filedOn) return false;
 
   const note = `Companies House shows that this filing was recorded on ${format(filedOn, "d MMMM yyyy")}, so this task was marked complete automatically.`;
+  const evidenceKey = filingEvidenceKey(companyNumber, filing);
   const prisma = getPrisma();
   await prisma.task.update({
     where: { id: task.id },
@@ -335,6 +407,18 @@ async function autoCompleteTask(task: Task, filing: CompaniesHouseFilingItem, us
             source: "companies_house",
             filingType: filing.type ?? null,
             filingCategory: filing.category ?? null,
+            filingDate: filing.date ?? null,
+            filingDescription: filing.description ?? null,
+            filingDescriptionValues: filing.description_values ?? null,
+            companyNumber: normaliseCompanyNumber(companyNumber),
+            evidenceKey,
+            detectedAt: checkedAt.toISOString(),
+            companiesHouseCheckedAt: checkedAt.toISOString(),
+            previousSourceValues: previousSnapshot ?? null,
+            newSourceValues: nextSnapshot,
+            ruleVersion: companiesHouseAutoCompletionRuleVersion,
+            sourceUrl: `https://find-and-update.company-information.service.gov.uk/company/${encodeURIComponent(normaliseCompanyNumber(companyNumber))}/filing-history`,
+            explanation: note,
             automated: true
           }
         }
@@ -344,7 +428,21 @@ async function autoCompleteTask(task: Task, filing: CompaniesHouseFilingItem, us
   return true;
 }
 
-async function autoCompleteEligibleTasks(businessId: string, companyNumber: string, userId?: string | null) {
+async function autoCompleteEligibleTasks({
+  businessId,
+  companyNumber,
+  userId,
+  checkedAt,
+  previousSnapshot,
+  nextSnapshot
+}: {
+  businessId: string;
+  companyNumber: string;
+  userId?: string | null;
+  checkedAt: Date;
+  previousSnapshot: Prisma.JsonValue | null | undefined;
+  nextSnapshot: Prisma.InputJsonValue;
+}) {
   let filingHistory;
   try {
     filingHistory = await lookupCompanyFilingHistory(companyNumber);
@@ -354,19 +452,20 @@ async function autoCompleteEligibleTasks(businessId: string, companyNumber: stri
   const items = filingHistory.items ?? [];
   const prisma = getPrisma();
   const tasks = await prisma.task.findMany({
-    where: { businessId, key: { in: Array.from(companyTaskKeys) } }
+    where: { businessId, key: { in: Array.from(companyTaskKeys) } },
+    include: { history: true }
   });
 
   let completed = 0;
-  const accounts = relevantFiling(items, "accounts");
-  const confirmation = relevantFiling(items, "confirmation");
 
   for (const task of tasks) {
+    const accounts = relevantFilingForTask(task, items, "accounts", companyNumber);
+    const confirmation = relevantFilingForTask(task, items, "confirmation", companyNumber);
     if (task.key === "limited-company-first-accounts" && accounts) {
-      if (await autoCompleteTask(task, accounts, userId)) completed += 1;
+      if (await autoCompleteTask({ task, filing: accounts, userId, companyNumber, checkedAt, previousSnapshot, nextSnapshot })) completed += 1;
     }
     if (task.key === "limited-company-confirmation-statement" && confirmation) {
-      if (await autoCompleteTask(task, confirmation, userId)) completed += 1;
+      if (await autoCompleteTask({ task, filing: confirmation, userId, companyNumber, checkedAt, previousSnapshot, nextSnapshot })) completed += 1;
     }
   }
 
@@ -395,6 +494,7 @@ export async function connectCompaniesHouseProfile({
   });
   if (!business?.profile) throw new Error("Business profile not found.");
 
+  const checkedAt = new Date();
   const preview = await previewCompany(companyNumber);
   const { update, conflicts } = profileUpdateFromPreview(business.profile, preview, { useCompaniesHouseValues });
   const updated = await prisma.business.update({
@@ -408,7 +508,14 @@ export async function connectCompaniesHouseProfile({
   });
 
   const taskSync = await syncBusinessTasks(business.id, userId);
-  const completed = await autoCompleteEligibleTasks(business.id, preview.companyNumber, userId);
+  const completed = await autoCompleteEligibleTasks({
+    businessId: business.id,
+    companyNumber: preview.companyNumber,
+    userId,
+    checkedAt,
+    previousSnapshot: business.profile.companiesHouseSnapshot,
+    nextSnapshot: preview.snapshot
+  });
 
   await prisma.auditLog.create({
     data: {
@@ -449,12 +556,20 @@ export async function syncCompaniesHouseForBusiness({
   }
 
   try {
+    const checkedAt = new Date();
     const preview = await previewCompany(profile.companyNumber);
     const materialChanges = detectMaterialChanges(profile.companiesHouseSnapshot, preview);
     const { update } = profileUpdateFromPreview(profile, preview, { useCompaniesHouseValues: false });
     await prisma.businessProfile.update({ where: { id: profile.id }, data: update });
     const taskSync = await syncBusinessTasks(business.id, userId);
-    const completed = await autoCompleteEligibleTasks(business.id, preview.companyNumber, userId);
+    const completed = await autoCompleteEligibleTasks({
+      businessId: business.id,
+      companyNumber: preview.companyNumber,
+      userId,
+      checkedAt,
+      previousSnapshot: profile.companiesHouseSnapshot,
+      nextSnapshot: preview.snapshot
+    });
 
     await prisma.auditLog.create({
       data: {
