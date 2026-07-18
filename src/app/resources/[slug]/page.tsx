@@ -12,7 +12,12 @@ import {
   GuideSection,
   OfficialSourceCard,
   PenaltyBox,
-  RelatedGuides
+  CommonMyths,
+  PreparationChecklist,
+  QuickAnswer,
+  RealisticExample,
+  RelatedGuides,
+  VideoExplainerBlock
 } from "@/components/resource-guide";
 import { PublicPage } from "@/components/public-page";
 
@@ -100,6 +105,8 @@ export default async function ResourceGuidePage({ params }: GuidePageProps) {
             when your situation needs it.
           </Callout>
 
+          <QuickAnswer guide={guide} />
+
           <GuideSection title="What it is">
             <p>{guide.sections[0]?.[1]}</p>
           </GuideSection>
@@ -108,11 +115,19 @@ export default async function ResourceGuidePage({ params }: GuidePageProps) {
             <p>{guide.appliesTo}</p>
           </GuideSection>
 
+          <GuideSection title="Why it matters">
+            <p>
+              This topic matters because missed filings, unclear records or late payments can create avoidable admin, penalties, interest or extra support work. A simple reminder is useful only when it is tied to the correct official source.
+            </p>
+          </GuideSection>
+
           <GuideSection title="When it applies">
             <p>{guide.whenApplies}</p>
           </GuideSection>
 
           <DeadlineBox deadlines={guide.deadlines} />
+          <PreparationChecklist guide={guide} />
+          <RealisticExample guide={guide} />
 
           <GuideSection title="Common mistakes">
             <ul className="space-y-3">
@@ -126,6 +141,7 @@ export default async function ResourceGuidePage({ params }: GuidePageProps) {
           </GuideSection>
 
           <PenaltyBox>{guide.penalties}</PenaltyBox>
+          <CommonMyths />
 
           {guide.sections
             .slice(1)
@@ -137,6 +153,7 @@ export default async function ResourceGuidePage({ params }: GuidePageProps) {
             ))}
 
           <FAQSection faqs={guide.faqs} />
+          <VideoExplainerBlock guide={guide} />
           <RelatedGuides slugs={guide.related} />
           <CTASection />
         </div>

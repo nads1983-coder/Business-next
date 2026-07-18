@@ -1,10 +1,13 @@
 import Link from "next/link";
 import type { Metadata } from "next";
 import { ArrowRight } from "lucide-react";
+import { comparisonResources, downloadableResources, topicClusters } from "@/content/authority";
 import { absoluteUrl, siteConfig } from "@/config/site";
 import { resourceGuides, resourcePath } from "@/content/resources";
 import { createPageMetadata, jsonLd } from "@/lib/seo";
+import { FilingTimeline } from "@/components/authority-visuals";
 import { Breadcrumbs } from "@/components/resource-guide";
+import { ResourceExplorer } from "@/components/resource-explorer";
 import { PublicPage } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -88,6 +91,52 @@ export default function ResourcesPage() {
               </CardContent>
             </Card>
           ))}
+        </section>
+
+        <section className="rounded-md border bg-secondary/20 p-4">
+          <FilingTimeline />
+        </section>
+
+        <ResourceExplorer guides={resourceGuides} comparisons={comparisonResources} />
+
+        <section className="grid gap-4 lg:grid-cols-[minmax(0,1fr)_360px]">
+          <div className="space-y-4">
+            <h2 className="text-2xl font-semibold tracking-normal">Topic clusters</h2>
+            <div className="grid gap-4 md:grid-cols-3">
+              {topicClusters.map((cluster) => (
+                <Card key={cluster.name}>
+                  <CardHeader>
+                    <CardTitle className="text-lg">{cluster.name}</CardTitle>
+                  </CardHeader>
+                  <CardContent className="space-y-3">
+                    <p className="text-sm leading-6 text-muted-foreground">{cluster.description}</p>
+                    <ul className="space-y-2 text-sm">
+                      {cluster.links.map((link) => (
+                        <li key={link.href}>
+                          <a href={link.href} className="text-primary underline">{link.label}</a>
+                        </li>
+                      ))}
+                    </ul>
+                  </CardContent>
+                </Card>
+              ))}
+            </div>
+          </div>
+          <aside className="rounded-md border bg-secondary/30 p-5">
+            <h2 className="text-2xl font-semibold tracking-normal">Printable resources</h2>
+            <p className="mt-3 text-sm leading-6 text-muted-foreground">
+              Download checklist PDFs generated from shared Business Sorted source data.
+            </p>
+            <ul className="mt-4 space-y-2 text-sm">
+              {downloadableResources.map((download) => (
+                <li key={download.slug}>
+                  <a href={`/downloads/${download.slug}`} className="text-primary underline">
+                    {download.title}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </aside>
         </section>
       </div>
     </PublicPage>

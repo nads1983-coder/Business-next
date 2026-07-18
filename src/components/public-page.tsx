@@ -5,6 +5,7 @@ import { MobileNav, type MobileNavItem } from "@/components/mobile-nav";
 export const publicNavItems: MobileNavItem[] = [
   { label: "Guides", href: "/guides" },
   { label: "Resources", href: "/resources" },
+  { label: "Tools", href: "/tools" },
   { label: "Deadlines", href: "/deadlines" },
   { label: "Checklists", href: "/checklists" },
   { label: "Pricing", href: "/pricing" },
@@ -19,6 +20,10 @@ export function PublicFooter() {
         <p className="max-w-3xl leading-6">{productConfig.tradingNameDisclosure}</p>
         <nav className="flex min-w-0 flex-wrap gap-3 sm:gap-4" aria-label="Legal">
           <Link href="/resources" className="hover:text-foreground">Resources</Link>
+          <Link href="/tools" className="hover:text-foreground">Tools</Link>
+          <Link href="/comparisons" className="hover:text-foreground">Comparisons</Link>
+          <Link href="/downloads" className="hover:text-foreground">Downloads</Link>
+          <Link href="/updates" className="hover:text-foreground">Updates</Link>
           <Link href="/about" className="hover:text-foreground">About</Link>
           <Link href="/editorial-policy" className="hover:text-foreground">Editorial policy</Link>
           <Link href="/how-we-research" className="hover:text-foreground">How we research</Link>

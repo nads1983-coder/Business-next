@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { AlertTriangle, ArrowRight, CalendarDays, ExternalLink, FileText, ShieldCheck } from "lucide-react";
+import { AlertTriangle, ArrowRight, CalendarDays, ExternalLink, FileText, ShieldCheck, Video } from "lucide-react";
 import { productConfig } from "@/config/product";
 import { resourcePath, resourceGuideMap, type ResourceGuide } from "@/content/resources";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +34,8 @@ export function Breadcrumbs({
 }
 
 export function GuideHeader({ guide }: { guide: ResourceGuide }) {
+  const sourceLabels = guide.officialSources.map((source) => source.label).join(", ");
+
   return (
     <header className="space-y-5">
       <Breadcrumbs
@@ -51,6 +53,20 @@ export function GuideHeader({ guide }: { guide: ResourceGuide }) {
       <p className="text-sm text-muted-foreground">
         Written by the Business Sorted editorial team · Reviewed {guide.reviewed}
       </p>
+      <dl className="grid gap-3 rounded-md border bg-secondary/30 p-4 text-sm sm:grid-cols-3">
+        <div>
+          <dt className="font-medium text-foreground">Last reviewed</dt>
+          <dd className="mt-1 text-muted-foreground">{guide.reviewed}</dd>
+        </div>
+        <div>
+          <dt className="font-medium text-foreground">Next review</dt>
+          <dd className="mt-1 text-muted-foreground">Within 3 months, or sooner if official guidance changes.</dd>
+        </div>
+        <div>
+          <dt className="font-medium text-foreground">Primary sources checked</dt>
+          <dd className="mt-1 text-muted-foreground">{sourceLabels}</dd>
+        </div>
+      </dl>
     </header>
   );
 }
@@ -99,6 +115,107 @@ export function DeadlineBox({ deadlines }: { deadlines: readonly string[] }) {
             </li>
           ))}
         </ul>
+      </CardContent>
+    </Card>
+  );
+}
+
+export function QuickAnswer({ guide }: { guide: ResourceGuide }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg">Need to know in 30 seconds</CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3 text-sm leading-6 text-muted-foreground">
+        <p>{guide.intro}</p>
+        <p>
+          The safest next step is to identify whether this applies to your business, check the official source and set a preparation reminder before the filing or payment date.
+        </p>
+      </CardContent>
+    </Card>
+  );
+}
+
+export function PreparationChecklist({ guide }: { guide: ResourceGuide }) {
+  const items = [
+    `Confirm whether this applies: ${guide.appliesTo}`,
+    "Open the relevant HMRC or Companies House account before acting.",
+    "Collect records, dates and reference numbers that support the filing.",
+    "Set a preparation reminder before the deadline, not only on the deadline.",
+    "Save submission receipts, payment references and source links."
+  ];
+
+  return (
+    <GuideSection title="Preparation checklist">
+      <ul className="space-y-3">
+        {items.map((item) => (
+          <li key={item} className="flex gap-2">
+            <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
+            <span>{item}</span>
+          </li>
+        ))}
+      </ul>
+    </GuideSection>
+  );
+}
+
+export function RealisticExample({ guide }: { guide: ResourceGuide }) {
+  return (
+    <GuideSection title="Realistic example">
+      <p>
+        A first-time owner reads the {guide.shortTitle} guide after receiving a reminder or official message. They check whether the duty applies, note the relevant date from the official account, gather the records listed in the source guidance and save evidence after filing or paying.
+      </p>
+      <p className="mt-3">
+        This example is deliberately general because actual dates and duties can change with your company history, tax registrations, accounting period and HMRC or Companies House notices.
+      </p>
+    </GuideSection>
+  );
+}
+
+export function CommonMyths() {
+  const myths = [
+    "If no money changed hands, no filings can be due.",
+    "Companies House and HMRC deadlines are always the same.",
+    "A reminder calendar can replace checking the official account.",
+    "Filing a form always means any related payment has also been made."
+  ];
+
+  return (
+    <GuideSection title="Common myths">
+      <ul className="space-y-3">
+        {myths.map((myth) => (
+          <li key={myth} className="flex gap-2">
+            <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
+            <span>{myth}</span>
+          </li>
+        ))}
+      </ul>
+    </GuideSection>
+  );
+}
+
+export function VideoExplainerBlock({ guide }: { guide: ResourceGuide }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="flex items-center gap-2 text-lg">
+          <Video className="h-5 w-5 text-primary" aria-hidden="true" />
+          Video explainer
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-3 text-sm leading-6 text-muted-foreground">
+        <p>
+          This guide is ready for a 2-minute explainer and 5-minute walkthrough. No video is embedded until Business Sorted has a reviewed transcript that matches the official-source guidance.
+        </p>
+        <details className="rounded-md border bg-background p-3">
+          <summary className="cursor-pointer font-medium text-foreground">Transcript outline</summary>
+          <ol className="mt-3 space-y-2">
+            <li>1. What {guide.shortTitle} means.</li>
+            <li>2. Who should check whether it applies.</li>
+            <li>3. Which dates and records to prepare.</li>
+            <li>4. Which official sources to open before acting.</li>
+          </ol>
+        </details>
       </CardContent>
     </Card>
   );

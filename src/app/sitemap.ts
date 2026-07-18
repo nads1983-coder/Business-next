@@ -1,4 +1,5 @@
 import type { MetadataRoute } from "next";
+import { comparisonPath, comparisonResources } from "@/content/authority";
 import { guideHubs, guides } from "@/content/seo-content";
 import { resourceGuides, resourcePath } from "@/content/resources";
 
@@ -15,6 +16,13 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...guides.map((guide) => `/guides/${guide.category}/${guide.slug}`),
     "/resources",
     ...resourceGuides.map((guide) => resourcePath(guide.slug)),
+    "/tools",
+    "/tools/deadline-calculators",
+    "/tools/decision-tools",
+    "/comparisons",
+    ...comparisonResources.map((comparison) => comparisonPath(comparison.slug)),
+    "/downloads",
+    "/updates",
     "/deadlines",
     "/checklists",
     "/glossary",
@@ -30,7 +38,15 @@ export default function sitemap(): MetadataRoute.Sitemap {
   return publicRoutes.map((path) => ({
     url: `${baseUrl}${path}`,
     lastModified: new Date(),
-    changeFrequency: path.startsWith("/guides") || path.startsWith("/resources") ? "monthly" : "weekly",
-    priority: path === "" ? 1 : path === "/resources" || path.startsWith("/guides") ? 0.8 : 0.7
+    changeFrequency:
+      path.startsWith("/guides") || path.startsWith("/resources") || path.startsWith("/comparisons")
+        ? "monthly"
+        : "weekly",
+    priority:
+      path === ""
+        ? 1
+        : path === "/resources" || path === "/tools" || path === "/comparisons" || path.startsWith("/guides")
+          ? 0.8
+          : 0.7
   }));
 }

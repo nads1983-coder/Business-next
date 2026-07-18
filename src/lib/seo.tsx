@@ -131,6 +131,11 @@ export function websiteSchema() {
     url: siteUrl,
     publisher: {
       "@id": `${siteUrl}/#organization`
+    },
+    potentialAction: {
+      "@type": "SearchAction",
+      target: `${siteUrl}/resources?query={search_term_string}`,
+      "query-input": "required name=search_term_string"
     }
   };
 }

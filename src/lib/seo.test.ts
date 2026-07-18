@@ -2,6 +2,7 @@ import { describe, expect, it } from "vitest";
 import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
 import { absoluteUrl, siteConfig } from "@/config/site";
+import { comparisonPath, comparisonResources, downloadableResources } from "@/content/authority";
 import { resourceGuides, resourcePath } from "@/content/resources";
 import { createPageMetadata, jsonLd } from "@/lib/seo";
 
@@ -36,6 +37,10 @@ describe("SEO configuration", () => {
     expect(urls).toContain("https://businesssorted.uk");
     expect(urls).toContain("https://businesssorted.uk/pricing");
     expect(urls).toContain("https://businesssorted.uk/resources");
+    expect(urls).toContain("https://businesssorted.uk/tools");
+    expect(urls).toContain("https://businesssorted.uk/comparisons");
+    expect(urls).toContain("https://businesssorted.uk/downloads");
+    expect(urls).toContain("https://businesssorted.uk/updates");
     expect(urls).toContain("https://businesssorted.uk/about");
     expect(urls).toContain("https://businesssorted.uk/editorial-policy");
     expect(urls).not.toContain("https://businesssorted.uk/login");
@@ -51,6 +56,14 @@ describe("SEO configuration", () => {
     }
   });
 
+  it("includes every comparison page in the XML sitemap", () => {
+    const urls = sitemap().map((entry) => entry.url);
+
+    for (const comparison of comparisonResources) {
+      expect(urls).toContain(absoluteUrl(comparisonPath(comparison.slug)));
+    }
+  });
+
   it("keeps resource guide titles, descriptions and related links unique and useful", () => {
     const titles = new Set(resourceGuides.map((guide) => guide.title));
     const descriptions = new Set(resourceGuides.map((guide) => guide.description));
@@ -63,6 +76,22 @@ describe("SEO configuration", () => {
       expect(guide.faqs.length).toBeGreaterThanOrEqual(2);
       expect(guide.officialSources.length).toBeGreaterThanOrEqual(2);
       expect(guide.h1).not.toBe(guide.title);
+    }
+  });
+
+  it("keeps authority resources source-led and downloadable", () => {
+    expect(comparisonResources.length).toBeGreaterThanOrEqual(3);
+    expect(downloadableResources.length).toBeGreaterThanOrEqual(3);
+
+    for (const comparison of comparisonResources) {
+      expect(comparison.sources.length).toBeGreaterThanOrEqual(2);
+      expect(comparison.rows.length).toBeGreaterThanOrEqual(3);
+      expect(comparison.related.length).toBeGreaterThanOrEqual(3);
+    }
+
+    for (const download of downloadableResources) {
+      expect(download.items.length).toBeGreaterThanOrEqual(5);
+      expect(download.sources.length).toBeGreaterThanOrEqual(2);
     }
   });
 

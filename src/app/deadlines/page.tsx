@@ -1,7 +1,9 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { guides, lastChecked } from "@/content/seo-content";
+import { downloadableResources } from "@/content/authority";
 import { JsonLd, breadcrumbSchema, pageMetadata } from "@/lib/seo";
+import { FilingTimeline } from "@/components/authority-visuals";
 import { PublicPage } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -57,6 +59,10 @@ export default function DeadlinesPage() {
         </table>
       </section>
 
+      <section className="mt-10 rounded-md border bg-secondary/20 p-4">
+        <FilingTimeline />
+      </section>
+
       <section className="mt-10 rounded-md border bg-secondary/30 p-5">
         <h2 className="text-2xl font-semibold tracking-normal">How Business Sorted uses deadlines</h2>
         <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
@@ -72,6 +78,16 @@ export default function DeadlinesPage() {
             </Button>
           ) : null}
         </div>
+      </section>
+
+      <section className="mt-10 rounded-md border p-5">
+        <h2 className="text-2xl font-semibold tracking-normal">Download a printable calendar</h2>
+        <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
+          Use the printable version to collect official due dates before adding them to your Business Sorted account.
+        </p>
+        <Button asChild variant="outline" className="mt-5">
+          <Link href={`/downloads/${downloadableResources[0].slug}`}>Download Business Deadline Calendar PDF</Link>
+        </Button>
       </section>
     </PublicPage>
   );

@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
+import { downloadableResources, downloadPath } from "@/content/authority";
 import { guides } from "@/content/seo-content";
 import { JsonLd, breadcrumbSchema, pageMetadata } from "@/lib/seo";
 import { PublicPage } from "@/components/public-page";
@@ -59,6 +60,22 @@ export default function ChecklistsPage() {
         <Button asChild className="mt-5">
           <Link href="/register">Build my personalised business checklist</Link>
         </Button>
+      </section>
+
+      <section className="mt-10 grid gap-4 md:grid-cols-3">
+        {downloadableResources.map((download) => (
+          <Card key={download.slug}>
+            <CardHeader>
+              <CardTitle className="text-base">{download.title}</CardTitle>
+            </CardHeader>
+            <CardContent className="space-y-4 text-sm leading-6 text-muted-foreground">
+              <p>{download.description}</p>
+              <Link href={downloadPath(download.slug)} className="font-medium text-primary underline">
+                Download printable PDF
+              </Link>
+            </CardContent>
+          </Card>
+        ))}
       </section>
     </PublicPage>
   );
