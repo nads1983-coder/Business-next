@@ -50,6 +50,7 @@ async function sendEmail({
     {
       from: emailConfig.from,
       to,
+      replyTo: emailConfig.replyTo,
       subject,
       html
     },

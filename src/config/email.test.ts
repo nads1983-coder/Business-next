@@ -5,6 +5,8 @@ function resetUrlEnv() {
   delete process.env.BUSINESS_NEXT_APPROVED_APP_URL;
   delete process.env.NEXT_PUBLIC_APP_URL;
   delete process.env.NEXTAUTH_URL;
+  delete process.env.EMAIL_FROM;
+  delete process.env.EMAIL_REPLY_TO;
 }
 
 describe("email and app URL configuration", () => {
@@ -31,5 +33,21 @@ describe("email and app URL configuration", () => {
     const { emailConfig } = await import("./email");
 
     expect(emailConfig.appUrl).toBe("https://files-mentioned-by-the-user-build-umber.vercel.app");
+  });
+
+  it("uses the configured BusinessSorted sender and support reply-to", async () => {
+    process.env.EMAIL_FROM = "BusinessSorted <support@businesssorted.uk>";
+    process.env.EMAIL_REPLY_TO = "support@businesssorted.uk";
+
+    const { emailConfig } = await import("./email");
+
+    expect(emailConfig.from).toBe("BusinessSorted <support@businesssorted.uk>");
+    expect(emailConfig.replyTo).toBe("support@businesssorted.uk");
+  });
+
+  it("defaults reply-to to the BusinessSorted support mailbox", async () => {
+    const { emailConfig } = await import("./email");
+
+    expect(emailConfig.replyTo).toBe("support@businesssorted.uk");
   });
 });

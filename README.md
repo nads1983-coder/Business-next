@@ -59,6 +59,7 @@ Deploy on Vercel with managed PostgreSQL and these required environment variable
 - `NEXT_PUBLIC_APP_URL`
 - `RESEND_API_KEY`
 - `EMAIL_FROM`
+- `EMAIL_REPLY_TO`
 
 Stage 3 billing supports a controlled Stripe launch gate. Checkout remains owner-restricted through `BUSINESS_NEXT_TEST_EMAIL` until public activation is explicitly approved.
 
