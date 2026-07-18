@@ -1,8 +1,8 @@
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { productConfig } from "@/config/product";
 import { AuthProvider } from "@/components/auth-provider";
+import { siteConfig } from "@/config/site";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -15,21 +15,35 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://businesssorted.uk"),
+  metadataBase: new URL(siteConfig.url),
   title: {
-    default: productConfig.name,
-    template: `%s | ${productConfig.name}`
+    default: `${siteConfig.name} | Plain-English UK Business Deadline Guidance`,
+    template: `%s | ${siteConfig.name}`
   },
-  description: productConfig.promise,
+  description: siteConfig.description,
   alternates: {
     canonical: "/"
   },
   openGraph: {
-    title: productConfig.name,
-    description: productConfig.promise,
-    url: "https://businesssorted.uk",
-    siteName: productConfig.name,
+    title: `${siteConfig.name} | Plain-English UK Business Deadline Guidance`,
+    description: siteConfig.description,
+    url: siteConfig.url,
+    siteName: siteConfig.name,
+    images: [
+      {
+        url: "/opengraph-image",
+        width: 1200,
+        height: 630,
+        alt: `${siteConfig.name} plain-English UK business deadline guidance`
+      }
+    ],
     type: "website"
+  },
+  twitter: {
+    card: "summary_large_image",
+    title: `${siteConfig.name} | Plain-English UK Business Deadline Guidance`,
+    description: siteConfig.description,
+    images: ["/opengraph-image"]
   }
 };
 

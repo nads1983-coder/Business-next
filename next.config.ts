@@ -3,6 +3,16 @@ import type { NextConfig } from "next";
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   reactStrictMode: true,
+  async redirects() {
+    return [
+      {
+        source: "/:path*",
+        has: [{ type: "host", value: "www.businesssorted.uk" }],
+        destination: "https://businesssorted.uk/:path*",
+        permanent: true
+      }
+    ];
+  },
   async headers() {
     return [
       {

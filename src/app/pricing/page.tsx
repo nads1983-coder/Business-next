@@ -1,8 +1,11 @@
 import Link from "next/link";
+import type { Metadata } from "next";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { billingConfig } from "@/config/billing";
 import { productConfig } from "@/config/product";
+import { absoluteUrl, siteConfig } from "@/config/site";
 import { analyticsEvents, recordAnalyticsEvent } from "@/lib/analytics";
+import { createPageMetadata, jsonLd } from "@/lib/seo";
 import { PublicPage } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -10,19 +13,66 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 export const dynamic = "force-dynamic";
 
+export const metadata: Metadata = createPageMetadata({
+  title: "Business Sorted Pricing",
+  description:
+    "Review Business Sorted pricing for first-time UK founders: plain-English business deadline guidance prepared for a controlled £9 monthly Stripe launch.",
+  path: "/pricing"
+});
+
+const pricingFaqs = [
+  ["Is Business Sorted accounting advice?", productConfig.disclaimer],
+  ["Is Business Sorted connected to GOV.UK or HMRC?", "No. Business Sorted links to official sources where useful, but it is an independent product and is not affiliated with government."],
+  ["Will it guarantee I avoid penalties?", "No. It helps you organise deadlines and tasks, but you are still responsible for checking your duties and getting professional advice when needed."],
+  ["Can I cancel?", "Yes. The proposed monthly plan can be cancelled at any time through the secure billing portal. Cancellation stops future renewals and normally takes effect at the end of the current paid period."],
+  ["Can I pay annually?", "No. Annual billing is not offered in the initial controlled test."],
+  ["Is there a free trial?", "No. The initial controlled launch uses one monthly Stripe price with no free trial."]
+] as const;
+
 export default async function PricingPage() {
   recordAnalyticsEvent({
     name: analyticsEvents.pricingPageViewed,
     path: "/pricing"
   }).catch(() => undefined);
 
+  const structuredData = [
+    {
+      "@context": "https://schema.org",
+      "@type": "WebPage",
+      "@id": `${absoluteUrl("/pricing")}#webpage`,
+      url: absoluteUrl("/pricing"),
+      name: "Business Sorted Pricing",
+      description:
+        "Pricing information for Business Sorted plain-English UK business deadline guidance.",
+      isPartOf: {
+        "@id": `${siteConfig.url}/#website`
+      }
+    },
+    {
+      "@context": "https://schema.org",
+      "@type": "FAQPage",
+      mainEntity: pricingFaqs.map(([question, answer]) => ({
+        "@type": "Question",
+        name: question,
+        acceptedAnswer: {
+          "@type": "Answer",
+          text: answer
+        }
+      }))
+    }
+  ];
+
   return (
     <PublicPage>
+      <script
+        type="application/ld+json"
+        dangerouslySetInnerHTML={jsonLd(structuredData)}
+      />
       <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
         <section>
           <Badge variant="calm">Pricing</Badge>
           <h1 className="mt-4 text-4xl font-semibold tracking-normal">
-            Start with calm, plain-English business deadlines.
+            Business Sorted pricing for plain-English UK business deadlines.
           </h1>
           <p className="mt-4 max-w-2xl text-lg leading-8 text-muted-foreground">
             {productConfig.promise} Business Sorted is built for first-time UK founders who want a clear next step,
@@ -88,14 +138,7 @@ export default async function PricingPage() {
       </div>
 
       <section className="mt-10 grid gap-4 md:grid-cols-2">
-        {[
-          ["Is Business Sorted accounting advice?", productConfig.disclaimer],
-          ["Is Business Sorted connected to GOV.UK or HMRC?", "No. Business Sorted links to official sources where useful, but it is an independent product and is not affiliated with government."],
-          ["Will it guarantee I avoid penalties?", "No. It helps you organise deadlines and tasks, but you are still responsible for checking your duties and getting professional advice when needed."],
-          ["Can I cancel?", "Yes. The proposed monthly plan can be cancelled at any time through the secure billing portal. Cancellation stops future renewals and normally takes effect at the end of the current paid period."],
-          ["Can I pay annually?", "No. Annual billing is not offered in the initial controlled test."],
-          ["Is there a free trial?", "No. The initial controlled launch uses one monthly Stripe price with no free trial."]
-        ].map(([question, answer]) => (
+        {pricingFaqs.map(([question, answer]) => (
           <Card key={question}>
             <CardHeader>
               <CardTitle className="text-base">{question}</CardTitle>
