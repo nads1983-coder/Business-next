@@ -1,5 +1,9 @@
 import { describe, expect, it } from "vitest";
 import {
+  businessComplianceHubCategories,
+  businessComplianceHubFeaturedGuideSlugs,
+  businessComplianceHubPathways,
+  getBusinessComplianceHubFeaturedArticles,
   getResourceArticle,
   getIndexableResourceArticles,
   resourceArticles,
@@ -41,6 +45,47 @@ describe("resource centre content", () => {
       "dormant-companies",
       "directors-first-year"
     ]);
+  });
+
+  it("models the Business Compliance Hub without publishing thin future category pages", () => {
+    expect(businessComplianceHubCategories.map((category) => category.slug)).toEqual([
+      "companies-house",
+      "corporation-tax",
+      "vat",
+      "paye",
+      "directors",
+      "starting-a-limited-company",
+      "running-a-limited-company"
+    ]);
+
+    const liveCategory = businessComplianceHubCategories.find((category) => category.slug === "companies-house");
+    expect(liveCategory).toEqual(
+      expect.objectContaining({
+        status: "live",
+        destination: "/resources/companies-house",
+        ctaLabel: "Explore Companies House guides"
+      })
+    );
+
+    for (const category of businessComplianceHubCategories.filter((item) => item.status === "coming-soon")) {
+      expect(category).not.toHaveProperty("destination");
+      expect(Object.keys(resourceCategories)).not.toContain(category.slug);
+    }
+  });
+
+  it("keeps hub featured guides and pathways backed by published articles", () => {
+    expect(getBusinessComplianceHubFeaturedArticles()).toHaveLength(6);
+
+    for (const slug of businessComplianceHubFeaturedGuideSlugs) {
+      expect(getResourceArticle(slug)?.status).toBe("published");
+    }
+
+    for (const pathway of businessComplianceHubPathways) {
+      expect(pathway.links.length).toBeGreaterThanOrEqual(3);
+      for (const link of pathway.links) {
+        expect(getResourceArticle(link.slug)?.status).toBe("published");
+      }
+    }
   });
 
   it("keeps article relationships and resource internal links resolvable", () => {

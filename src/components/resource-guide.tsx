@@ -10,7 +10,7 @@ import {
   type ResourceArticle
 } from "@/content/resources";
 import { ResourceTrackedLink } from "@/components/resource-analytics";
-import { resourceAnalyticsEvents } from "@/lib/resource-analytics";
+import { resourceAnalyticsEvents, type ResourceAnalyticsEventName, type ResourceAnalyticsProps } from "@/lib/resource-analytics";
 import { productConfig } from "@/config/product";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -43,7 +43,17 @@ export function Breadcrumbs({
   );
 }
 
-export function ResourceCard({ article }: { article: ResourceArticle }) {
+export function ResourceCard({
+  article,
+  trackingEventName,
+  trackingProps,
+  linkLocationPrefix = "resource_card"
+}: {
+  article: ResourceArticle;
+  trackingEventName?: ResourceAnalyticsEventName;
+  trackingProps?: ResourceAnalyticsProps;
+  linkLocationPrefix?: string;
+}) {
   return (
     <Card>
       <CardHeader>
@@ -51,10 +61,12 @@ export function ResourceCard({ article }: { article: ResourceArticle }) {
           <ResourceTrackedLink
             href={resourcePath(article.slug)}
             className="hover:text-primary"
+            eventName={trackingEventName}
             eventProps={{
+              ...trackingProps,
               target_slug: article.slug,
               article_category: article.category,
-              link_location: "resource_card_title"
+              link_location: `${linkLocationPrefix}_title`
             }}
           >
             {article.title}
@@ -69,10 +81,12 @@ export function ResourceCard({ article }: { article: ResourceArticle }) {
         <ResourceTrackedLink
           href={resourcePath(article.slug)}
           className="inline-flex items-center gap-2 text-sm font-medium text-primary underline"
+          eventName={trackingEventName}
           eventProps={{
+            ...trackingProps,
             target_slug: article.slug,
             article_category: article.category,
-            link_location: "resource_card_read_guide"
+            link_location: `${linkLocationPrefix}_read_guide`
           }}
         >
           Read guide <ArrowRight className="h-4 w-4" aria-hidden="true" />

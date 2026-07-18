@@ -1,4 +1,5 @@
 import { describe, expect, it } from "vitest";
+import { metadata as resourcesMetadata } from "@/app/resources/page";
 import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
 import { absoluteUrl, siteConfig } from "@/config/site";
@@ -65,6 +66,28 @@ describe("SEO configuration", () => {
         new Date(`${article.lastReviewedDate}T00:00:00Z`)
       );
     }
+
+    for (const plannedCategory of [
+      "/resources/corporation-tax",
+      "/resources/vat",
+      "/resources/paye",
+      "/resources/directors",
+      "/resources/starting-a-limited-company",
+      "/resources/running-a-limited-company"
+    ]) {
+      expect(urls).not.toContain(absoluteUrl(plannedCategory));
+    }
+  });
+
+  it("positions the resources page as the Business Compliance Hub", () => {
+    expect(resourcesMetadata.title).toBe("UK Business Compliance Hub");
+    expect(resourcesMetadata.description).toContain("Practical UK business compliance guides");
+    expect(resourcesMetadata.alternates?.canonical).toBe("https://businesssorted.uk/resources");
+    expect(resourcesMetadata.openGraph?.url).toBe("https://businesssorted.uk/resources");
+    expect(resourcesMetadata.openGraph?.title).toBe("UK Business Compliance Hub");
+    expect(`${resourcesMetadata.description} ${resourcesMetadata.openGraph?.description}`).not.toMatch(
+      /localhost|vercel\.app/i
+    );
   });
 
   it("includes every comparison page in the XML sitemap", () => {

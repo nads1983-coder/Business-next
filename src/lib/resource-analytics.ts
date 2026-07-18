@@ -1,4 +1,9 @@
 export const resourceAnalyticsEvents = {
+  complianceHubViewed: "compliance_hub_viewed",
+  complianceHubCategoryClicked: "compliance_hub_category_clicked",
+  complianceHubFeaturedGuideClicked: "compliance_hub_featured_guide_clicked",
+  complianceHubPathwayClicked: "compliance_hub_pathway_clicked",
+  complianceHubProductCtaClicked: "compliance_hub_product_cta_clicked",
   resourceViewed: "resource_viewed",
   resourceCategoryViewed: "resource_category_viewed",
   resourceArticleViewed: "resource_article_viewed",

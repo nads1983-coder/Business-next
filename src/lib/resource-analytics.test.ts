@@ -9,6 +9,11 @@ import {
 describe("resource analytics taxonomy", () => {
   it("uses stable privacy-safe event names", () => {
     expect(Object.values(resourceAnalyticsEvents)).toEqual([
+      "compliance_hub_viewed",
+      "compliance_hub_category_clicked",
+      "compliance_hub_featured_guide_clicked",
+      "compliance_hub_pathway_clicked",
+      "compliance_hub_product_cta_clicked",
       "resource_viewed",
       "resource_category_viewed",
       "resource_article_viewed",

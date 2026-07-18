@@ -14,6 +14,107 @@ export const resourceCategories = {
   }
 } as const;
 
+export const businessComplianceHubCategories = [
+  {
+    slug: "companies-house",
+    analyticsId: "companies_house",
+    name: "Companies House",
+    description:
+      "Confirmation statements, company accounts, register updates, authentication codes and first-year company filings.",
+    status: "live",
+    destination: "/resources/companies-house",
+    ctaLabel: "Explore Companies House guides",
+    featuredGuideSlug: "companies-house-deadlines"
+  },
+  {
+    slug: "corporation-tax",
+    analyticsId: "corporation_tax",
+    name: "Corporation Tax",
+    description:
+      "Future guides will cover Corporation Tax registration, accounting periods, payment timing and filing responsibilities.",
+    status: "coming-soon"
+  },
+  {
+    slug: "vat",
+    analyticsId: "vat",
+    name: "VAT",
+    description:
+      "Future guides will explain VAT registration, returns, payment dates and practical record-keeping points.",
+    status: "coming-soon"
+  },
+  {
+    slug: "paye",
+    analyticsId: "paye",
+    name: "PAYE",
+    description:
+      "Future guides will cover payroll registration, PAYE reporting dates and employer responsibilities.",
+    status: "coming-soon"
+  },
+  {
+    slug: "directors",
+    analyticsId: "directors",
+    name: "Directors",
+    description:
+      "Future guides will bring together director duties, company records and recurring responsibilities.",
+    status: "coming-soon"
+  },
+  {
+    slug: "starting-a-limited-company",
+    analyticsId: "starting_limited_company",
+    name: "Starting a Limited Company",
+    description:
+      "Future guides will support the first practical steps after incorporation, from records to early deadlines.",
+    status: "coming-soon"
+  },
+  {
+    slug: "running-a-limited-company",
+    analyticsId: "running_limited_company",
+    name: "Running a Limited Company",
+    description:
+      "Future guides will cover recurring admin, filing routines and keeping business responsibilities organised.",
+    status: "coming-soon"
+  }
+] as const;
+
+export const businessComplianceHubFeaturedGuideSlugs = [
+  "confirmation-statement-due",
+  "companies-house-deadlines",
+  "annual-accounts-guide",
+  "first-company-accounts-deadline",
+  "directors-responsibilities-checklist",
+  "first-year-companies-house-checklist"
+] as const;
+
+export const businessComplianceHubPathways = [
+  {
+    title: "I have just formed a company",
+    description: "Start with the early Companies House dates and records that can surprise first-time directors.",
+    links: [
+      { label: "First-year Companies House checklist", slug: "first-year-companies-house-checklist" },
+      { label: "First accounts deadline", slug: "first-company-accounts-deadline" },
+      { label: "Confirmation statement guidance", slug: "confirmation-statement-guide" }
+    ]
+  },
+  {
+    title: "I am checking an upcoming deadline",
+    description: "Use these guides when you need to understand what is due and where to check the official date.",
+    links: [
+      { label: "Companies House deadlines explained", slug: "companies-house-deadlines" },
+      { label: "Annual accounts deadline", slug: "annual-accounts-guide" },
+      { label: "Confirmation statement due date", slug: "confirmation-statement-due" }
+    ]
+  },
+  {
+    title: "I need to update company information",
+    description: "Find practical guidance for keeping company register details and access information up to date.",
+    links: [
+      { label: "Registered office address", slug: "change-registered-office-address" },
+      { label: "Director details", slug: "change-company-director-details" },
+      { label: "Authentication code guidance", slug: "get-replace-company-authentication-code" }
+    ]
+  }
+] as const;
+
 export const resourceGroups = {
   "confirmation-statements": {
     label: "Confirmation statements",
@@ -2337,6 +2438,12 @@ export function getIndexableResourceArticles() {
 
 export function getFeaturedResourceArticles() {
   return getIndexableResourceArticles().filter((article) => article.featured);
+}
+
+export function getBusinessComplianceHubFeaturedArticles() {
+  return businessComplianceHubFeaturedGuideSlugs
+    .map((slug) => resourceArticleMap.get(slug))
+    .filter((article): article is ResourceArticle => article !== undefined && article.status === "published");
 }
 
 export function getResourceArticlesByCategory(category: ResourceCategory) {

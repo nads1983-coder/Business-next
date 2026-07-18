@@ -6,7 +6,12 @@ Business Sorted uses Plausible on public pages and internal database analytics f
 
 | Event | When it fires | Safe properties |
 | --- | --- | --- |
-| `resource_viewed` | `/resources` loads | `link_location` |
+| `compliance_hub_viewed` | `/resources` Business Compliance Hub loads | `link_location` |
+| `compliance_hub_category_clicked` | the live Companies House category card is clicked | `category`, `destination_type`, `link_location` |
+| `compliance_hub_featured_guide_clicked` | a featured hub guide link is clicked | `category`, `guide_slug`, `link_location` |
+| `compliance_hub_pathway_clicked` | a "Where to begin" pathway guide is clicked | `category`, `guide_slug`, `link_location` |
+| `compliance_hub_product_cta_clicked` | a hub product CTA is clicked | `cta_variant`, `destination_type`, `link_location` |
+| `resource_viewed` | a general resource index view, if reused outside the compliance hub | `link_location` |
 | `resource_category_viewed` | a resource category page loads | `category` |
 | `resource_article_viewed` | a resource article loads | `article_slug`, `article_category`, `article_group` |
 | `resource_cta_clicked` | an end-of-article CTA is clicked | `article_slug`, `article_category`, `cta_variant`, `destination_type`, `link_location` |
