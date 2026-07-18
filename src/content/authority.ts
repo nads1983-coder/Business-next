@@ -95,9 +95,9 @@ export const comparisonResources: readonly ComparisonResource[] = [
       "A sole trader can still have tax, VAT or PAYE duties depending on the business."
     ],
     related: [
-      { label: "Registering a limited company", href: resourcePath("registering-a-limited-company") },
-      { label: "Self Assessment guide", href: resourcePath("self-assessment-guide") },
-      { label: "Corporation Tax guide", href: resourcePath("corporation-tax-guide") }
+      { label: "What to do after registering a limited company", href: "/guides/limited-companies/what-to-do-after-registering-a-limited-company" },
+      { label: "Sole trader tax and record keeping", href: "/guides/sole-traders/sole-trader-tax-and-record-keeping-checklist" },
+      { label: "Corporation Tax deadlines", href: "/guides/hmrc/corporation-tax-deadlines-for-limited-companies" }
     ],
     sources: [officialSources.companiesHouse, officialSources.hmrc, officialSources.selfAssessment]
   },
@@ -145,7 +145,7 @@ export const comparisonResources: readonly ComparisonResource[] = [
     related: [
       { label: "Annual accounts guide", href: resourcePath("annual-accounts-guide") },
       { label: "Confirmation statement guide", href: resourcePath("confirmation-statement-guide") },
-      { label: "Companies House guide", href: resourcePath("companies-house-guide") }
+      { label: "Companies House resources", href: "/resources/companies-house" }
     ],
     sources: [officialSources.companiesHouse, officialSources.confirmationStatement]
   },
@@ -191,9 +191,9 @@ export const comparisonResources: readonly ComparisonResource[] = [
       "Registering a company does not remove personal tax return responsibilities."
     ],
     related: [
-      { label: "PAYE guide", href: resourcePath("paye-guide") },
-      { label: "Self Assessment guide", href: resourcePath("self-assessment-guide") },
-      { label: "Business deadline calendar", href: resourcePath("business-deadline-calendar") }
+      { label: "Small-business administration checklist", href: "/guides/business-admin/small-business-administration-checklist" },
+      { label: "Sole trader tax and record keeping", href: "/guides/sole-traders/sole-trader-tax-and-record-keeping-checklist" },
+      { label: "How to avoid missing deadlines", href: "/guides/business-admin/how-to-avoid-missing-companies-house-and-hmrc-deadlines" }
     ],
     sources: [officialSources.paye, officialSources.selfAssessment, officialSources.hmrc]
   }
@@ -213,16 +213,16 @@ export const topicClusters = [
     description: "Choosing a structure, registering a company and setting up first records.",
     links: [
       { label: "Company vs sole trader", href: comparisonPath("limited-company-vs-sole-trader") },
-      { label: "Registering a company", href: resourcePath("registering-a-limited-company") },
-      { label: "Companies House", href: resourcePath("companies-house-guide") }
+      { label: "Registering a company", href: "/guides/limited-companies/what-to-do-after-registering-a-limited-company" },
+      { label: "Companies House", href: "/resources/companies-house" }
     ]
   },
   {
     name: "Tax and payroll",
     description: "Corporation Tax, VAT, PAYE and Self Assessment reminders.",
     links: [
-      { label: "Corporation Tax", href: resourcePath("corporation-tax-guide") },
-      { label: "VAT", href: resourcePath("vat-guide") },
+      { label: "Corporation Tax", href: "/guides/hmrc/corporation-tax-deadlines-for-limited-companies" },
+      { label: "Business admin checklist", href: "/guides/business-admin/small-business-administration-checklist" },
       { label: "PAYE vs Self Assessment", href: comparisonPath("paye-vs-self-assessment") }
     ]
   },
@@ -232,7 +232,7 @@ export const topicClusters = [
     links: [
       { label: "Accounts vs confirmation statement", href: comparisonPath("annual-accounts-vs-confirmation-statement") },
       { label: "Annual accounts", href: resourcePath("annual-accounts-guide") },
-      { label: "Dormant company", href: resourcePath("dormant-company-guide") }
+      { label: "Confirmation statement", href: resourcePath("confirmation-statement-guide") }
     ]
   }
 ] as const;

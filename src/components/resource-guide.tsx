@@ -1,7 +1,15 @@
 import Link from "next/link";
-import { AlertTriangle, ArrowRight, CalendarDays, ExternalLink, FileText, ShieldCheck, Video } from "lucide-react";
+import { ArrowRight, CalendarDays, ExternalLink, FileText, ShieldCheck } from "lucide-react";
+import {
+  formatResourceDate,
+  getRelatedResourceArticles,
+  resourceCategories,
+  resourceCategoryPath,
+  resourceCtaVariants,
+  resourcePath,
+  type ResourceArticle
+} from "@/content/resources";
 import { productConfig } from "@/config/product";
-import { resourcePath, resourceGuideMap, type ResourceGuide } from "@/content/resources";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -33,8 +41,34 @@ export function Breadcrumbs({
   );
 }
 
-export function GuideHeader({ guide }: { guide: ResourceGuide }) {
-  const sourceLabels = guide.officialSources.map((source) => source.label).join(", ");
+export function ResourceCard({ article }: { article: ResourceArticle }) {
+  return (
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg">
+          <Link href={resourcePath(article.slug)} className="hover:text-primary">
+            {article.title}
+          </Link>
+        </CardTitle>
+      </CardHeader>
+      <CardContent className="space-y-4">
+        <p className="text-sm leading-6 text-muted-foreground">{article.description}</p>
+        <p className="text-xs font-medium uppercase tracking-normal text-muted-foreground">
+          Reviewed {formatResourceDate(article.lastReviewedDate)} · {article.estimatedReadingTime} min read
+        </p>
+        <Link
+          href={resourcePath(article.slug)}
+          className="inline-flex items-center gap-2 text-sm font-medium text-primary underline"
+        >
+          Read guide <ArrowRight className="h-4 w-4" aria-hidden="true" />
+        </Link>
+      </CardContent>
+    </Card>
+  );
+}
+
+export function ArticleHeader({ article }: { article: ResourceArticle }) {
+  const category = resourceCategories[article.category];
 
   return (
     <header className="space-y-5">
@@ -42,76 +76,62 @@ export function GuideHeader({ guide }: { guide: ResourceGuide }) {
         items={[
           { label: "Home", href: "/" },
           { label: "Resources", href: "/resources" },
-          { label: guide.shortTitle }
+          { label: category.label, href: resourceCategoryPath(article.category) },
+          { label: article.title }
         ]}
       />
       <div>
-        <Badge variant="calm">Business deadline guide</Badge>
-        <h1 className="mt-4 text-4xl font-semibold tracking-normal">{guide.h1}</h1>
-        <p className="mt-4 max-w-3xl text-lg leading-8 text-muted-foreground">{guide.intro}</p>
+        <Badge variant="calm">{category.label} guide</Badge>
+        <h1 className="mt-4 text-4xl font-semibold tracking-normal">{article.title}</h1>
+        <p className="mt-4 max-w-3xl text-lg leading-8 text-muted-foreground">{article.summary}</p>
       </div>
-      <p className="text-sm text-muted-foreground">
-        Written by the Business Sorted editorial team · Reviewed {guide.reviewed}
-      </p>
       <dl className="grid gap-3 rounded-md border bg-secondary/30 p-4 text-sm sm:grid-cols-3">
         <div>
           <dt className="font-medium text-foreground">Last reviewed</dt>
-          <dd className="mt-1 text-muted-foreground">{guide.reviewed}</dd>
+          <dd className="mt-1 text-muted-foreground">{formatResourceDate(article.lastReviewedDate)}</dd>
         </div>
         <div>
-          <dt className="font-medium text-foreground">Next review</dt>
-          <dd className="mt-1 text-muted-foreground">Within 3 months, or sooner if official guidance changes.</dd>
+          <dt className="font-medium text-foreground">Sources checked</dt>
+          <dd className="mt-1 text-muted-foreground">{formatResourceDate(article.sourceCheckedDate)}</dd>
         </div>
         <div>
-          <dt className="font-medium text-foreground">Primary sources checked</dt>
-          <dd className="mt-1 text-muted-foreground">{sourceLabels}</dd>
+          <dt className="font-medium text-foreground">Reading time</dt>
+          <dd className="mt-1 text-muted-foreground">{article.estimatedReadingTime} minutes</dd>
         </div>
       </dl>
+      <p className="text-sm text-muted-foreground">Written by {article.author}</p>
     </header>
   );
 }
 
-export function GuideSection({
-  title,
-  children
-}: {
-  title: string;
-  children: React.ReactNode;
-}) {
+export function DirectAnswer({ article }: { article: ResourceArticle }) {
   return (
-    <section className="space-y-3">
-      <h2 className="text-2xl font-semibold tracking-normal">{title}</h2>
-      <div className="text-base leading-7 text-muted-foreground">{children}</div>
-    </section>
-  );
-}
-
-export function Callout({ children }: { children: React.ReactNode }) {
-  return (
-    <Card className="border-primary/30 bg-secondary/40">
-      <CardContent className="flex items-start gap-3 p-4 text-sm leading-6 text-muted-foreground">
-        <ShieldCheck className="mt-0.5 h-4 w-4 text-primary" aria-hidden="true" />
-        <div>{children}</div>
+    <Card>
+      <CardHeader>
+        <CardTitle className="text-lg">Direct answer</CardTitle>
+      </CardHeader>
+      <CardContent className="text-sm leading-6 text-muted-foreground">
+        <p>{article.summary}</p>
       </CardContent>
     </Card>
   );
 }
 
-export function DeadlineBox({ deadlines }: { deadlines: readonly string[] }) {
+export function KeyFacts({ facts }: { facts: readonly string[] }) {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <CalendarDays className="h-5 w-5 text-primary" aria-hidden="true" />
-          Important deadlines
+          Key facts
         </CardTitle>
       </CardHeader>
       <CardContent>
         <ul className="space-y-3 text-sm leading-6 text-muted-foreground">
-          {deadlines.map((deadline) => (
-            <li key={deadline} className="flex gap-2">
+          {facts.map((fact) => (
+            <li key={fact} className="flex gap-2">
               <span className="mt-2 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
-              <span>{deadline}</span>
+              <span>{fact}</span>
             </li>
           ))}
         </ul>
@@ -120,132 +140,49 @@ export function DeadlineBox({ deadlines }: { deadlines: readonly string[] }) {
   );
 }
 
-export function QuickAnswer({ guide }: { guide: ResourceGuide }) {
+export function TableOfContents({ article }: { article: ResourceArticle }) {
+  if (article.content.length < 3) return null;
+
   return (
     <Card>
       <CardHeader>
-        <CardTitle className="text-lg">Need to know in 30 seconds</CardTitle>
+        <CardTitle className="text-lg">On this page</CardTitle>
       </CardHeader>
-      <CardContent className="space-y-3 text-sm leading-6 text-muted-foreground">
-        <p>{guide.intro}</p>
-        <p>
-          The safest next step is to identify whether this applies to your business, check the official source and set a preparation reminder before the filing or payment date.
-        </p>
+      <CardContent>
+        <ol className="space-y-2 text-sm">
+          {article.content.map((section) => (
+            <li key={section.id}>
+              <a href={`#${section.id}`} className="text-primary underline">
+                {section.heading}
+              </a>
+            </li>
+          ))}
+        </ol>
       </CardContent>
     </Card>
   );
 }
 
-export function PreparationChecklist({ guide }: { guide: ResourceGuide }) {
-  const items = [
-    `Confirm whether this applies: ${guide.appliesTo}`,
-    "Open the relevant HMRC or Companies House account before acting.",
-    "Collect records, dates and reference numbers that support the filing.",
-    "Set a preparation reminder before the deadline, not only on the deadline.",
-    "Save submission receipts, payment references and source links."
-  ];
-
+export function ArticleSection({ section }: { section: ResourceArticle["content"][number] }) {
   return (
-    <GuideSection title="Preparation checklist">
-      <ul className="space-y-3">
-        {items.map((item) => (
-          <li key={item} className="flex gap-2">
-            <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
-            <span>{item}</span>
-          </li>
+    <section id={section.id} className="scroll-mt-24 space-y-3">
+      <h2 className="text-2xl font-semibold tracking-normal">{section.heading}</h2>
+      <div className="space-y-4 text-base leading-7 text-muted-foreground">
+        {section.body.map((paragraph) => (
+          <p key={paragraph}>{paragraph}</p>
         ))}
-      </ul>
-    </GuideSection>
+      </div>
+    </section>
   );
 }
 
-export function RealisticExample({ guide }: { guide: ResourceGuide }) {
-  return (
-    <GuideSection title="Realistic example">
-      <p>
-        A first-time owner reads the {guide.shortTitle} guide after receiving a reminder or official message. They check whether the duty applies, note the relevant date from the official account, gather the records listed in the source guidance and save evidence after filing or paying.
-      </p>
-      <p className="mt-3">
-        This example is deliberately general because actual dates and duties can change with your company history, tax registrations, accounting period and HMRC or Companies House notices.
-      </p>
-    </GuideSection>
-  );
-}
-
-export function CommonMyths() {
-  const myths = [
-    "If no money changed hands, no filings can be due.",
-    "Companies House and HMRC deadlines are always the same.",
-    "A reminder calendar can replace checking the official account.",
-    "Filing a form always means any related payment has also been made."
-  ];
-
-  return (
-    <GuideSection title="Common myths">
-      <ul className="space-y-3">
-        {myths.map((myth) => (
-          <li key={myth} className="flex gap-2">
-            <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
-            <span>{myth}</span>
-          </li>
-        ))}
-      </ul>
-    </GuideSection>
-  );
-}
-
-export function VideoExplainerBlock({ guide }: { guide: ResourceGuide }) {
-  return (
-    <Card>
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <Video className="h-5 w-5 text-primary" aria-hidden="true" />
-          Video explainer
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="space-y-3 text-sm leading-6 text-muted-foreground">
-        <p>
-          This guide is ready for a 2-minute explainer and 5-minute walkthrough. No video is embedded until Business Sorted has a reviewed transcript that matches the official-source guidance.
-        </p>
-        <details className="rounded-md border bg-background p-3">
-          <summary className="cursor-pointer font-medium text-foreground">Transcript outline</summary>
-          <ol className="mt-3 space-y-2">
-            <li>1. What {guide.shortTitle} means.</li>
-            <li>2. Who should check whether it applies.</li>
-            <li>3. Which dates and records to prepare.</li>
-            <li>4. Which official sources to open before acting.</li>
-          </ol>
-        </details>
-      </CardContent>
-    </Card>
-  );
-}
-
-export function PenaltyBox({ children }: { children: React.ReactNode }) {
-  return (
-    <Card className="border-destructive/30">
-      <CardHeader>
-        <CardTitle className="flex items-center gap-2 text-lg">
-          <AlertTriangle className="h-5 w-5 text-destructive" aria-hidden="true" />
-          Penalties and risk
-        </CardTitle>
-      </CardHeader>
-      <CardContent className="text-sm leading-6 text-muted-foreground">{children}</CardContent>
-    </Card>
-  );
-}
-
-export function OfficialSourceCard({
-  sources
-}: {
-  sources: ResourceGuide["officialSources"];
-}) {
+export function OfficialSourceCard({ sources }: { sources: ResourceArticle["officialSources"] }) {
   return (
     <Card>
       <CardHeader>
         <CardTitle className="flex items-center gap-2 text-lg">
           <FileText className="h-5 w-5 text-primary" aria-hidden="true" />
-          Useful HMRC and Companies House links
+          Official sources
         </CardTitle>
       </CardHeader>
       <CardContent>
@@ -261,6 +198,7 @@ export function OfficialSourceCard({
                 {source.label}
                 <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
               </a>
+              <span className="mt-1 block text-xs text-muted-foreground">{source.publisher}</span>
             </li>
           ))}
         </ul>
@@ -269,31 +207,31 @@ export function OfficialSourceCard({
   );
 }
 
-export function RelatedGuides({ slugs }: { slugs: readonly string[] }) {
+export function RelatedGuides({ article }: { article: ResourceArticle }) {
+  const related = getRelatedResourceArticles(article);
+
+  if (related.length === 0) return null;
+
   return (
     <section className="space-y-3">
       <h2 className="text-2xl font-semibold tracking-normal">Related guides</h2>
-      <div className="grid gap-3 sm:grid-cols-3">
-        {slugs.map((slug) => {
-          const guide = resourceGuideMap.get(slug);
-          if (!guide) return null;
-          return (
-            <Link
-              key={slug}
-              href={resourcePath(slug)}
-              className="rounded-lg border bg-card p-4 text-sm hover:border-primary/40"
-            >
-              <span className="font-medium text-foreground">{guide.shortTitle}</span>
-              <span className="mt-2 block text-muted-foreground">{guide.description}</span>
-            </Link>
-          );
-        })}
+      <div className="grid gap-3 sm:grid-cols-2">
+        {related.map((relatedArticle) => (
+          <Link
+            key={relatedArticle.slug}
+            href={resourcePath(relatedArticle.slug)}
+            className="rounded-md border bg-card p-4 text-sm hover:border-primary/40"
+          >
+            <span className="font-medium text-foreground">{relatedArticle.title}</span>
+            <span className="mt-2 block text-muted-foreground">{relatedArticle.description}</span>
+          </Link>
+        ))}
       </div>
     </section>
   );
 }
 
-export function FAQSection({ faqs }: { faqs: ResourceGuide["faqs"] }) {
+export function FAQSection({ faqs }: { faqs: ResourceArticle["faqs"] }) {
   return (
     <section className="space-y-4">
       <h2 className="text-2xl font-semibold tracking-normal">Frequently asked questions</h2>
@@ -311,24 +249,57 @@ export function FAQSection({ faqs }: { faqs: ResourceGuide["faqs"] }) {
   );
 }
 
-export function CTASection() {
+export function InternalLinks({ links }: { links: ResourceArticle["internalLinks"] }) {
   return (
-    <section className="rounded-lg border bg-secondary/40 p-6">
-      <h2 className="text-2xl font-semibold tracking-normal">
-        Turn business deadlines into a clear task list
-      </h2>
-      <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">
-        {productConfig.name} helps first-time UK business owners see what needs doing, when it is due and
-        which official source to check before acting.
+    <section className="space-y-3">
+      <h2 className="text-2xl font-semibold tracking-normal">Useful next steps</h2>
+      <ul className="grid gap-3 text-sm sm:grid-cols-2">
+        {links.map((link) => (
+          <li key={link.href}>
+            <Link href={link.href} className="block rounded-md border p-4 font-medium hover:border-primary/40">
+              {link.label}
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </section>
+  );
+}
+
+export function InformationDisclaimer() {
+  return (
+    <Card className="border-primary/30 bg-secondary/40">
+      <CardContent className="flex items-start gap-3 p-4 text-sm leading-6 text-muted-foreground">
+        <ShieldCheck className="mt-0.5 h-4 w-4 text-primary" aria-hidden="true" />
+        <div>
+          {productConfig.name} provides general educational information and organisation tools. It is
+          not Companies House, HMRC, a solicitor, an accountant, a tax adviser or a regulated
+          professional adviser. Check official sources and get professional advice where your
+          circumstances need it.
+        </div>
+      </CardContent>
+    </Card>
+  );
+}
+
+export function CTASection({ article }: { article: ResourceArticle }) {
+  const cta = resourceCtaVariants[article.ctaVariant];
+
+  return (
+    <section className="rounded-md border bg-secondary/40 p-6">
+      <h2 className="text-2xl font-semibold tracking-normal">{cta.title}</h2>
+      <p className="mt-3 max-w-2xl text-sm leading-6 text-muted-foreground">{cta.body}</p>
+      <p className="mt-3 text-sm leading-6 text-muted-foreground">
+        Relevant feature: {article.relatedProductFeature}.
       </p>
       <div className="mt-5 flex flex-col gap-3 sm:flex-row">
         <Button asChild>
-          <Link href="/register">
-            Start setup <ArrowRight className="h-4 w-4" aria-hidden="true" />
+          <Link href={cta.primaryHref}>
+            {cta.primaryLabel} <ArrowRight className="h-4 w-4" aria-hidden="true" />
           </Link>
         </Button>
         <Button asChild variant="outline">
-          <Link href="/pricing">View pricing</Link>
+          <Link href={cta.secondaryHref}>{cta.secondaryLabel}</Link>
         </Button>
       </div>
     </section>

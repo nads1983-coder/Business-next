@@ -3,7 +3,7 @@ import robots from "@/app/robots";
 import sitemap from "@/app/sitemap";
 import { absoluteUrl, siteConfig } from "@/config/site";
 import { comparisonPath, comparisonResources, downloadableResources } from "@/content/authority";
-import { resourceGuides, resourcePath } from "@/content/resources";
+import { getIndexableResourceArticles, resourceCategories, resourceCategoryPath, resourcePath } from "@/content/resources";
 import { createPageMetadata, jsonLd } from "@/lib/seo";
 
 describe("SEO configuration", () => {
@@ -51,11 +51,15 @@ describe("SEO configuration", () => {
     expect(urls.some((url) => url.includes("/app"))).toBe(false);
   });
 
-  it("includes every resource guide in the XML sitemap", () => {
+  it("includes every indexable resource article and category in the XML sitemap", () => {
     const urls = sitemap().map((entry) => entry.url);
 
-    for (const guide of resourceGuides) {
-      expect(urls).toContain(absoluteUrl(resourcePath(guide.slug)));
+    for (const category of Object.keys(resourceCategories)) {
+      expect(urls).toContain(absoluteUrl(resourceCategoryPath(category as keyof typeof resourceCategories)));
+    }
+
+    for (const article of getIndexableResourceArticles()) {
+      expect(urls).toContain(absoluteUrl(resourcePath(article.slug)));
     }
   });
 
@@ -67,18 +71,19 @@ describe("SEO configuration", () => {
     }
   });
 
-  it("keeps resource guide titles, descriptions and related links unique and useful", () => {
-    const titles = new Set(resourceGuides.map((guide) => guide.title));
-    const descriptions = new Set(resourceGuides.map((guide) => guide.description));
+  it("keeps resource article titles, descriptions and source links unique and useful", () => {
+    const articles = getIndexableResourceArticles();
+    const titles = new Set(articles.map((article) => article.title));
+    const descriptions = new Set(articles.map((article) => article.description));
 
-    expect(titles.size).toBe(resourceGuides.length);
-    expect(descriptions.size).toBe(resourceGuides.length);
+    expect(titles.size).toBe(articles.length);
+    expect(descriptions.size).toBe(articles.length);
 
-    for (const guide of resourceGuides) {
-      expect(guide.related).toHaveLength(3);
-      expect(guide.faqs.length).toBeGreaterThanOrEqual(2);
-      expect(guide.officialSources.length).toBeGreaterThanOrEqual(2);
-      expect(guide.h1).not.toBe(guide.title);
+    for (const article of articles) {
+      expect(article.relatedArticleSlugs.length).toBeGreaterThanOrEqual(1);
+      expect(article.faqs.length).toBeGreaterThanOrEqual(2);
+      expect(article.officialSources.length).toBeGreaterThanOrEqual(2);
+      expect(article.keyFacts.length).toBeGreaterThanOrEqual(3);
     }
   });
 

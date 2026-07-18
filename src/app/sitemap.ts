@@ -1,7 +1,12 @@
 import type { MetadataRoute } from "next";
 import { comparisonPath, comparisonResources } from "@/content/authority";
 import { guideHubs, guides } from "@/content/seo-content";
-import { resourceGuides, resourcePath } from "@/content/resources";
+import {
+  getIndexableResourceArticles,
+  resourceCategories,
+  resourceCategoryPath,
+  resourcePath
+} from "@/content/resources";
 
 const baseUrl = "https://businesssorted.uk";
 
@@ -15,7 +20,10 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...guideHubs.map((hub) => hub.path),
     ...guides.map((guide) => `/guides/${guide.category}/${guide.slug}`),
     "/resources",
-    ...resourceGuides.map((guide) => resourcePath(guide.slug)),
+    ...Object.keys(resourceCategories).map((category) =>
+      resourceCategoryPath(category as keyof typeof resourceCategories)
+    ),
+    ...getIndexableResourceArticles().map((article) => resourcePath(article.slug)),
     "/tools",
     "/tools/deadline-calculators",
     "/tools/decision-tools",

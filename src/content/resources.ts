@@ -1,652 +1,333 @@
+import { z } from "zod";
 import { absoluteUrl } from "@/config/site";
 
-export type ResourceGuide = {
-  slug: string;
-  title: string;
-  shortTitle: string;
-  description: string;
-  h1: string;
-  intro: string;
-  appliesTo: string;
-  whenApplies: string;
-  deadlines: readonly string[];
-  mistakes: readonly string[];
-  penalties: string;
-  sections: readonly (readonly [string, string])[];
-  officialSources: readonly { label: string; href: string }[];
-  faqs: readonly { question: string; answer: string }[];
-  related: readonly string[];
-  reviewed: string;
+export const resourceCategories = {
+  "companies-house": {
+    slug: "companies-house",
+    label: "Companies House",
+    description:
+      "Guides for UK limited company directors who need to keep Companies House filings visible and source-linked.",
+    introduction:
+      "Companies House filing dates can sit alongside HMRC tax dates, but they are separate duties. These guides explain common Companies House obligations in plain English and point back to official sources before you act."
+  }
+} as const;
+
+export type ResourceCategory = keyof typeof resourceCategories;
+
+export const resourceCtaVariants = {
+  "companies-house-obligations": {
+    title: "Keep Companies House obligations visible",
+    body:
+      "BusinessSorted helps UK business owners organise and keep track of important company obligations and deadlines in one practical dashboard.",
+    primaryHref: "/register",
+    primaryLabel: "Start setup",
+    secondaryHref: "/pricing",
+    secondaryLabel: "View pricing"
+  },
+  "deadline-dashboard": {
+    title: "Turn important dates into practical tasks",
+    body:
+      "BusinessSorted helps UK business owners organise Companies House, HMRC and business admin tasks without claiming to replace official guidance or professional advice.",
+    primaryHref: "/register",
+    primaryLabel: "Start setup",
+    secondaryHref: "/resources",
+    secondaryLabel: "Browse resources"
+  }
+} as const;
+
+const resourceCategorySchema = z.enum(["companies-house"] satisfies [ResourceCategory]);
+const ctaVariantSchema = z.enum([
+  "companies-house-obligations",
+  "deadline-dashboard"
+] satisfies [keyof typeof resourceCtaVariants, keyof typeof resourceCtaVariants]);
+
+const sourceSchema = z.object({
+  label: z.string().min(2),
+  href: z.string().url(),
+  publisher: z.string().min(2)
+});
+
+const faqSchema = z.object({
+  question: z.string().min(10),
+  answer: z.string().min(40)
+});
+
+const articleSectionSchema = z.object({
+  id: z.string().regex(/^[a-z0-9-]+$/),
+  heading: z.string().min(6),
+  body: z.array(z.string().min(40)).min(1)
+});
+
+const resourceArticleSchema = z.object({
+  title: z.string().min(10),
+  slug: z.string().regex(/^[a-z0-9-]+$/),
+  description: z.string().min(80).max(170),
+  category: resourceCategorySchema,
+  searchIntent: z.string().min(20),
+  primaryKeyword: z.string().min(3),
+  secondaryKeywords: z.array(z.string().min(3)).min(2),
+  targetAudience: z.string().min(20),
+  summary: z.string().min(80),
+  content: z.array(articleSectionSchema).min(3),
+  keyFacts: z.array(z.string().min(30)).min(3),
+  faqs: z.array(faqSchema).min(1),
+  relatedArticleSlugs: z.array(z.string().regex(/^[a-z0-9-]+$/)),
+  relatedProductFeature: z.string().min(10),
+  ctaVariant: ctaVariantSchema,
+  officialSources: z.array(sourceSchema).min(1),
+  sourceCheckedDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  lastReviewedDate: z.string().regex(/^\d{4}-\d{2}-\d{2}$/),
+  author: z.string().min(3),
+  status: z.enum(["draft", "published"]),
+  featured: z.boolean(),
+  estimatedReadingTime: z.number().int().positive(),
+  canonicalUrl: z.string().url(),
+  robots: z.enum(["index", "noindex"]),
+  socialTitle: z.string().min(10).max(70),
+  socialDescription: z.string().min(80).max(200),
+  internalLinks: z.array(
+    z.object({
+      label: z.string().min(3),
+      href: z.string().startsWith("/")
+    })
+  )
+});
+
+export type ResourceArticle = z.infer<typeof resourceArticleSchema>;
+export type ResourceGuide = ResourceArticle;
+export type ResourceValidationIssue = {
+  slug?: string;
+  field?: string;
+  message: string;
 };
 
-const hmrc = "https://www.gov.uk/government/organisations/hm-revenue-customs";
-const companiesHouse = "https://www.gov.uk/government/organisations/companies-house";
-
-export const resourceGuides = [
-  {
-    slug: "business-deadline-calendar",
-    title: "UK Business Deadline Calendar",
-    shortTitle: "Deadline calendar",
-    description:
-      "A plain-English guide to the main UK business deadlines first-time owners should understand, including Companies House, tax, VAT, PAYE and Self Assessment.",
-    h1: "UK business deadline calendar for first-time owners",
-    intro:
-      "Business deadlines can feel scattered because different organisations handle different duties. Companies House deals with company filing, while HMRC deals with tax, VAT, PAYE and Self Assessment. This guide explains the main deadlines to know so you can build a simple calendar and avoid last-minute surprises.",
-    appliesTo:
-      "This guide is for first-time UK business owners, including sole traders, limited company directors and employers who want a clearer view of recurring administration.",
-    whenApplies:
-      "Deadlines depend on your business structure, accounting dates, VAT registration, PAYE setup and whether you need to file a Self Assessment tax return.",
-    deadlines: [
-      "Confirmation statement: usually every 12 months for limited companies.",
-      "Annual accounts: normally due to Companies House after the company financial year ends.",
-      "Corporation Tax return: usually due 12 months after the accounting period ends.",
-      "Corporation Tax payment: often due before the return filing deadline.",
-      "VAT Returns and payments: usually quarterly, unless HMRC has agreed a different scheme.",
-      "PAYE: payroll reporting is usually on or before employees are paid.",
-      "Self Assessment: key online filing and payment deadlines normally fall in January."
-    ],
-    mistakes: [
-      "Treating all tax and filing deadlines as the same date.",
-      "Forgetting that payment and filing deadlines can be different.",
-      "Relying on memory instead of a calendar and source links.",
-      "Missing Companies House letters or HMRC online account messages."
-    ],
-    penalties:
-      "Late filing or payment can lead to penalties, interest, restrictions or further compliance checks. The exact result depends on the duty, the delay and your circumstances, so check the relevant official guidance.",
-    sections: [
-      [
-        "What it is",
-        "A business deadline calendar is a practical list of filing, reporting and payment dates. It is not a substitute for advice, but it helps you see what needs attention and which official source explains it."
-      ],
-      [
-        "How to use it",
-        "Start with your business structure, then add dates from Companies House and HMRC. Keep the source link with each task so you can check the wording before you file or pay."
-      ],
-      [
-        "Why dates vary",
-        "Limited company dates often depend on incorporation and accounting periods. VAT and PAYE dates depend on how HMRC has set up the account. Sole trader Self Assessment dates follow the tax year."
-      ]
-    ],
-    officialSources: [
-      { label: "HMRC", href: hmrc },
-      { label: "Companies House", href: companiesHouse },
-      { label: "Running a limited company", href: "https://www.gov.uk/running-a-limited-company" }
-    ],
-    faqs: [
-      {
-        question: "Are all UK business deadlines the same for every business?",
-        answer:
-          "No. Deadlines depend on your business structure, registrations, accounting dates and HMRC or Companies House requirements."
-      },
-      {
-        question: "Should I rely only on a calendar reminder?",
-        answer:
-          "No. Use reminders, but keep official source links with each task so you can check the latest wording before acting."
-      }
-    ],
-    related: ["companies-house-guide", "corporation-tax-guide", "vat-guide"],
-    reviewed: "18 July 2026"
+const companiesHouseSources = {
+  runningCompanyConfirmationStatement: {
+    label: "Running a limited company: confirmation statement",
+    href: "https://www.gov.uk/running-a-limited-company/confirmation-statement",
+    publisher: "GOV.UK"
   },
-  {
-    slug: "companies-house-guide",
-    title: "Companies House Guide for New Directors",
-    shortTitle: "Companies House",
-    description:
-      "Plain-English guide to Companies House responsibilities for first-time UK limited company directors.",
-    h1: "Companies House guide for first-time company directors",
-    intro:
-      "Companies House keeps the public register of UK companies. If you run a limited company, you usually need to keep company details up to date and file documents such as confirmation statements and annual accounts.",
-    appliesTo:
-      "This guide applies to UK limited companies and their directors. Sole traders do not file confirmation statements or company accounts with Companies House.",
-    whenApplies:
-      "Companies House duties start when a company is incorporated and continue while the company remains on the register, including dormant periods.",
-    deadlines: [
-      "Confirmation statement: usually every 12 months.",
-      "Annual accounts: normally due after the financial year end.",
-      "Company detail changes: update Companies House when required, such as changes to registered office or directors."
-    ],
-    mistakes: [
-      "Assuming dormant companies have no Companies House duties.",
-      "Confusing company accounts with Corporation Tax returns.",
-      "Missing the confirmation statement because no trading has happened.",
-      "Letting registered office details become outdated."
-    ],
-    penalties:
-      "Late accounts can lead to automatic penalties. Continued failure to keep records or file required documents may create further consequences for the company and directors.",
-    sections: [
-      [
-        "What it is",
-        "Companies House is the official registrar of companies. It records company names, directors, registered offices, confirmation statements and accounts."
-      ],
-      [
-        "What directors usually need to do",
-        "Directors normally keep statutory information accurate, file confirmation statements, file annual accounts and make sure company records are kept."
-      ],
-      [
-        "How it connects to HMRC",
-        "Companies House and HMRC are separate. Filing accounts at Companies House does not automatically file every tax return or pay every tax bill."
-      ]
-    ],
-    officialSources: [
-      { label: "Companies House", href: companiesHouse },
-      { label: "Running a limited company", href: "https://www.gov.uk/running-a-limited-company" },
-      {
-        label: "File a confirmation statement",
-        href: "https://www.gov.uk/file-your-confirmation-statement-with-companies-house"
-      }
-    ],
-    faqs: [
-      {
-        question: "Is Companies House the same as HMRC?",
-        answer:
-          "No. Companies House manages the company register. HMRC manages tax, VAT, PAYE and Self Assessment."
-      },
-      {
-        question: "Do dormant companies still file with Companies House?",
-        answer:
-          "Usually yes. Dormant companies can still have Companies House filing duties, including accounts and confirmation statements."
-      }
-    ],
-    related: ["confirmation-statement-guide", "annual-accounts-guide", "dormant-company-guide"],
-    reviewed: "18 July 2026"
+  confirmationStatementService: {
+    label: "File a confirmation statement",
+    href: "https://find-and-update.company-information.service.gov.uk/confirmation-statement",
+    publisher: "Companies House"
   },
-  {
-    slug: "corporation-tax-guide",
-    title: "Corporation Tax Guide for New UK Companies",
-    shortTitle: "Corporation Tax",
-    description:
-      "Understand Corporation Tax registration, payment and return deadlines in plain English for first-time UK company directors.",
-    h1: "Corporation Tax guide for first-time UK company directors",
-    intro:
-      "Corporation Tax is the tax a limited company may pay on its profits. New directors often find it confusing because the tax payment deadline and the company tax return deadline are not necessarily the same date.",
-    appliesTo:
-      "This guide applies to UK limited companies. Sole traders usually deal with business profits through Self Assessment instead.",
-    whenApplies:
-      "Corporation Tax applies when a company is active for tax purposes and has taxable profits or needs to report its position to HMRC.",
-    deadlines: [
-      "Tell HMRC when the company starts business activity.",
-      "Pay Corporation Tax by the relevant payment deadline for the accounting period.",
-      "File the Company Tax Return, usually within 12 months of the accounting period end."
-    ],
-    mistakes: [
-      "Waiting for the return deadline before thinking about payment.",
-      "Assuming Companies House accounts are the same as a Company Tax Return.",
-      "Not keeping records that explain income, expenses and adjustments.",
-      "Ignoring HMRC letters or online account messages."
-    ],
-    penalties:
-      "Late filing, late payment or inaccurate returns can lead to penalties and interest. HMRC guidance explains the current rules and how penalties are calculated.",
-    sections: [
-      [
-        "What it is",
-        "Corporation Tax is handled by HMRC and relates to company profits. The company normally needs accounting records to prepare figures correctly."
-      ],
-      [
-        "Who it applies to",
-        "It mainly applies to limited companies, clubs, societies and some other organisations. First-time directors should check how their company is treated by HMRC."
-      ],
-      [
-        "How it links to annual accounts",
-        "Company accounts and tax returns use related information, but they are not the same filing. You may need to file with both Companies House and HMRC."
-      ]
-    ],
-    officialSources: [
-      { label: "Corporation Tax", href: "https://www.gov.uk/corporation-tax" },
-      { label: "Company Tax Returns", href: "https://www.gov.uk/company-tax-returns" },
-      { label: "HMRC", href: hmrc }
-    ],
-    faqs: [
-      {
-        question: "Is Corporation Tax only for limited companies?",
-        answer:
-          "It mainly applies to limited companies and some organisations. Sole trader profits are usually handled through Self Assessment."
-      },
-      {
-        question: "Is the Corporation Tax payment deadline the same as the return deadline?",
-        answer:
-          "Not always. The payment deadline can be earlier than the Company Tax Return filing deadline."
-      }
-    ],
-    related: ["annual-accounts-guide", "companies-house-guide", "business-deadline-calendar"],
-    reviewed: "18 July 2026"
+  accountsAndTaxReturns: {
+    label: "Accounts and tax returns for private limited companies",
+    href: "https://www.gov.uk/prepare-file-annual-accounts-for-limited-company/overview",
+    publisher: "GOV.UK"
   },
-  {
-    slug: "vat-guide",
-    title: "VAT Guide for First-Time UK Business Owners",
-    shortTitle: "VAT",
-    description:
-      "Plain-English guide to VAT registration, returns, payment deadlines and common mistakes for UK business owners.",
-    h1: "VAT guide for first-time UK business owners",
-    intro:
-      "VAT can affect both sole traders and limited companies. You may need to register when your taxable turnover reaches the VAT threshold, or you may choose to register voluntarily if it makes sense for your business.",
-    appliesTo:
-      "This guide applies to UK businesses that are VAT registered or may need to register. VAT can apply regardless of whether the business is a sole trader or limited company.",
-    whenApplies:
-      "VAT applies when a business is registered for VAT and makes taxable supplies. Registration can become compulsory when turnover reaches the current threshold.",
-    deadlines: [
-      "Check whether turnover requires VAT registration.",
-      "Submit VAT Returns by the deadline shown in the HMRC account.",
-      "Pay VAT by the relevant payment deadline.",
-      "Keep digital records where Making Tax Digital rules apply."
-    ],
-    mistakes: [
-      "Checking turnover too late.",
-      "Confusing sales income with profit.",
-      "Missing VAT Return dates after registering.",
-      "Forgetting that VAT records must support the return."
-    ],
-    penalties:
-      "HMRC may charge penalties or interest for late VAT Returns, late payment or errors. The exact rules depend on the issue and current HMRC guidance.",
-    sections: [
-      [
-        "What it is",
-        "VAT is a tax on many goods and services. VAT-registered businesses usually charge VAT, keep VAT records and submit VAT Returns to HMRC."
-      ],
-      [
-        "Who it applies to",
-        "VAT can apply to sole traders, partnerships and limited companies. The key question is whether the business is registered or required to register."
-      ],
-      [
-        "When to get help",
-        "VAT can become detailed when you sell different types of goods or services, trade internationally or use special schemes. Professional advice can be useful."
-      ]
-    ],
-    officialSources: [
-      { label: "Register for VAT", href: "https://www.gov.uk/register-for-vat" },
-      { label: "VAT Returns", href: "https://www.gov.uk/submit-vat-return" },
-      { label: "HMRC", href: hmrc }
-    ],
-    faqs: [
-      {
-        question: "Does VAT apply only to limited companies?",
-        answer:
-          "No. VAT can apply to different business structures, including sole traders and limited companies."
-      },
-      {
-        question: "Should I wait until year end to check VAT?",
-        answer:
-          "No. VAT registration depends on turnover over a period, so it is safer to monitor it during the year."
-      }
-    ],
-    related: ["corporation-tax-guide", "paye-guide", "registering-a-limited-company"],
-    reviewed: "18 July 2026"
+  annualAccounts: {
+    label: "Prepare annual accounts for a private limited company",
+    href: "https://www.gov.uk/annual-accounts",
+    publisher: "GOV.UK"
   },
-  {
-    slug: "paye-guide",
-    title: "PAYE Guide for New UK Employers",
-    shortTitle: "PAYE",
-    description:
-      "A plain-English guide to PAYE deadlines, payroll reporting and common first-employer mistakes.",
-    h1: "PAYE guide for first-time UK employers",
-    intro:
-      "PAYE is the system HMRC uses for collecting Income Tax and National Insurance from employment. If your business employs people, payroll tasks can become one of your most regular deadlines.",
-    appliesTo:
-      "This guide applies to businesses that employ staff or directors in circumstances where PAYE registration and payroll reporting are required.",
-    whenApplies:
-      "PAYE applies when you need to run payroll, report pay and deductions to HMRC, and pay what is due.",
-    deadlines: [
-      "Register as an employer when required.",
-      "Send payroll information to HMRC on or before payday.",
-      "Pay HMRC by the relevant PAYE payment deadline.",
-      "Keep payroll records."
-    ],
-    mistakes: [
-      "Paying someone before understanding payroll reporting.",
-      "Missing the on-or-before-payday reporting requirement.",
-      "Confusing contractor payments with employee payroll.",
-      "Not keeping payroll evidence."
-    ],
-    penalties:
-      "Late payroll reports, late payments or inaccurate submissions can lead to HMRC penalties and interest. Check HMRC guidance for the current rules.",
-    sections: [
-      [
-        "What it is",
-        "PAYE is HMRC's payroll system for employment taxes. Employers use it to report pay, Income Tax, National Insurance and other payroll details."
-      ],
-      [
-        "Who it applies to",
-        "It can apply when you employ staff or pay directors. The exact position depends on pay, benefits and the worker relationship."
-      ],
-      [
-        "How it fits with other deadlines",
-        "PAYE can sit alongside VAT, Corporation Tax and Companies House responsibilities, so it helps to keep all recurring deadlines in one place."
-      ]
-    ],
-    officialSources: [
-      { label: "PAYE and payroll for employers", href: "https://www.gov.uk/paye-for-employers" },
-      { label: "Register as an employer", href: "https://www.gov.uk/register-employer" },
-      { label: "HMRC", href: hmrc }
-    ],
-    faqs: [
-      {
-        question: "Do I need PAYE before hiring someone?",
-        answer:
-          "You may need to register as an employer before the first payday. Check HMRC guidance for your situation."
-      },
-      {
-        question: "Is PAYE the same as Corporation Tax?",
-        answer:
-          "No. PAYE is payroll reporting and payment. Corporation Tax relates to company profits."
-      }
-    ],
-    related: ["vat-guide", "corporation-tax-guide", "business-deadline-calendar"],
-    reviewed: "18 July 2026"
-  },
-  {
-    slug: "self-assessment-guide",
-    title: "Self Assessment Guide for Sole Traders",
-    shortTitle: "Self Assessment",
-    description:
-      "Understand Self Assessment registration, tax returns, payments on account and record keeping in plain English.",
-    h1: "Self Assessment guide for sole traders",
-    intro:
-      "Self Assessment is how many sole traders report business income to HMRC. It may also apply to company directors or people with other untaxed income, but this guide focuses on first-time business owners.",
-    appliesTo:
-      "This guide is especially useful for sole traders and people who need to report business income through a tax return.",
-    whenApplies:
-      "Self Assessment usually works around the UK tax year, with registration, filing and payment deadlines set by HMRC.",
-    deadlines: [
-      "Register for Self Assessment when required.",
-      "Keep records throughout the tax year.",
-      "File the tax return by the relevant deadline.",
-      "Pay tax and any payments on account by HMRC deadlines."
-    ],
-    mistakes: [
-      "Waiting until January to organise records.",
-      "Confusing income with profit.",
-      "Forgetting payments on account may apply.",
-      "Not saving money for tax as income arrives."
-    ],
-    penalties:
-      "Late filing, late payment or inaccurate returns can lead to penalties and interest. HMRC publishes the rules and current deadlines.",
-    sections: [
-      [
-        "What it is",
-        "Self Assessment is HMRC's tax return process for people who need to report income that is not fully taxed at source."
-      ],
-      [
-        "Who it applies to",
-        "It commonly applies to sole traders. Some directors, landlords or people with other income may also need to use Self Assessment."
-      ],
-      [
-        "Records to keep",
-        "Keep invoices, receipts, bank records and notes that explain income and allowable expenses. Good records make deadlines less stressful."
-      ]
-    ],
-    officialSources: [
-      { label: "Self Assessment tax returns", href: "https://www.gov.uk/self-assessment-tax-returns" },
-      { label: "Set up as a sole trader", href: "https://www.gov.uk/become-sole-trader" },
-      { label: "HMRC", href: hmrc }
-    ],
-    faqs: [
-      {
-        question: "Is Self Assessment only for sole traders?",
-        answer:
-          "No. Sole traders commonly use it, but other people may need to file depending on their income and circumstances."
-      },
-      {
-        question: "Do I need records before filing?",
-        answer:
-          "Yes. Records support the figures on your tax return and help you answer HMRC questions."
-      }
-    ],
-    related: ["business-deadline-calendar", "vat-guide", "paye-guide"],
-    reviewed: "18 July 2026"
-  },
-  {
-    slug: "confirmation-statement-guide",
-    title: "Confirmation Statement Guide",
-    shortTitle: "Confirmation statement",
-    description:
-      "Plain-English guide to the Companies House confirmation statement, who files it and common mistakes.",
-    h1: "Confirmation statement guide for UK limited companies",
-    intro:
-      "A confirmation statement tells Companies House that key information about a company is correct or has been updated. It is a recurring duty for limited companies.",
-    appliesTo:
-      "This guide applies to UK limited companies, including companies that have not traded or are dormant.",
-    whenApplies:
-      "A confirmation statement is usually due at least once every 12 months, based on the company's review period.",
-    deadlines: [
-      "Check the company's review period.",
-      "Update company information if needed.",
-      "File the confirmation statement by the Companies House deadline."
-    ],
-    mistakes: [
-      "Assuming no changes means no filing is needed.",
-      "Missing people with significant control information.",
-      "Leaving registered office details out of date.",
-      "Confusing the confirmation statement with annual accounts."
-    ],
-    penalties:
-      "Failure to file required company information can lead to enforcement action. Check Companies House guidance for the current process.",
-    sections: [
-      [
-        "What it is",
-        "The confirmation statement is a Companies House filing that confirms company details such as registered office, directors, shareholders and people with significant control."
-      ],
-      [
-        "Who it applies to",
-        "It applies to limited companies on the register, even if the company has not changed much since the last filing."
-      ],
-      [
-        "How to prepare",
-        "Review company details before filing. If something is wrong, update it through the correct Companies House process."
-      ]
-    ],
-    officialSources: [
-      {
-        label: "File a confirmation statement",
-        href: "https://www.gov.uk/file-your-confirmation-statement-with-companies-house"
-      },
-      { label: "Companies House", href: companiesHouse }
-    ],
-    faqs: [
-      {
-        question: "Do I file a confirmation statement if nothing changed?",
-        answer:
-          "Usually yes. The filing confirms the details are correct, even if there are no changes."
-      },
-      {
-        question: "Is a confirmation statement the same as accounts?",
-        answer:
-          "No. It is a separate Companies House filing from annual accounts."
-      }
-    ],
-    related: ["companies-house-guide", "annual-accounts-guide", "dormant-company-guide"],
-    reviewed: "18 July 2026"
-  },
-  {
-    slug: "registering-a-limited-company",
-    title: "Registering a Limited Company Guide",
-    shortTitle: "Registering a company",
-    description:
-      "Plain-English guide to registering a UK limited company and the first deadlines directors should know.",
-    h1: "Registering a limited company in plain English",
-    intro:
-      "Registering a limited company creates a separate legal structure from the people who own or run it. It can be the right structure for some businesses, but it also brings Companies House and HMRC responsibilities.",
-    appliesTo:
-      "This guide is for first-time UK founders considering or recently completing limited company registration.",
-    whenApplies:
-      "It applies before and just after incorporation, when you choose company details and prepare for first filings and tax setup.",
-    deadlines: [
-      "Choose and register company details.",
-      "Keep statutory records from the start.",
-      "Understand first accounts and confirmation statement dates.",
-      "Tell HMRC when the company starts business activity."
-    ],
-    mistakes: [
-      "Registering before understanding director responsibilities.",
-      "Ignoring the first accounts deadline.",
-      "Using a registered office without understanding mail handling.",
-      "Assuming company registration automatically covers VAT, PAYE or all taxes."
-    ],
-    penalties:
-      "Missing post-registration duties can lead to Companies House or HMRC penalties depending on the missed task. Check official guidance before acting.",
-    sections: [
-      [
-        "What it is",
-        "Incorporation creates a limited company on the Companies House register. Directors then have duties to keep records and file information."
-      ],
-      [
-        "Who it applies to",
-        "It applies to founders who want to trade through a limited company rather than as a sole trader or another structure."
-      ],
-      [
-        "What comes next",
-        "After registration, directors should note accounts, confirmation statement, Corporation Tax, VAT and PAYE tasks where relevant."
-      ]
-    ],
-    officialSources: [
-      { label: "Set up a limited company", href: "https://www.gov.uk/limited-company-formation" },
-      { label: "Running a limited company", href: "https://www.gov.uk/running-a-limited-company" },
-      { label: "Companies House", href: companiesHouse }
-    ],
-    faqs: [
-      {
-        question: "Does registering a company register me for VAT?",
-        answer:
-          "No. VAT registration is a separate HMRC process when it is required or chosen voluntarily."
-      },
-      {
-        question: "Do directors have deadlines straight away?",
-        answer:
-          "Yes. Some dates may be months away, but responsibilities start when the company exists and begins relevant activity."
-      }
-    ],
-    related: ["confirmation-statement-guide", "annual-accounts-guide", "vat-guide"],
-    reviewed: "18 July 2026"
-  },
-  {
-    slug: "annual-accounts-guide",
-    title: "Annual Accounts Guide",
-    shortTitle: "Annual accounts",
-    description:
-      "Understand limited company annual accounts, Companies House filing and how accounts differ from tax returns.",
-    h1: "Annual accounts guide for first-time company directors",
-    intro:
-      "Annual accounts are a key Companies House filing for limited companies. They explain the company's financial position for a period and are separate from the Corporation Tax return sent to HMRC.",
-    appliesTo:
-      "This guide applies to limited companies and directors responsible for filing accounts with Companies House.",
-    whenApplies:
-      "Accounts normally apply for each company financial year, including years when the company is dormant.",
-    deadlines: [
-      "Know the company accounting reference date.",
-      "Prepare accounts from accurate records.",
-      "File accounts with Companies House by the deadline.",
-      "Use the records to support Corporation Tax where relevant."
-    ],
-    mistakes: [
-      "Confusing annual accounts with the Company Tax Return.",
-      "Leaving bookkeeping until the filing deadline.",
-      "Assuming dormant status removes every filing duty.",
-      "Missing first accounts dates after incorporation."
-    ],
-    penalties:
-      "Late Companies House accounts can trigger automatic penalties. The penalty can increase depending on how late the accounts are.",
-    sections: [
-      [
-        "What it is",
-        "Annual accounts are financial statements prepared for a company period and filed with Companies House in the required form."
-      ],
-      [
-        "Who it applies to",
-        "Limited companies usually need to prepare and file accounts. The filing type can depend on company size and status."
-      ],
-      [
-        "Why records matter",
-        "Good records help accounts, tax returns and director decisions. Poor records make deadlines harder and increase the risk of mistakes."
-      ]
-    ],
-    officialSources: [
-      { label: "File your annual accounts", href: "https://www.gov.uk/file-your-company-annual-accounts" },
-      { label: "Running a limited company", href: "https://www.gov.uk/running-a-limited-company" },
-      { label: "Companies House", href: companiesHouse }
-    ],
-    faqs: [
-      {
-        question: "Are annual accounts sent to HMRC?",
-        answer:
-          "Companies House accounts and HMRC tax returns are separate, even though they may use related financial records."
-      },
-      {
-        question: "Can a dormant company have accounts?",
-        answer:
-          "Yes. Dormant companies normally still have Companies House accounts duties."
-      }
-    ],
-    related: ["companies-house-guide", "corporation-tax-guide", "dormant-company-guide"],
-    reviewed: "18 July 2026"
-  },
-  {
-    slug: "dormant-company-guide",
-    title: "Dormant Company Guide",
-    shortTitle: "Dormant company",
-    description:
-      "Plain-English guide to dormant company duties, Companies House filings and what first-time directors should check.",
-    h1: "Dormant company guide for first-time directors",
-    intro:
-      "A dormant company may not be trading, but it can still have filing responsibilities. Directors often miss this because no income has arrived and no customer work is happening.",
-    appliesTo:
-      "This guide applies to limited companies that are dormant or expected to remain inactive for a period.",
-    whenApplies:
-      "Dormant status depends on the company's activity and how Companies House and HMRC treat it. You should check both organisations where relevant.",
-    deadlines: [
-      "Confirm whether the company is dormant for Companies House purposes.",
-      "Check HMRC expectations for Corporation Tax.",
-      "File dormant company accounts where required.",
-      "File the confirmation statement by its deadline."
-    ],
-    mistakes: [
-      "Assuming no trading means no Companies House filings.",
-      "Ignoring HMRC Corporation Tax letters.",
-      "Missing confirmation statement dates.",
-      "Using the company bank account in a way that affects dormant status."
-    ],
-    penalties:
-      "Late accounts or missed statutory filings can still create penalties for dormant companies. Check Companies House and HMRC guidance for your exact position.",
-    sections: [
-      [
-        "What it is",
-        "A dormant company is generally inactive for certain filing purposes. The exact meaning can differ depending on whether you are dealing with Companies House or HMRC."
-      ],
-      [
-        "Who it applies to",
-        "It applies to limited companies that are not currently trading or receiving income, but remain registered."
-      ],
-      [
-        "Why it still needs attention",
-        "Dormant does not mean forgotten. Keep a calendar for accounts, confirmation statements and any HMRC communication."
-      ]
-    ],
-    officialSources: [
-      { label: "Dormant companies and associations", href: "https://www.gov.uk/dormant-company" },
-      { label: "Companies House", href: companiesHouse },
-      { label: "HMRC", href: hmrc }
-    ],
-    faqs: [
-      {
-        question: "Does a dormant company still file a confirmation statement?",
-        answer:
-          "Usually yes. A confirmation statement is separate from trading activity."
-      },
-      {
-        question: "Can HMRC and Companies House treat dormant status differently?",
-        answer:
-          "They can use different rules and processes, so check the relevant official guidance."
-      }
-    ],
-    related: ["annual-accounts-guide", "confirmation-statement-guide", "companies-house-guide"],
-    reviewed: "18 July 2026"
+  companiesHouseAccountsGuidance: {
+    label: "Preparing and filing Companies House accounts",
+    href: "https://www.gov.uk/government/publications/life-of-a-company-annual-requirements/life-of-a-company-part-1-accounts",
+    publisher: "Companies House"
   }
-] as const satisfies readonly ResourceGuide[];
+} as const;
 
-export const resourceGuideMap: ReadonlyMap<string, ResourceGuide> = new Map(
-  resourceGuides.map((guide) => [guide.slug, guide])
+export const resourceArticles = [
+  {
+    title: "Confirmation statement guide for UK limited company directors",
+    slug: "confirmation-statement-guide",
+    description:
+      "Understand what a Companies House confirmation statement is, when UK limited companies usually file it and what directors should check before filing.",
+    category: "companies-house",
+    searchIntent:
+      "A UK limited company director wants to understand the confirmation statement duty, due date and preparation steps.",
+    primaryKeyword: "confirmation statement guide",
+    secondaryKeywords: [
+      "Companies House confirmation statement",
+      "confirmation statement deadline",
+      "UK company director filing duties"
+    ],
+    targetAudience:
+      "First-time UK limited company directors and small-business owners responsible for company filings.",
+    summary:
+      "A confirmation statement is the Companies House filing used to confirm that key company information is correct. Companies normally need to review their records and file at least one confirmation statement every 12 months.",
+    content: [
+      {
+        id: "what-it-is",
+        heading: "What a confirmation statement is",
+        body: [
+          "A confirmation statement tells Companies House that the information on the public company register is correct or has been updated. It covers details such as the registered office, directors, shareholders, standard industrial classification code and people with significant control.",
+          "The filing is separate from annual accounts. A company can have no major changes and still need to file because the statement confirms the register position for the review period."
+        ]
+      },
+      {
+        id: "when-it-is-due",
+        heading: "When the confirmation statement is due",
+        body: [
+          "Companies House guidance says a company must review its records and file at least one confirmation statement every 12 months. The review period normally ends 12 months after incorporation for the first statement, or 12 months after the confirmation statement date on the previous statement.",
+          "The statement can usually be filed up to 14 days after the review period ends. Directors should still check the company register for the exact filing deadline before relying on a reminder."
+        ]
+      },
+      {
+        id: "what-to-check",
+        heading: "What to check before filing",
+        body: [
+          "Before filing, check the company number, authentication code, registered office, officers, shareholder details, people with significant control and SIC code. Some details must be updated using a separate Companies House process before the statement is filed.",
+          "Companies House currently lists online and postal filing routes, with different fees. Check the official service before filing because fees, service rules and required information can change."
+        ]
+      },
+      {
+        id: "how-businesssorted-helps",
+        heading: "How BusinessSorted can help",
+        body: [
+          "BusinessSorted helps keep the confirmation statement visible alongside other important company obligations and deadlines. It is designed for organisation and plain-English context, not for filing the statement on your behalf."
+        ]
+      }
+    ],
+    keyFacts: [
+      "A confirmation statement confirms that key Companies House register information is correct or updated.",
+      "Companies normally need to file at least one confirmation statement every 12 months.",
+      "Companies House says the statement can usually be filed up to 14 days after the review period ends.",
+      "The confirmation statement is separate from annual accounts and HMRC tax returns."
+    ],
+    faqs: [
+      {
+        question: "Do I need to file a confirmation statement if nothing has changed?",
+        answer:
+          "Usually yes. The statement confirms that the information Companies House holds is correct, so a company can still need to file even when there have been no changes."
+      },
+      {
+        question: "Can I use a confirmation statement to change every company detail?",
+        answer:
+          "No. Companies House guidance says some details need a separate update process. Check the official guidance before filing so the register is correct."
+      }
+    ],
+    relatedArticleSlugs: ["annual-accounts-guide"],
+    relatedProductFeature: "Companies House obligation tracking",
+    ctaVariant: "companies-house-obligations",
+    officialSources: [
+      companiesHouseSources.runningCompanyConfirmationStatement,
+      companiesHouseSources.confirmationStatementService
+    ],
+    sourceCheckedDate: "2026-07-18",
+    lastReviewedDate: "2026-07-18",
+    author: "Business Sorted editorial team",
+    status: "published",
+    featured: true,
+    estimatedReadingTime: 5,
+    canonicalUrl: absoluteUrl("/resources/confirmation-statement-guide"),
+    robots: "index",
+    socialTitle: "Confirmation statement guide for UK directors",
+    socialDescription:
+      "Plain-English Companies House confirmation statement guidance for UK limited company directors, with official source links and review dates.",
+    internalLinks: [
+      { label: "Companies House resources", href: "/resources/companies-house" },
+      { label: "Annual accounts guide", href: "/resources/annual-accounts-guide" },
+      { label: "How we research", href: "/how-we-research" },
+      { label: "BusinessSorted pricing", href: "/pricing" }
+    ]
+  },
+  {
+    title: "Annual accounts guide for UK limited company directors",
+    slug: "annual-accounts-guide",
+    description:
+      "Understand what annual accounts are, common Companies House filing deadlines and how accounts differ from HMRC Company Tax Returns.",
+    category: "companies-house",
+    searchIntent:
+      "A UK limited company director wants to understand annual accounts, Companies House deadlines and how accounts relate to tax returns.",
+    primaryKeyword: "annual accounts guide",
+    secondaryKeywords: [
+      "Companies House accounts deadline",
+      "limited company annual accounts",
+      "first company accounts deadline"
+    ],
+    targetAudience:
+      "First-time UK limited company directors preparing for company accounts and related filing tasks.",
+    summary:
+      "Annual accounts are statutory accounts prepared from company financial records. Private limited companies usually file accounts with Companies House after the financial year, while HMRC Company Tax Returns follow their own deadline.",
+    content: [
+      {
+        id: "what-annual-accounts-are",
+        heading: "What annual accounts are",
+        body: [
+          "Annual accounts are statutory accounts prepared from the company financial records at the end of the financial year. GOV.UK explains that statutory accounts include financial statements such as a balance sheet and, depending on the company, other statements or reports.",
+          "Accounts are not the same as a Company Tax Return. The same records may support both, but Companies House and HMRC have different filing requirements and deadlines."
+        ]
+      },
+      {
+        id: "companies-house-deadlines",
+        heading: "Companies House accounts deadlines",
+        body: [
+          "For private limited companies, GOV.UK says first accounts are usually due 21 months after registration with Companies House. Later annual accounts are usually due 9 months after the company financial year ends.",
+          "Companies House guidance also explains that the first accounts deadline can depend on the period covered by the accounts. Directors should check the company record and official guidance for the exact date rather than copying a generic example."
+        ]
+      },
+      {
+        id: "records-to-prepare",
+        heading: "Records to prepare before accounts",
+        body: [
+          "Directors should keep records that explain company income, costs, assets, liabilities, bank activity and decisions. Good records make accounts preparation easier and reduce last-minute work.",
+          "If the company is small, a micro-entity or dormant, simpler accounts may be available. That does not mean the filing can be ignored, so check the current Companies House route before the deadline."
+        ]
+      },
+      {
+        id: "how-businesssorted-helps",
+        heading: "How BusinessSorted can help",
+        body: [
+          "BusinessSorted helps directors keep accounts preparation and filing tasks visible with related source links and review dates. It does not prepare statutory accounts or replace an accountant or tax adviser."
+        ]
+      }
+    ],
+    keyFacts: [
+      "Annual accounts are statutory accounts prepared from the company financial records.",
+      "GOV.UK says first private limited company accounts are usually due 21 months after registration.",
+      "Later private limited company accounts are usually due 9 months after the company financial year ends.",
+      "Companies House accounts and HMRC Company Tax Returns are related but separate filing tasks."
+    ],
+    faqs: [
+      {
+        question: "Are annual accounts the same as a Company Tax Return?",
+        answer:
+          "No. Accounts and Company Tax Returns use related financial information, but Companies House and HMRC have separate filing requirements and deadlines."
+      },
+      {
+        question: "Does a dormant company still need to think about accounts?",
+        answer:
+          "Yes. Dormant companies can still have Companies House filing duties. Check the official guidance for the company position before assuming no filing is needed."
+      }
+    ],
+    relatedArticleSlugs: ["confirmation-statement-guide"],
+    relatedProductFeature: "Accounts preparation reminders",
+    ctaVariant: "companies-house-obligations",
+    officialSources: [
+      companiesHouseSources.accountsAndTaxReturns,
+      companiesHouseSources.annualAccounts,
+      companiesHouseSources.companiesHouseAccountsGuidance
+    ],
+    sourceCheckedDate: "2026-07-18",
+    lastReviewedDate: "2026-07-18",
+    author: "Business Sorted editorial team",
+    status: "published",
+    featured: true,
+    estimatedReadingTime: 6,
+    canonicalUrl: absoluteUrl("/resources/annual-accounts-guide"),
+    robots: "index",
+    socialTitle: "Annual accounts guide for UK company directors",
+    socialDescription:
+      "Plain-English annual accounts guidance for UK limited company directors, with Companies House deadlines and official source links.",
+    internalLinks: [
+      { label: "Companies House resources", href: "/resources/companies-house" },
+      { label: "Confirmation statement guide", href: "/resources/confirmation-statement-guide" },
+      { label: "How we research", href: "/how-we-research" },
+      { label: "BusinessSorted pricing", href: "/pricing" }
+    ]
+  }
+] as const satisfies readonly ResourceArticle[];
+
+resourceArticles.forEach((article) => resourceArticleSchema.parse(article));
+
+export const resourceArticleMap: ReadonlyMap<string, ResourceArticle> = new Map(
+  resourceArticles.map((article) => [article.slug, article])
 );
 
-export function getGuide(slug: string) {
-  return resourceGuideMap.get(slug);
-}
+export const resourceGuideMap = resourceArticleMap;
 
 export function resourcePath(slug: string) {
   return `/resources/${slug}`;
@@ -654,4 +335,199 @@ export function resourcePath(slug: string) {
 
 export function resourceUrl(slug: string) {
   return absoluteUrl(resourcePath(slug));
+}
+
+export function resourceCategoryPath(category: ResourceCategory) {
+  return `/resources/${category}`;
+}
+
+export function getResourceArticle(slug: string) {
+  return resourceArticleMap.get(slug);
+}
+
+export const getGuide = getResourceArticle;
+
+export function getPublishedResourceArticles() {
+  return resourceArticles.filter((article) => article.status === "published");
+}
+
+export function getIndexableResourceArticles() {
+  return getPublishedResourceArticles().filter((article) => article.robots === "index");
+}
+
+export function getFeaturedResourceArticles() {
+  return getIndexableResourceArticles().filter((article) => article.featured);
+}
+
+export function getResourceArticlesByCategory(category: ResourceCategory) {
+  return getIndexableResourceArticles().filter((article) => article.category === category);
+}
+
+export function getRelatedResourceArticles(article: ResourceArticle) {
+  return article.relatedArticleSlugs
+    .map((slug) => resourceArticleMap.get(slug))
+    .filter((related): related is ResourceArticle => related !== undefined && related.status === "published");
+}
+
+export function formatResourceDate(value: string) {
+  return new Intl.DateTimeFormat("en-GB", {
+    day: "numeric",
+    month: "long",
+    year: "numeric"
+  }).format(new Date(`${value}T00:00:00Z`));
+}
+
+export function validateResourceArticles(articles: readonly ResourceArticle[] = resourceArticles) {
+  const issues: ResourceValidationIssue[] = [];
+  const slugs = new Map<string, string>();
+  const titles = new Map<string, string>();
+  const descriptions = new Map<string, string>();
+  const metaFingerprints = new Map<string, string>();
+  const validCategories = new Set(Object.keys(resourceCategories));
+
+  for (const article of articles) {
+    const parsed = resourceArticleSchema.safeParse(article);
+    if (!parsed.success) {
+      for (const issue of parsed.error.issues) {
+        issues.push({
+          slug: article.slug,
+          field: issue.path.join("."),
+          message: issue.message
+        });
+      }
+    }
+
+    addUniqueIssue(slugs, article.slug, article.slug, "slug", issues, "Duplicate slug");
+    addUniqueIssue(
+      titles,
+      normaliseText(article.title),
+      article.slug,
+      "title",
+      issues,
+      "Duplicate title"
+    );
+    addUniqueIssue(
+      descriptions,
+      normaliseText(article.description),
+      article.slug,
+      "description",
+      issues,
+      "Duplicate description"
+    );
+    addUniqueIssue(
+      metaFingerprints,
+      `${normaliseText(article.socialTitle)}:${normaliseText(article.socialDescription)}`,
+      article.slug,
+      "metadata",
+      issues,
+      "Duplicate social metadata"
+    );
+
+    if (!validCategories.has(article.category)) {
+      issues.push({ slug: article.slug, field: "category", message: "Invalid category" });
+    }
+
+    if (article.status === "published" && article.officialSources.length === 0) {
+      issues.push({
+        slug: article.slug,
+        field: "officialSources",
+        message: "Published articles must include official sources"
+      });
+    }
+
+    if (article.status === "draft" && article.robots !== "noindex") {
+      issues.push({
+        slug: article.slug,
+        field: "robots",
+        message: "Draft articles must be marked noindex"
+      });
+    }
+
+    if (article.status === "published" && article.internalLinks.length === 0) {
+      issues.push({
+        slug: article.slug,
+        field: "internalLinks",
+        message: "Published articles must include meaningful internal links"
+      });
+    }
+
+    if (article.status === "published" && getArticleBodyText(article).length < 1200) {
+      issues.push({
+        slug: article.slug,
+        field: "content",
+        message: "Published articles need more substantive content"
+      });
+    }
+
+    if (article.canonicalUrl !== resourceUrl(article.slug)) {
+      issues.push({
+        slug: article.slug,
+        field: "canonicalUrl",
+        message: "Canonical URL must match the production resource URL"
+      });
+    }
+
+    for (const relatedSlug of article.relatedArticleSlugs) {
+      if (!articles.some((candidate) => candidate.slug === relatedSlug)) {
+        issues.push({
+          slug: article.slug,
+          field: "relatedArticleSlugs",
+          message: `Broken related article reference: ${relatedSlug}`
+        });
+      }
+    }
+  }
+
+  for (let index = 0; index < articles.length; index += 1) {
+    for (let nextIndex = index + 1; nextIndex < articles.length; nextIndex += 1) {
+      const current = articles[index];
+      const next = articles[nextIndex];
+      if (jaccardSimilarity(current.description, next.description) > 0.82) {
+        issues.push({
+          slug: current.slug,
+          field: "description",
+          message: `Near-duplicate metadata with ${next.slug}`
+        });
+      }
+    }
+  }
+
+  return issues;
+}
+
+function addUniqueIssue(
+  seen: Map<string, string>,
+  key: string,
+  slug: string,
+  field: string,
+  issues: ResourceValidationIssue[],
+  message: string
+) {
+  const previous = seen.get(key);
+  if (previous) {
+    issues.push({ slug, field, message: `${message}: ${previous}` });
+    return;
+  }
+  seen.set(key, slug);
+}
+
+function normaliseText(value: string) {
+  return value.toLowerCase().replace(/[^a-z0-9]+/g, " ").trim();
+}
+
+function getArticleBodyText(article: ResourceArticle) {
+  return [
+    article.summary,
+    ...article.keyFacts,
+    ...article.content.flatMap((section) => [section.heading, ...section.body]),
+    ...article.faqs.flatMap((faq) => [faq.question, faq.answer])
+  ].join(" ");
+}
+
+function jaccardSimilarity(left: string, right: string) {
+  const leftWords = new Set(normaliseText(left).split(" ").filter((word) => word.length > 3));
+  const rightWords = new Set(normaliseText(right).split(" ").filter((word) => word.length > 3));
+  const intersection = [...leftWords].filter((word) => rightWords.has(word)).length;
+  const union = new Set([...leftWords, ...rightWords]).size;
+  return union === 0 ? 0 : intersection / union;
 }

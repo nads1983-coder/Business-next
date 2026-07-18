@@ -1,169 +1,126 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
-import { absoluteUrl, siteConfig } from "@/config/site";
-import { getGuide, resourceGuides, resourcePath, resourceUrl } from "@/content/resources";
-import { createPageMetadata, jsonLd } from "@/lib/seo";
 import {
-  Callout,
+  getIndexableResourceArticles,
+  getResourceArticle,
+  resourceCategories,
+  resourcePath,
+  resourceUrl
+} from "@/content/resources";
+import { JsonLd, absoluteUrl, breadcrumbSchema, createPageMetadata } from "@/lib/seo";
+import {
+  ArticleHeader,
+  ArticleSection,
   CTASection,
-  DeadlineBox,
+  DirectAnswer,
   FAQSection,
-  GuideHeader,
-  GuideSection,
+  InformationDisclaimer,
+  InternalLinks,
+  KeyFacts,
   OfficialSourceCard,
-  PenaltyBox,
-  CommonMyths,
-  PreparationChecklist,
-  QuickAnswer,
-  RealisticExample,
   RelatedGuides,
-  VideoExplainerBlock
+  TableOfContents
 } from "@/components/resource-guide";
 import { PublicPage } from "@/components/public-page";
 
-type GuidePageProps = {
+type ResourceArticlePageProps = {
   params: Promise<{ slug: string }>;
 };
 
 export function generateStaticParams() {
-  return resourceGuides.map((guide) => ({ slug: guide.slug }));
+  return getIndexableResourceArticles().map((article) => ({ slug: article.slug }));
 }
 
-export async function generateMetadata({ params }: GuidePageProps): Promise<Metadata> {
+export async function generateMetadata({ params }: ResourceArticlePageProps): Promise<Metadata> {
   const { slug } = await params;
-  const guide = getGuide(slug);
-  if (!guide) return {};
+  const article = getResourceArticle(slug);
+  if (!article || article.status !== "published") return {};
 
   return createPageMetadata({
-    title: guide.title,
-    description: guide.description,
-    path: resourcePath(guide.slug),
-    type: "article"
+    title: article.socialTitle,
+    description: article.socialDescription,
+    path: resourcePath(article.slug),
+    type: "article",
+    noIndex: article.robots === "noindex"
   });
 }
 
-export default async function ResourceGuidePage({ params }: GuidePageProps) {
+export default async function ResourceArticlePage({ params }: ResourceArticlePageProps) {
   const { slug } = await params;
-  const guide = getGuide(slug);
-  if (!guide) notFound();
+  const article = getResourceArticle(slug);
+  if (!article || article.status !== "published") notFound();
+
+  const category = resourceCategories[article.category];
+  const faqSchema =
+    article.faqs.length > 0
+      ? {
+          "@context": "https://schema.org",
+          "@type": "FAQPage",
+          mainEntity: article.faqs.map((faq) => ({
+            "@type": "Question",
+            name: faq.question,
+            acceptedAnswer: {
+              "@type": "Answer",
+              text: faq.answer
+            }
+          }))
+        }
+      : null;
 
   const structuredData = [
+    breadcrumbSchema([
+      { name: "Home", path: "/" },
+      { name: "Resources", path: "/resources" },
+      { name: category.label, path: `/resources/${article.category}` },
+      { name: article.title, path: resourcePath(article.slug) }
+    ]),
     {
       "@context": "https://schema.org",
       "@type": "Article",
-      "@id": `${resourceUrl(guide.slug)}#article`,
-      headline: guide.h1,
-      description: guide.description,
-      url: resourceUrl(guide.slug),
-      dateModified: "2026-07-18",
-      datePublished: "2026-07-18",
+      "@id": `${resourceUrl(article.slug)}#article`,
+      headline: article.title,
+      description: article.description,
+      url: resourceUrl(article.slug),
+      datePublished: article.lastReviewedDate,
+      dateModified: article.lastReviewedDate,
       author: {
         "@type": "Organization",
-        name: "Business Sorted editorial team",
+        name: article.author,
         url: absoluteUrl("/about")
       },
       publisher: {
-        "@id": `${siteConfig.url}/#organization`
+        "@type": "Organization",
+        name: "Business Sorted",
+        url: absoluteUrl("/")
       },
-      mainEntityOfPage: {
-        "@id": `${resourceUrl(guide.slug)}#webpage`
-      }
+      mainEntityOfPage: resourceUrl(article.slug),
+      articleSection: category.label,
+      keywords: [article.primaryKeyword, ...article.secondaryKeywords]
     },
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
-        { "@type": "ListItem", position: 2, name: "Resources", item: absoluteUrl("/resources") },
-        { "@type": "ListItem", position: 3, name: guide.shortTitle, item: resourceUrl(guide.slug) }
-      ]
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "FAQPage",
-      mainEntity: guide.faqs.map((faq) => ({
-        "@type": "Question",
-        name: faq.question,
-        acceptedAnswer: {
-          "@type": "Answer",
-          text: faq.answer
-        }
-      }))
-    }
+    ...(faqSchema ? [faqSchema] : [])
   ];
 
   return (
     <PublicPage>
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(structuredData)} />
+      <JsonLd data={structuredData} />
       <article className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="space-y-8">
-          <GuideHeader guide={guide} />
-
-          <Callout>
-            Business Sorted is not HMRC, Companies House, an accountant or a legal adviser. Use this
-            guide to understand the topic, then check the official source and get professional advice
-            when your situation needs it.
-          </Callout>
-
-          <QuickAnswer guide={guide} />
-
-          <GuideSection title="What it is">
-            <p>{guide.sections[0]?.[1]}</p>
-          </GuideSection>
-
-          <GuideSection title="Who it applies to">
-            <p>{guide.appliesTo}</p>
-          </GuideSection>
-
-          <GuideSection title="Why it matters">
-            <p>
-              This topic matters because missed filings, unclear records or late payments can create avoidable admin, penalties, interest or extra support work. A simple reminder is useful only when it is tied to the correct official source.
-            </p>
-          </GuideSection>
-
-          <GuideSection title="When it applies">
-            <p>{guide.whenApplies}</p>
-          </GuideSection>
-
-          <DeadlineBox deadlines={guide.deadlines} />
-          <PreparationChecklist guide={guide} />
-          <RealisticExample guide={guide} />
-
-          <GuideSection title="Common mistakes">
-            <ul className="space-y-3">
-              {guide.mistakes.map((mistake) => (
-                <li key={mistake} className="flex gap-2">
-                  <span className="mt-3 h-1.5 w-1.5 shrink-0 rounded-full bg-primary" aria-hidden="true" />
-                  <span>{mistake}</span>
-                </li>
-              ))}
-            </ul>
-          </GuideSection>
-
-          <PenaltyBox>{guide.penalties}</PenaltyBox>
-          <CommonMyths />
-
-          {guide.sections
-            .slice(1)
-            .filter(([heading]) => !["Who it applies to", "When it applies"].includes(heading))
-            .map(([heading, body]) => (
-              <GuideSection key={heading} title={heading}>
-                <p>{body}</p>
-              </GuideSection>
-            ))}
-
-          <FAQSection faqs={guide.faqs} />
-          <VideoExplainerBlock guide={guide} />
-          <RelatedGuides slugs={guide.related} />
-          <CTASection />
+          <ArticleHeader article={article} />
+          <InformationDisclaimer />
+          <DirectAnswer article={article} />
+          <KeyFacts facts={article.keyFacts} />
+          {article.content.map((section) => (
+            <ArticleSection key={section.id} section={section} />
+          ))}
+          <FAQSection faqs={article.faqs} />
+          <RelatedGuides article={article} />
+          <InternalLinks links={article.internalLinks} />
+          <CTASection article={article} />
         </div>
 
         <aside className="space-y-5 lg:sticky lg:top-24 lg:h-fit">
-          <OfficialSourceCard sources={guide.officialSources} />
-          <Callout>
-            Reviewed against official HMRC and Companies House terminology on {guide.reviewed}. See
-            the <a href="/how-we-research" className="text-primary underline">research process</a>.
-          </Callout>
+          <TableOfContents article={article} />
+          <OfficialSourceCard sources={article.officialSources} />
         </aside>
       </article>
     </PublicPage>

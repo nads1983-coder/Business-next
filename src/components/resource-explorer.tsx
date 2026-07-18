@@ -26,8 +26,8 @@ export function ResourceExplorer({
     const guideItems = guides.map((guide) => ({
       key: guide.slug,
       type: "Guide",
-      topic: inferTopic(guide.title),
-      title: guide.shortTitle,
+      topic: guide.category === "companies-house" ? "Companies House" : "Resource",
+      title: guide.title,
       description: guide.description,
       href: resourcePath(guide.slug)
     }));
@@ -104,12 +104,4 @@ export function ResourceExplorer({
       </div>
     </section>
   );
-}
-
-function inferTopic(title: string) {
-  if (/VAT/i.test(title)) return "VAT";
-  if (/PAYE/i.test(title)) return "PAYE";
-  if (/Self Assessment/i.test(title)) return "Self Assessment";
-  if (/Companies House|accounts|confirmation|dormant|company/i.test(title)) return "Companies House";
-  return "HMRC";
 }

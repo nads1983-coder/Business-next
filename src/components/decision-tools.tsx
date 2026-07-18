@@ -4,7 +4,6 @@ import { useMemo, useState } from "react";
 import Link from "next/link";
 import { CheckCircle2 } from "lucide-react";
 import { comparisonPath } from "@/content/authority";
-import { resourcePath } from "@/content/resources";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Label } from "@/components/ui/label";
@@ -28,12 +27,12 @@ export function DecisionTools() {
       tasks.push({
         title: "Check Companies House filing dates",
         reason: "Limited companies normally need to manage Companies House records, accounts and confirmation statements.",
-        href: resourcePath("companies-house-guide")
+        href: "/resources/companies-house"
       });
       tasks.push({
         title: "Check Corporation Tax dates",
         reason: "Active companies usually need to understand Corporation Tax payment and return timing.",
-        href: resourcePath("corporation-tax-guide")
+        href: "/guides/hmrc/corporation-tax-deadlines-for-limited-companies"
       });
     }
 
@@ -41,7 +40,7 @@ export function DecisionTools() {
       tasks.push({
         title: "Review PAYE responsibilities",
         reason: "Employers usually need payroll records and reporting before or when people are paid.",
-        href: resourcePath("paye-guide")
+        href: "/guides/business-admin/small-business-administration-checklist"
       });
     }
 
@@ -49,7 +48,7 @@ export function DecisionTools() {
       tasks.push({
         title: "Check VAT registration guidance",
         reason: "VAT depends on taxable turnover and the official registration rules, so it is worth checking early.",
-        href: resourcePath("vat-guide")
+        href: "/guides/business-admin/small-business-administration-checklist"
       });
     }
 
@@ -57,7 +56,7 @@ export function DecisionTools() {
       tasks.push({
         title: "Check Self Assessment duties",
         reason: "Self-employed income is commonly reported through Self Assessment.",
-        href: resourcePath("self-assessment-guide")
+        href: "/guides/sole-traders/sole-trader-tax-and-record-keeping-checklist"
       });
     }
 
@@ -65,7 +64,7 @@ export function DecisionTools() {
       tasks.push({
         title: "Start with the business deadline calendar",
         reason: "Your answers do not point to a specific filing yet, so build a general deadline map first.",
-        href: resourcePath("business-deadline-calendar")
+        href: "/guides/business-admin/how-to-avoid-missing-companies-house-and-hmrc-deadlines"
       });
     }
 

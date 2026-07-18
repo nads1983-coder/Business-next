@@ -3,7 +3,6 @@
 import { useMemo, useState } from "react";
 import Link from "next/link";
 import { CalendarDays } from "lucide-react";
-import { resourcePath } from "@/content/resources";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
@@ -119,7 +118,7 @@ export function DeadlineCalculators() {
         </p>
         <div className="mt-5 flex flex-col gap-3 sm:flex-row">
           <Button asChild>
-            <Link href={resourcePath("business-deadline-calendar")}>Read deadline calendar guide</Link>
+            <Link href="/guides/business-admin/how-to-avoid-missing-companies-house-and-hmrc-deadlines">Read deadline planning guide</Link>
           </Button>
           <Button asChild variant="outline">
             <Link href="/register">Create personalised reminders</Link>
