@@ -9,6 +9,24 @@ import {
 } from "@/content/resources";
 
 const baseUrl = "https://businesssorted.uk";
+const defaultLastModified = new Date("2026-07-18T00:00:00Z");
+
+function sitemapEntry(path: string, lastModified = defaultLastModified): MetadataRoute.Sitemap[number] {
+  return {
+    url: `${baseUrl}${path}`,
+    lastModified,
+    changeFrequency:
+      path.startsWith("/guides") || path.startsWith("/resources") || path.startsWith("/comparisons")
+        ? "monthly"
+        : "weekly",
+    priority:
+      path === ""
+        ? 1
+        : path === "/resources" || path === "/tools" || path === "/comparisons" || path.startsWith("/guides")
+          ? 0.8
+          : 0.7
+  };
+}
 
 export default function sitemap(): MetadataRoute.Sitemap {
   const publicRoutes = [
@@ -19,11 +37,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/guides",
     ...guideHubs.map((hub) => hub.path),
     ...guides.map((guide) => `/guides/${guide.category}/${guide.slug}`),
-    "/resources",
-    ...Object.keys(resourceCategories).map((category) =>
-      resourceCategoryPath(category as keyof typeof resourceCategories)
-    ),
-    ...getIndexableResourceArticles().map((article) => resourcePath(article.slug)),
     "/tools",
     "/tools/deadline-calculators",
     "/tools/decision-tools",
@@ -43,18 +56,22 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/support"
   ];
 
-  return publicRoutes.map((path) => ({
-    url: `${baseUrl}${path}`,
-    lastModified: new Date(),
-    changeFrequency:
-      path.startsWith("/guides") || path.startsWith("/resources") || path.startsWith("/comparisons")
-        ? "monthly"
-        : "weekly",
-    priority:
-      path === ""
-        ? 1
-        : path === "/resources" || path === "/tools" || path === "/comparisons" || path.startsWith("/guides")
-          ? 0.8
-          : 0.7
-  }));
+  const latestResourceReview = getIndexableResourceArticles()
+    .map((article) => article.lastReviewedDate)
+    .sort()
+    .at(-1);
+  const resourceLastModified = latestResourceReview
+    ? new Date(`${latestResourceReview}T00:00:00Z`)
+    : defaultLastModified;
+
+  return [
+    ...publicRoutes.map((path) => sitemapEntry(path)),
+    sitemapEntry("/resources", resourceLastModified),
+    ...Object.keys(resourceCategories).map((category) =>
+      sitemapEntry(resourceCategoryPath(category as keyof typeof resourceCategories), resourceLastModified)
+    ),
+    ...getIndexableResourceArticles().map((article) =>
+      sitemapEntry(resourcePath(article.slug), new Date(`${article.lastReviewedDate}T00:00:00Z`))
+    )
+  ];
 }

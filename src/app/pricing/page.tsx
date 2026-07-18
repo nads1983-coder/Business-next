@@ -142,6 +142,7 @@ export default async function PricingPage() {
       </section>
 
       <nav className="mt-8 flex flex-wrap gap-4 text-sm text-primary underline">
+        <Link href="/resources/companies-house">Companies House resources</Link>
         <Link href="/terms">Terms</Link>
         <Link href="/privacy">Privacy</Link>
         <Link href="/subscription-terms">Subscription terms</Link>

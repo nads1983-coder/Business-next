@@ -52,7 +52,8 @@ describe("SEO configuration", () => {
   });
 
   it("includes every indexable resource article and category in the XML sitemap", () => {
-    const urls = sitemap().map((entry) => entry.url);
+    const entries = sitemap();
+    const urls = entries.map((entry) => entry.url);
 
     for (const category of Object.keys(resourceCategories)) {
       expect(urls).toContain(absoluteUrl(resourceCategoryPath(category as keyof typeof resourceCategories)));
@@ -60,6 +61,9 @@ describe("SEO configuration", () => {
 
     for (const article of getIndexableResourceArticles()) {
       expect(urls).toContain(absoluteUrl(resourcePath(article.slug)));
+      expect(entries.find((entry) => entry.url === absoluteUrl(resourcePath(article.slug)))?.lastModified).toEqual(
+        new Date(`${article.lastReviewedDate}T00:00:00Z`)
+      );
     }
   });
 

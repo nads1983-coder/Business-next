@@ -9,6 +9,8 @@ import {
   resourcePath,
   type ResourceArticle
 } from "@/content/resources";
+import { ResourceTrackedLink } from "@/components/resource-analytics";
+import { resourceAnalyticsEvents } from "@/lib/resource-analytics";
 import { productConfig } from "@/config/product";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -46,9 +48,17 @@ export function ResourceCard({ article }: { article: ResourceArticle }) {
     <Card>
       <CardHeader>
         <CardTitle className="text-lg">
-          <Link href={resourcePath(article.slug)} className="hover:text-primary">
+          <ResourceTrackedLink
+            href={resourcePath(article.slug)}
+            className="hover:text-primary"
+            eventProps={{
+              target_slug: article.slug,
+              article_category: article.category,
+              link_location: "resource_card_title"
+            }}
+          >
             {article.title}
-          </Link>
+          </ResourceTrackedLink>
         </CardTitle>
       </CardHeader>
       <CardContent className="space-y-4">
@@ -56,12 +66,17 @@ export function ResourceCard({ article }: { article: ResourceArticle }) {
         <p className="text-xs font-medium uppercase tracking-normal text-muted-foreground">
           Reviewed {formatResourceDate(article.lastReviewedDate)} · {article.estimatedReadingTime} min read
         </p>
-        <Link
+        <ResourceTrackedLink
           href={resourcePath(article.slug)}
           className="inline-flex items-center gap-2 text-sm font-medium text-primary underline"
+          eventProps={{
+            target_slug: article.slug,
+            article_category: article.category,
+            link_location: "resource_card_read_guide"
+          }}
         >
           Read guide <ArrowRight className="h-4 w-4" aria-hidden="true" />
-        </Link>
+        </ResourceTrackedLink>
       </CardContent>
     </Card>
   );
@@ -184,7 +199,7 @@ export function ArticleSection({ section }: { section: ResourceArticle["content"
   );
 }
 
-export function OfficialSourceCard({ sources }: { sources: ResourceArticle["officialSources"] }) {
+export function OfficialSourceCard({ article }: { article: ResourceArticle }) {
   return (
     <Card>
       <CardHeader>
@@ -195,17 +210,23 @@ export function OfficialSourceCard({ sources }: { sources: ResourceArticle["offi
       </CardHeader>
       <CardContent>
         <ul className="space-y-3 text-sm">
-          {sources.map((source) => (
+          {article.officialSources.map((source) => (
             <li key={source.href}>
-              <a
+              <ResourceTrackedLink
                 href={source.href}
                 className="inline-flex items-center gap-2 text-primary underline"
                 rel="noreferrer"
                 target="_blank"
+                eventName={resourceAnalyticsEvents.resourceSourceClicked}
+                eventProps={{
+                  article_slug: article.slug,
+                  article_category: article.category,
+                  link_location: "official_sources"
+                }}
               >
                 {source.label}
                 <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
-              </a>
+              </ResourceTrackedLink>
               <span className="mt-1 block text-xs text-muted-foreground">{source.publisher}</span>
             </li>
           ))}
@@ -225,14 +246,21 @@ export function RelatedGuides({ article }: { article: ResourceArticle }) {
       <h2 className="text-2xl font-semibold tracking-normal">Related guides</h2>
       <div className="grid gap-3 sm:grid-cols-2">
         {related.map((relatedArticle) => (
-          <Link
+          <ResourceTrackedLink
             key={relatedArticle.slug}
             href={resourcePath(relatedArticle.slug)}
             className="rounded-md border bg-card p-4 text-sm hover:border-primary/40"
+            eventName={resourceAnalyticsEvents.resourceRelatedArticleClicked}
+            eventProps={{
+              article_slug: article.slug,
+              article_category: article.category,
+              target_slug: relatedArticle.slug,
+              link_location: "related_guides"
+            }}
           >
             <span className="font-medium text-foreground">{relatedArticle.title}</span>
             <span className="mt-2 block text-muted-foreground">{relatedArticle.description}</span>
-          </Link>
+          </ResourceTrackedLink>
         ))}
       </div>
     </section>
@@ -257,16 +285,24 @@ export function FAQSection({ faqs }: { faqs: ResourceArticle["faqs"] }) {
   );
 }
 
-export function InternalLinks({ links }: { links: ResourceArticle["internalLinks"] }) {
+export function InternalLinks({ article }: { article: ResourceArticle }) {
   return (
     <section className="space-y-3">
       <h2 className="text-2xl font-semibold tracking-normal">Useful next steps</h2>
       <ul className="grid gap-3 text-sm sm:grid-cols-2">
-        {links.map((link) => (
+        {article.internalLinks.map((link) => (
           <li key={link.href}>
-            <Link href={link.href} className="block rounded-md border p-4 font-medium hover:border-primary/40">
+            <ResourceTrackedLink
+              href={link.href}
+              className="block rounded-md border p-4 font-medium hover:border-primary/40"
+              eventProps={{
+                article_slug: article.slug,
+                article_category: article.category,
+                link_location: "useful_next_steps"
+              }}
+            >
               {link.label}
-            </Link>
+            </ResourceTrackedLink>
           </li>
         ))}
       </ul>
@@ -302,12 +338,32 @@ export function CTASection({ article }: { article: ResourceArticle }) {
       </p>
       <div className="mt-5 flex flex-col gap-3 sm:flex-row">
         <Button asChild>
-          <Link href={cta.primaryHref}>
+          <ResourceTrackedLink
+            href={cta.primaryHref}
+            eventName={resourceAnalyticsEvents.resourceCtaClicked}
+            eventProps={{
+              article_slug: article.slug,
+              article_category: article.category,
+              cta_variant: article.ctaVariant,
+              link_location: "end_article_primary_cta"
+            }}
+          >
             {cta.primaryLabel} <ArrowRight className="h-4 w-4" aria-hidden="true" />
-          </Link>
+          </ResourceTrackedLink>
         </Button>
         <Button asChild variant="outline">
-          <Link href={cta.secondaryHref}>{cta.secondaryLabel}</Link>
+          <ResourceTrackedLink
+            href={cta.secondaryHref}
+            eventName={resourceAnalyticsEvents.resourceCtaClicked}
+            eventProps={{
+              article_slug: article.slug,
+              article_category: article.category,
+              cta_variant: article.ctaVariant,
+              link_location: "end_article_secondary_cta"
+            }}
+          >
+            {cta.secondaryLabel}
+          </ResourceTrackedLink>
         </Button>
       </div>
     </section>

@@ -66,7 +66,7 @@ export const resourceCtaVariants = {
   "company-accounts": {
     title: "Keep company accounts deadlines in view",
     body:
-      "Never lose sight of your company accounts deadline. BusinessSorted keeps your important company tasks organised in one practical dashboard.",
+      "Keep your company accounts deadline visible alongside the other tasks that need attention. BusinessSorted keeps important company tasks organised in one practical dashboard.",
     primaryHref: "/register",
     primaryLabel: "Start setup",
     secondaryHref: "/pricing",
@@ -811,8 +811,10 @@ export const resourceArticles = [
       }
     ],
     relatedArticleSlugs: [
-      "confirmation-statement-guide",
-      "confirmation-statement-due"
+      "companies-house-deadlines",
+      "first-company-accounts-deadline",
+      "accounting-reference-date",
+      "companies-house-late-filing-penalties"
     ],
     relatedProductFeature: "Company accounts preparation reminders",
     ctaVariant: "company-accounts",
@@ -834,8 +836,10 @@ export const resourceArticles = [
       "Plain-English annual accounts guidance for UK limited company directors, with Companies House deadlines and official source links.",
     internalLinks: [
       { label: "Companies House resources", href: "/resources/companies-house" },
-      { label: "What a confirmation statement is", href: "/resources/confirmation-statement-guide" },
-      { label: "When a confirmation statement is due", href: "/resources/confirmation-statement-due" },
+      { label: "Companies House deadlines", href: "/resources/companies-house-deadlines" },
+      { label: "First accounts deadline", href: "/resources/first-company-accounts-deadline" },
+      { label: "Accounting reference date guide", href: "/resources/accounting-reference-date" },
+      { label: "Late filing penalties", href: "/resources/companies-house-late-filing-penalties" },
       { label: "Start BusinessSorted setup", href: "/register" }
     ]
   },
@@ -2446,7 +2450,7 @@ export function validateResourceArticles(articles: readonly ResourceArticle[] = 
     }
 
     const combinedText = normaliseText(getArticleBodyText(article));
-    for (const banned of ["guarantee compliance", "guaranteed compliance", "files your accounts", "files your confirmation statement", "placeholder", "lorem ipsum"]) {
+    for (const banned of ["guarantee compliance", "guaranteed compliance", "files your accounts", "files your confirmation statement", "automatically tracks", "placeholder", "lorem ipsum"]) {
       if (combinedText.includes(banned)) {
         issues.push({
           slug: article.slug,
@@ -2469,6 +2473,30 @@ export function validateResourceArticles(articles: readonly ResourceArticle[] = 
           slug: article.slug,
           field: "relatedArticleSlugs",
           message: `Published article references unpublished article: ${relatedSlug}`
+        });
+      }
+    }
+
+    const cta = resourceCtaVariants[article.ctaVariant];
+    for (const [field, href] of [
+      ["primaryHref", cta.primaryHref],
+      ["secondaryHref", cta.secondaryHref]
+    ] as const) {
+      if (!href.startsWith("/")) {
+        issues.push({
+          slug: article.slug,
+          field: `ctaVariant.${field}`,
+          message: "Resource CTA destinations must be internal paths"
+        });
+      }
+    }
+
+    for (const link of article.internalLinks) {
+      if (link.href === resourcePath(article.slug)) {
+        issues.push({
+          slug: article.slug,
+          field: "internalLinks",
+          message: "Article must not link to itself"
         });
       }
     }

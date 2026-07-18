@@ -1,4 +1,3 @@
-import Link from "next/link";
 import type { Metadata } from "next";
 import { ArrowRight, Library, SearchCheck } from "lucide-react";
 import {
@@ -11,6 +10,8 @@ import {
 import { JsonLd, absoluteUrl, breadcrumbSchema, createPageMetadata } from "@/lib/seo";
 import { Breadcrumbs, ResourceCard } from "@/components/resource-guide";
 import { PublicPage } from "@/components/public-page";
+import { ResourceTrackedLink, ResourceViewTracker } from "@/components/resource-analytics";
+import { resourceAnalyticsEvents } from "@/lib/resource-analytics";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -44,6 +45,11 @@ export default function ResourcesPage() {
           }
         ]}
       />
+      <ResourceViewTracker
+        eventName={resourceAnalyticsEvents.resourceViewed}
+        eventKey="resources:index"
+        props={{ link_location: "resource_index" }}
+      />
       <div className="space-y-10">
         <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Resources" }]} />
 
@@ -66,16 +72,26 @@ export default function ResourcesPage() {
               <CardHeader>
                 <CardTitle className="flex items-center gap-2 text-lg">
                   <Library className="h-5 w-5 text-primary" aria-hidden="true" />
-                  <Link href={resourceCategoryPath(category.slug)} className="hover:text-primary">
+                  <ResourceTrackedLink
+                    href={resourceCategoryPath(category.slug)}
+                    className="hover:text-primary"
+                    eventName={resourceAnalyticsEvents.resourceNavigationLinkClicked}
+                    eventProps={{ category: category.slug, link_location: "resource_category_card_title" }}
+                  >
                     {category.label}
-                  </Link>
+                  </ResourceTrackedLink>
                 </CardTitle>
               </CardHeader>
               <CardContent className="space-y-4 text-sm leading-6 text-muted-foreground">
                 <p>{category.description}</p>
-                <Link href={resourceCategoryPath(category.slug)} className="font-medium text-primary underline">
+                <ResourceTrackedLink
+                  href={resourceCategoryPath(category.slug)}
+                  className="font-medium text-primary underline"
+                  eventName={resourceAnalyticsEvents.resourceNavigationLinkClicked}
+                  eventProps={{ category: category.slug, link_location: "resource_category_card_cta" }}
+                >
                   Browse {category.label.toLowerCase()} resources
-                </Link>
+                </ResourceTrackedLink>
               </CardContent>
             </Card>
           ))}
@@ -85,8 +101,8 @@ export default function ResourcesPage() {
           <div className="max-w-3xl">
             <h2 className="text-2xl font-semibold tracking-normal">Featured guides</h2>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              Demonstration articles for the resource-centre architecture. Future guides can be
-              added through the typed content model and validation checks.
+              Start with source-checked guides that answer common Companies House questions and
+              point to the next practical step.
             </p>
           </div>
           <div className="grid gap-4 md:grid-cols-2">
@@ -108,9 +124,17 @@ export default function ResourcesPage() {
               <ul className="space-y-4 text-sm">
                 {recentlyReviewed.map((article) => (
                   <li key={article.slug} className="flex flex-col gap-1 border-b pb-3 last:border-0 last:pb-0">
-                    <Link href={`/resources/${article.slug}`} className="font-medium text-primary underline">
+                    <ResourceTrackedLink
+                      href={`/resources/${article.slug}`}
+                      className="font-medium text-primary underline"
+                      eventProps={{
+                        target_slug: article.slug,
+                        article_category: article.category,
+                        link_location: "recently_reviewed"
+                      }}
+                    >
                       {article.title}
-                    </Link>
+                    </ResourceTrackedLink>
                     <span className="text-muted-foreground">
                       Reviewed {formatResourceDate(article.lastReviewedDate)}
                     </span>
@@ -128,12 +152,22 @@ export default function ResourcesPage() {
             </p>
             <div className="mt-5 flex flex-col gap-3">
               <Button asChild>
-                <Link href="/register">
+                <ResourceTrackedLink
+                  href="/register"
+                  eventName={resourceAnalyticsEvents.resourceRegistrationClicked}
+                  eventProps={{ link_location: "resource_index_sidebar" }}
+                >
                   Start setup <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
+                </ResourceTrackedLink>
               </Button>
               <Button asChild variant="outline">
-                <Link href="/pricing">View pricing</Link>
+                <ResourceTrackedLink
+                  href="/pricing"
+                  eventName={resourceAnalyticsEvents.resourcePricingClicked}
+                  eventProps={{ link_location: "resource_index_sidebar" }}
+                >
+                  View pricing
+                </ResourceTrackedLink>
               </Button>
             </div>
           </aside>

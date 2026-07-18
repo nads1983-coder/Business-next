@@ -20,6 +20,7 @@ export function PublicFooter() {
         <p className="max-w-3xl min-w-0 leading-6">{productConfig.tradingNameDisclosure}</p>
         <nav className="flex min-w-0 max-w-3xl flex-wrap gap-3 sm:gap-4 lg:justify-end" aria-label="Legal">
           <Link href="/resources" className="hover:text-foreground">Resources</Link>
+          <Link href="/resources/companies-house" className="hover:text-foreground">Companies House resources</Link>
           <Link href="/tools" className="hover:text-foreground">Tools</Link>
           <Link href="/comparisons" className="hover:text-foreground">Comparisons</Link>
           <Link href="/downloads" className="hover:text-foreground">Downloads</Link>
@@ -48,6 +49,9 @@ export function PublicPage({
 }) {
   return (
     <main className="min-h-screen bg-background">
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
       <header className="border-b">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
           <Link href="/" className="font-semibold">
@@ -63,7 +67,11 @@ export function PublicPage({
           <MobileNav items={publicNavItems} footer={productConfig.tradingNameDisclosure} />
         </div>
       </header>
-      <div className={narrow ? "mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10" : "mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10"}>
+      <div
+        id="main-content"
+        tabIndex={-1}
+        className={narrow ? "mx-auto max-w-3xl px-4 py-8 sm:px-6 sm:py-10" : "mx-auto max-w-6xl px-4 py-8 sm:px-6 sm:py-10"}
+      >
         {children}
       </div>
       <PublicFooter />

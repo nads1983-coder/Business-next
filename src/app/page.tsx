@@ -2,10 +2,11 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { ArrowRight, CalendarCheck, CheckCircle2, FileText, ShieldCheck } from "lucide-react";
 import { productConfig } from "@/config/product";
-import { guides } from "@/content/seo-content";
+import { getResourceArticle, type ResourceArticle } from "@/content/resources";
 import { JsonLd, organizationSchema, pageMetadata, websiteSchema } from "@/lib/seo";
 import { MobileNav } from "@/components/mobile-nav";
 import { PublicFooter, publicNavItems } from "@/components/public-page";
+import { ResourceCard } from "@/components/resource-guide";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -15,11 +16,15 @@ export const metadata: Metadata = pageMetadata({
   path: "/"
 });
 
-const featuredGuides = [
-  "uk-limited-company-filing-deadlines",
-  "confirmation-statement-deadline-explained",
-  "sole-trader-tax-and-record-keeping-checklist"
-].map((slug) => guides.find((guide) => guide.slug === slug)).filter(Boolean);
+const featuredResourceSlugs = [
+  "companies-house-deadlines",
+  "confirmation-statement-guide",
+  "first-year-companies-house-checklist"
+] as const;
+
+const featuredResources = featuredResourceSlugs
+  .map((slug) => getResourceArticle(slug))
+  .filter((article): article is ResourceArticle => article?.status === "published");
 
 export default function MarketingPage() {
   const softwareSchema = {
@@ -42,6 +47,9 @@ export default function MarketingPage() {
 
   return (
     <main className="min-h-screen bg-background">
+      <a href="#main-content" className="skip-link">
+        Skip to main content
+      </a>
       <JsonLd data={[organizationSchema(), websiteSchema(), softwareSchema]} />
       <header className="border-b">
         <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
@@ -59,7 +67,7 @@ export default function MarketingPage() {
         </div>
       </header>
 
-      <section className="mx-auto grid min-h-[calc(100vh-73px)] max-w-6xl items-center gap-8 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-10">
+      <section id="main-content" tabIndex={-1} className="mx-auto grid min-h-[calc(100vh-73px)] max-w-6xl items-center gap-8 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-10">
         <div className="min-w-0">
           <p className="text-sm font-medium text-primary">For first-time UK founders, directors and sole traders</p>
           <h1 className="mt-4 max-w-4xl text-4xl font-semibold tracking-normal text-foreground sm:text-6xl">
@@ -122,24 +130,14 @@ export default function MarketingPage() {
 
       <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12">
         <div className="max-w-3xl">
-          <h2 className="text-3xl font-semibold tracking-normal">Plain-English compliance for real first-year questions</h2>
+          <h2 className="text-3xl font-semibold tracking-normal">Source-checked resources for real first-year questions</h2>
           <p className="mt-3 text-muted-foreground">
-            Start with the tasks UK business owners search for when they are trying to avoid missed filings, confusing dates and last-minute paperwork.
+            Start with the Companies House questions directors search for when they are trying to avoid missed filings, confusing dates and last-minute paperwork.
           </p>
         </div>
         <div className="mt-6 grid gap-4 md:grid-cols-3">
-          {featuredGuides.map((guide) => (
-            <Card key={guide!.slug}>
-              <CardHeader>
-                <CardTitle className="text-base">{guide!.title}</CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-4 text-sm leading-6 text-muted-foreground">
-                <p>{guide!.summary}</p>
-                <Link href={`/guides/${guide!.category}/${guide!.slug}`} className="font-medium text-primary underline">
-                  Read the {guide!.primaryKeyword} guide
-                </Link>
-              </CardContent>
-            </Card>
+          {featuredResources.map((article) => (
+            <ResourceCard key={article.slug} article={article} />
           ))}
         </div>
       </section>

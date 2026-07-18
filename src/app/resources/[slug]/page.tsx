@@ -22,6 +22,8 @@ import {
   TableOfContents
 } from "@/components/resource-guide";
 import { PublicPage } from "@/components/public-page";
+import { ResourceViewTracker } from "@/components/resource-analytics";
+import { resourceAnalyticsEvents } from "@/lib/resource-analytics";
 
 type ResourceArticlePageProps = {
   params: Promise<{ slug: string }>;
@@ -103,6 +105,15 @@ export default async function ResourceArticlePage({ params }: ResourceArticlePag
   return (
     <PublicPage>
       <JsonLd data={structuredData} />
+      <ResourceViewTracker
+        eventName={resourceAnalyticsEvents.resourceArticleViewed}
+        eventKey={`article:${article.slug}`}
+        props={{
+          article_slug: article.slug,
+          article_category: article.category,
+          article_group: article.cluster
+        }}
+      />
       <article className="mx-auto grid max-w-6xl gap-8 lg:grid-cols-[minmax(0,1fr)_320px]">
         <div className="space-y-8">
           <ArticleHeader article={article} />
@@ -114,13 +125,13 @@ export default async function ResourceArticlePage({ params }: ResourceArticlePag
           ))}
           <FAQSection faqs={article.faqs} />
           <RelatedGuides article={article} />
-          <InternalLinks links={article.internalLinks} />
+          <InternalLinks article={article} />
           <CTASection article={article} />
         </div>
 
         <aside className="space-y-5 lg:sticky lg:top-24 lg:h-fit">
           <TableOfContents article={article} />
-          <OfficialSourceCard sources={article.officialSources} />
+          <OfficialSourceCard article={article} />
         </aside>
       </article>
     </PublicPage>

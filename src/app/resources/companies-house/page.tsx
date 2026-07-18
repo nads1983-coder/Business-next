@@ -1,5 +1,4 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { ArrowRight, FolderOpen } from "lucide-react";
 import {
   formatResourceDate,
@@ -15,6 +14,8 @@ import {
 import { JsonLd, absoluteUrl, breadcrumbSchema, createPageMetadata } from "@/lib/seo";
 import { Breadcrumbs, ResourceCard } from "@/components/resource-guide";
 import { PublicPage } from "@/components/public-page";
+import { ResourceTrackedLink, ResourceViewTracker } from "@/components/resource-analytics";
+import { resourceAnalyticsEvents } from "@/lib/resource-analytics";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
@@ -87,6 +88,11 @@ export default function CompaniesHouseResourcesPage() {
           }
         ]}
       />
+      <ResourceViewTracker
+        eventName={resourceAnalyticsEvents.resourceCategoryViewed}
+        eventKey="resource-category:companies-house"
+        props={{ category: "companies-house" }}
+      />
       <div className="space-y-10">
         <Breadcrumbs
           items={[
@@ -137,9 +143,18 @@ export default function CompaniesHouseResourcesPage() {
                   <ul className="space-y-2 text-sm">
                     {groupArticles.map((article) => (
                       <li key={article.slug}>
-                        <Link href={resourcePath(article.slug)} className="text-primary underline">
+                        <ResourceTrackedLink
+                          href={resourcePath(article.slug)}
+                          className="text-primary underline"
+                          eventProps={{
+                            category: "companies-house",
+                            target_slug: article.slug,
+                            article_category: article.category,
+                            link_location: `category_group_${group}`
+                          }}
+                        >
                           {article.title}
-                        </Link>
+                        </ResourceTrackedLink>
                       </li>
                     ))}
                   </ul>
@@ -156,9 +171,18 @@ export default function CompaniesHouseResourcesPage() {
               <ul className="divide-y text-sm">
                 {recentlyReviewed.slice(0, 8).map((article) => (
                   <li key={article.slug} className="flex flex-col gap-1 p-4 sm:flex-row sm:items-center sm:justify-between">
-                    <Link href={resourcePath(article.slug)} className="font-medium text-primary underline">
+                    <ResourceTrackedLink
+                      href={resourcePath(article.slug)}
+                      className="font-medium text-primary underline"
+                      eventProps={{
+                        category: "companies-house",
+                        target_slug: article.slug,
+                        article_category: article.category,
+                        link_location: "category_recently_reviewed"
+                      }}
+                    >
                       {article.title}
-                    </Link>
+                    </ResourceTrackedLink>
                     <span className="text-muted-foreground">
                       Reviewed {formatResourceDate(article.lastReviewedDate)}
                     </span>
@@ -167,16 +191,19 @@ export default function CompaniesHouseResourcesPage() {
               </ul>
             </div>
 
-            <div className="grid gap-4 md:grid-cols-2">
-              {categoryFaqs.map((faq) => (
-                <Card key={faq.question}>
-                  <CardHeader>
-                    <CardTitle className="text-base">{faq.question}</CardTitle>
-                  </CardHeader>
-                  <CardContent className="text-sm leading-6 text-muted-foreground">{faq.answer}</CardContent>
-                </Card>
-              ))}
-            </div>
+            <section className="space-y-4">
+              <h2 className="text-2xl font-semibold tracking-normal">Companies House questions</h2>
+              <div className="grid gap-4 md:grid-cols-2">
+                {categoryFaqs.map((faq) => (
+                  <Card key={faq.question}>
+                    <CardHeader>
+                      <CardTitle className="text-base">{faq.question}</CardTitle>
+                    </CardHeader>
+                    <CardContent className="text-sm leading-6 text-muted-foreground">{faq.answer}</CardContent>
+                  </Card>
+                ))}
+              </div>
+            </section>
           </div>
 
           <aside className="rounded-md border bg-secondary/30 p-5">
@@ -187,12 +214,22 @@ export default function CompaniesHouseResourcesPage() {
             </p>
             <div className="mt-5 flex flex-col gap-3">
               <Button asChild>
-                <Link href="/register">
+                <ResourceTrackedLink
+                  href="/register"
+                  eventName={resourceAnalyticsEvents.resourceRegistrationClicked}
+                  eventProps={{ category: "companies-house", link_location: "category_sidebar" }}
+                >
                   Start setup <ArrowRight className="h-4 w-4" aria-hidden="true" />
-                </Link>
+                </ResourceTrackedLink>
               </Button>
               <Button asChild variant="outline">
-                <Link href="/pricing">View pricing</Link>
+                <ResourceTrackedLink
+                  href="/pricing"
+                  eventName={resourceAnalyticsEvents.resourcePricingClicked}
+                  eventProps={{ category: "companies-house", link_location: "category_sidebar" }}
+                >
+                  View pricing
+                </ResourceTrackedLink>
               </Button>
             </div>
           </aside>
