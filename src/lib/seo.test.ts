@@ -45,6 +45,9 @@ describe("SEO configuration", () => {
     expect(urls).toContain("https://businesssorted.uk/editorial-policy");
     expect(urls).not.toContain("https://businesssorted.uk/login");
     expect(urls).not.toContain("https://businesssorted.uk/register");
+    expect(urls).not.toContain("https://businesssorted.uk/app/money");
+    expect(urls).not.toContain("https://businesssorted.uk/app/ask");
+    expect(urls).not.toContain("https://businesssorted.uk/app/calendar");
     expect(urls.some((url) => url.includes("/app"))).toBe(false);
   });
 

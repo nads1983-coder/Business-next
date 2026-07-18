@@ -10,6 +10,7 @@ import { Button } from "@/components/ui/button";
 export type MobileNavItem = {
   label: string;
   href: string;
+  status?: string;
 };
 
 export function MobileNav({
@@ -98,7 +99,15 @@ export function MobileNav({
                         aria-current={active ? "page" : undefined}
                         onClick={() => setOpen(false)}
                       >
-                        {item.label}
+                        <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                        {item.status ? (
+                          <span
+                            className="ml-3 shrink-0 rounded-md border border-primary/20 bg-secondary px-2 py-0.5 text-xs font-semibold text-secondary-foreground"
+                            aria-label={`${item.label} status: ${item.status}`}
+                          >
+                            {item.status}
+                          </span>
+                        ) : null}
                       </Link>
                     </li>
                   );

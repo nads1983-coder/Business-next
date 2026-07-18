@@ -6,6 +6,7 @@ import { getPrisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/session";
 import { MobileNav } from "@/components/mobile-nav";
 import { SignOutButton } from "@/components/sign-out-button";
+import { Badge } from "@/components/ui/badge";
 
 export const metadata: Metadata = pageMetadata({
   title: "Business Sorted app",
@@ -21,7 +22,7 @@ export default async function AppLayout({ children }: { children: React.ReactNod
     select: { role: true }
   });
   const navigation = productConfig.navigation.filter((item) => !("adminOnly" in item) || dbUser?.role === "ADMIN");
-  const mobileNavigation = navigation.map((item) => ({ label: item.label, href: item.href }));
+  const mobileNavigation = navigation.map((item) => ({ label: item.label, href: item.href, status: "status" in item ? item.status : undefined }));
 
   return (
     <div className="min-h-screen bg-background">
@@ -48,7 +49,16 @@ export default async function AppLayout({ children }: { children: React.ReactNod
                   className="flex min-h-11 min-w-0 items-center gap-2 rounded-md px-3 text-sm font-medium text-muted-foreground hover:bg-secondary hover:text-foreground"
                 >
                   <item.icon className="h-4 w-4" aria-hidden="true" />
-                  <span className="min-w-0 truncate">{item.label}</span>
+                  <span className="min-w-0 flex-1 truncate">{item.label}</span>
+                  {"status" in item ? (
+                    <Badge
+                      variant="calm"
+                      className="shrink-0 px-2 py-0 text-[0.68rem]"
+                      aria-label={`${item.label} status: ${item.status}`}
+                    >
+                      {item.status}
+                    </Badge>
+                  ) : null}
                 </Link>
               </li>
             ))}

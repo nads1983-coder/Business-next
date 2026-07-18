@@ -47,10 +47,10 @@ export const productConfig = {
   navigation: [
     { label: "Home", href: "/app", icon: Home },
     { label: "My tasks", href: "/app/tasks", icon: ListChecks },
-    { label: "Money", href: "/app/money", icon: CircleDollarSign },
+    { label: "Money", href: "/app/money", icon: CircleDollarSign, status: "Coming soon" },
     { label: "Documents", href: "/app/documents", icon: FileText },
-    { label: "Ask", href: "/app/ask", icon: HelpCircle },
-    { label: "Calendar", href: "/app/calendar", icon: CalendarDays },
+    { label: "Ask", href: "/app/ask", icon: HelpCircle, status: "Coming soon" },
+    { label: "Calendar", href: "/app/calendar", icon: CalendarDays, status: "Coming soon" },
     { label: "Billing", href: "/app/billing", icon: CreditCard },
     { label: "Settings", href: "/app/settings", icon: Settings },
     { label: "Admin", href: "/app/admin", icon: ShieldCheck, adminOnly: true }

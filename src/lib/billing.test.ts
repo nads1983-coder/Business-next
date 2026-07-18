@@ -3,6 +3,10 @@ import { beforeEach, describe, expect, it, vi } from "vitest";
 vi.mock("server-only", () => ({}));
 
 const findUnique = vi.fn();
+const requireUser = vi.fn();
+const redirect = vi.fn((href: string) => {
+  throw new Error(`redirect:${href}`);
+});
 
 vi.mock("@/lib/prisma", () => ({
   getPrisma: () => ({
@@ -10,10 +14,20 @@ vi.mock("@/lib/prisma", () => ({
   })
 }));
 
+vi.mock("@/lib/session", () => ({
+  requireUser
+}));
+
+vi.mock("next/navigation", () => ({
+  redirect
+}));
+
 describe("billing entitlement access", () => {
   beforeEach(() => {
     vi.resetModules();
     findUnique.mockReset();
+    requireUser.mockReset();
+    redirect.mockClear();
     process.env.BUSINESS_NEXT_BILLING_ENABLED = "false";
     delete process.env.STRIPE_PRICE_ID_MONTHLY;
     delete process.env.STRIPE_LIVE_PRICE_ID_MONTHLY;
@@ -59,5 +73,15 @@ describe("billing entitlement access", () => {
 
     expect(access.allowed).toBe(false);
     expect(access.source).toBe("BILLING_NOT_LIVE");
+  });
+
+  it("preserves the login redirect for unauthenticated product access", async () => {
+    requireUser.mockImplementation(async () => redirect("/login"));
+
+    const { requireProductAccess } = await import("./billing");
+
+    await expect(requireProductAccess()).rejects.toThrow("redirect:/login");
+    expect(redirect).toHaveBeenCalledWith("/login");
+    expect(findUnique).not.toHaveBeenCalled();
   });
 });
