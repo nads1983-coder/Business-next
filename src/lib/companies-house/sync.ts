@@ -1,6 +1,6 @@
 import "server-only";
 
-import type { BusinessProfile, Prisma, Task } from "@prisma/client";
+import type { BusinessProfile, Prisma, PrismaClient, Task } from "@prisma/client";
 import { addDays, format } from "date-fns";
 import {
   CompaniesHouseError,
@@ -34,10 +34,90 @@ type ProfilePatchDecision = {
   useCompaniesHouseValues?: boolean;
 };
 
+const defaultCompaniesHouseSyncIntervalHours = 24;
+const defaultCompaniesHouseSyncBatchSize = 25;
+const maxCompaniesHouseSyncBatchSize = 50;
+const defaultCompaniesHouseSyncDelayMs = 250;
+const companiesHouseSyncLockId = 34716208;
+
 const companyTaskKeys = new Set([
   "limited-company-first-accounts",
   "limited-company-confirmation-statement"
 ]);
+
+function positiveInteger(value: string | undefined, fallback: number) {
+  const parsed = Number.parseInt(value ?? "", 10);
+  return Number.isFinite(parsed) && parsed > 0 ? parsed : fallback;
+}
+
+export function companiesHouseSyncConfig(env: NodeJS.ProcessEnv = process.env) {
+  const intervalHours = positiveInteger(env.COMPANIES_HOUSE_SYNC_INTERVAL_HOURS, defaultCompaniesHouseSyncIntervalHours);
+  const batchSize = Math.min(
+    positiveInteger(env.COMPANIES_HOUSE_SYNC_BATCH_SIZE, defaultCompaniesHouseSyncBatchSize),
+    maxCompaniesHouseSyncBatchSize
+  );
+  const providerDelayMs = positiveInteger(env.COMPANIES_HOUSE_SYNC_DELAY_MS, defaultCompaniesHouseSyncDelayMs);
+
+  return { intervalHours, batchSize, providerDelayMs, maxBatchSize: maxCompaniesHouseSyncBatchSize };
+}
+
+export function companiesHouseEligibleProfileWhere(now: Date, intervalHours: number): Prisma.BusinessProfileWhereInput {
+  return {
+    businessType: "LIMITED_COMPANY",
+    companyNumber: { not: null },
+    AND: [
+      { OR: [{ companiesHouseSyncStatus: null }, { companiesHouseSyncStatus: { not: "disabled" } }] },
+      {
+        OR: [
+          { companiesHouseLastSyncedAt: null },
+          { companiesHouseLastSyncedAt: { lt: new Date(now.getTime() - intervalHours * 60 * 60 * 1000) } }
+        ]
+      }
+    ],
+    business: {
+      user: {
+        OR: [
+          { role: "ADMIN" },
+          {
+            entitlements: {
+              some: {
+                status: "ACTIVE",
+                kind: { in: ["FOUNDER", "COMPLIMENTARY", "TRIAL", "PAID"] },
+                OR: [{ endsAt: null }, { endsAt: { gt: now } }]
+              }
+            }
+          },
+          {
+            subscriptions: {
+              some: { billingStatus: { in: ["ACTIVE", "TRIALING"] } }
+            }
+          }
+        ]
+      }
+    }
+  };
+}
+
+function syncLog(level: "info" | "error", event: string, metadata: Record<string, unknown>) {
+  console[level](JSON.stringify({ event, source: "companies_house_sync", ...metadata }));
+}
+
+function sleep(ms: number) {
+  return ms > 0 ? new Promise((resolve) => setTimeout(resolve, ms)) : Promise.resolve();
+}
+
+async function tryCompaniesHouseSyncLock(prisma: PrismaClient) {
+  const rows = await prisma.$queryRaw<Array<{ locked: boolean }>>`
+    SELECT pg_try_advisory_lock(${companiesHouseSyncLockId}) AS locked
+  `;
+  return rows[0]?.locked === true;
+}
+
+async function releaseCompaniesHouseSyncLock(prisma: PrismaClient) {
+  await prisma.$queryRaw<Array<{ unlocked: boolean }>>`
+    SELECT pg_advisory_unlock(${companiesHouseSyncLockId}) AS unlocked
+  `;
+}
 
 function toIsoDate(value?: string | null) {
   const parsed = parseUkDate(value);
@@ -412,28 +492,56 @@ export async function syncCompaniesHouseForBusiness({
   }
 }
 
-export async function runCompaniesHouseSync({ limit = 25 }: { limit?: number } = {}) {
+export async function runCompaniesHouseSync({ limit }: { limit?: number } = {}) {
   const prisma = getPrisma();
-  const profiles = await prisma.businessProfile.findMany({
-    where: {
-      businessType: "LIMITED_COMPANY",
-      companyNumber: { not: null },
-      OR: [
-        { companiesHouseLastSyncedAt: null },
-        { companiesHouseLastSyncedAt: { lt: new Date(Date.now() - 20 * 60 * 60 * 1000) } }
-      ]
-    },
-    take: limit,
-    orderBy: { companiesHouseLastSyncedAt: "asc" },
-    select: { businessId: true }
-  });
+  const config = companiesHouseSyncConfig();
+  const batchLimit = Math.min(limit ?? config.batchSize, config.maxBatchSize);
+  const locked = await tryCompaniesHouseSyncLock(prisma);
 
-  const result = { processed: 0, skipped: 0, failed: 0 };
-  for (const profile of profiles) {
-    const sync = await syncCompaniesHouseForBusiness({ businessId: profile.businessId });
-    if (sync.skipped) result.skipped += 1;
-    else if ("failed" in sync && sync.failed) result.failed += 1;
-    else result.processed += 1;
+  if (!locked) {
+    const result = { processed: 0, skipped: 0, failed: 0, locked: true };
+    syncLog("info", "companies_house_sync_skipped_overlap", result);
+    return result;
   }
-  return result;
+
+  try {
+    const startedAt = new Date();
+    const profiles = await prisma.businessProfile.findMany({
+      where: companiesHouseEligibleProfileWhere(startedAt, config.intervalHours),
+      take: batchLimit,
+      orderBy: { companiesHouseLastSyncedAt: "asc" },
+      select: { businessId: true }
+    });
+
+    const result = { processed: 0, skipped: 0, failed: 0, locked: false };
+    syncLog("info", "companies_house_sync_started", {
+      batchLimit,
+      eligibleSelected: profiles.length,
+      intervalHours: config.intervalHours
+    });
+
+    for (const [index, profile] of profiles.entries()) {
+      try {
+        const sync = await syncCompaniesHouseForBusiness({ businessId: profile.businessId });
+        if (sync.skipped) result.skipped += 1;
+        else if ("failed" in sync && sync.failed) result.failed += 1;
+        else result.processed += 1;
+      } catch (error) {
+        result.failed += 1;
+        syncLog("error", "companies_house_sync_business_failed", {
+          businessId: profile.businessId,
+          error: error instanceof Error ? error.message : "unknown"
+        });
+      }
+
+      if (index < profiles.length - 1) {
+        await sleep(config.providerDelayMs);
+      }
+    }
+
+    syncLog("info", "companies_house_sync_finished", result);
+    return result;
+  } finally {
+    await releaseCompaniesHouseSyncLock(prisma);
+  }
 }

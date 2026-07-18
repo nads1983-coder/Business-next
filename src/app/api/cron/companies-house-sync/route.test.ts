@@ -6,6 +6,7 @@ vi.mock("server-only", () => ({}));
 const runCompaniesHouseSync = vi.fn(async () => ({ processed: 1, skipped: 0, failed: 0 }));
 
 vi.mock("@/lib/companies-house/sync", () => ({
+  companiesHouseSyncConfig: () => ({ batchSize: 25, intervalHours: 24, providerDelayMs: 250, maxBatchSize: 50 }),
   runCompaniesHouseSync
 }));
 
@@ -40,5 +41,20 @@ describe("Companies House sync cron route", () => {
 
     await expect(response.json()).resolves.toEqual({ processed: 1, skipped: 0, failed: 0 });
     expect(runCompaniesHouseSync).toHaveBeenCalledWith({ limit: 50 });
+  });
+
+  it("supports authenticated Vercel Cron GET requests", async () => {
+    process.env.CRON_SECRET = "secret";
+    const { GET } = await import("./route");
+
+    const response = await GET(
+      new NextRequest("https://example.com/api/cron/companies-house-sync", {
+        method: "GET",
+        headers: { authorization: "Bearer secret" }
+      })
+    );
+
+    await expect(response.json()).resolves.toEqual({ processed: 1, skipped: 0, failed: 0 });
+    expect(runCompaniesHouseSync).toHaveBeenCalledWith({ limit: 25 });
   });
 });

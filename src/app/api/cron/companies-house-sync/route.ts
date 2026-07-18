@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
-import { runCompaniesHouseSync } from "@/lib/companies-house/sync";
+import { companiesHouseSyncConfig, runCompaniesHouseSync } from "@/lib/companies-house/sync";
 
-export async function POST(request: NextRequest) {
+async function handleCompaniesHouseSync(request: NextRequest) {
   const secret = process.env.CRON_SECRET;
   const auth = request.headers.get("authorization");
 
@@ -10,8 +10,17 @@ export async function POST(request: NextRequest) {
   }
 
   const limit = Number.parseInt(request.nextUrl.searchParams.get("limit") ?? "25", 10);
+  const config = companiesHouseSyncConfig();
   const result = await runCompaniesHouseSync({
-    limit: Number.isFinite(limit) ? Math.min(Math.max(limit, 1), 50) : 25
+    limit: Number.isFinite(limit) ? Math.min(Math.max(limit, 1), config.maxBatchSize) : config.batchSize
   });
   return NextResponse.json(result);
+}
+
+export async function GET(request: NextRequest) {
+  return handleCompaniesHouseSync(request);
+}
+
+export async function POST(request: NextRequest) {
+  return handleCompaniesHouseSync(request);
 }
