@@ -124,6 +124,40 @@ export function BusinessSettingsForm({
             <option value="NO">Off</option>
           </select>
         </div>
+        <div className="space-y-2">
+          <Label htmlFor="reminderPreference">Reminder frequency</Label>
+          <select
+            id="reminderPreference"
+            name="reminderPreference"
+            defaultValue={profile.reminderPreference}
+            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm"
+          >
+            <option value="standard">Standard</option>
+            <option value="reduced">Reduced frequency</option>
+            <option value="critical">Critical only</option>
+          </select>
+          <p className="text-xs text-muted-foreground">Service, security and billing emails are separate from optional reminders.</p>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="reminderSnoozedUntil">Snooze reminders until</Label>
+          <Input id="reminderSnoozedUntil" name="reminderSnoozedUntil" type="date" defaultValue={dateValue(profile.reminderSnoozedUntil)} />
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="reminderPreferredHour">Preferred reminder hour</Label>
+          <Input
+            id="reminderPreferredHour"
+            name="reminderPreferredHour"
+            type="number"
+            min={0}
+            max={23}
+            defaultValue={profile.reminderPreferredHour}
+          />
+          <p className="text-xs text-muted-foreground">Uses 24-hour time in your business timezone.</p>
+        </div>
+        <div className="space-y-2">
+          <Label htmlFor="reminderTimezone">Business timezone</Label>
+          <Input id="reminderTimezone" name="reminderTimezone" defaultValue={profile.reminderTimezone} />
+        </div>
       </div>
       <p className="text-sm text-muted-foreground">
         Changing dates can move active deadlines. Business Sorted keeps completed and not-applicable history, then recalculates only the active list.

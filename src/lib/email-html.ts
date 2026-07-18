@@ -7,6 +7,15 @@ const cardStyle =
 const buttonStyle =
   "display: inline-block; background: #0f766e; color: #ffffff; text-decoration: none; padding: 12px 16px; border-radius: 6px; font-weight: 700;";
 
+function escapeHtml(value: string) {
+  return value
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#39;");
+}
+
 function baseEmail({
   title,
   intro,
@@ -59,21 +68,42 @@ export function passwordResetEmailHtml(href: string) {
 
 export function deadlineReminderEmailHtml({
   taskTitle,
+  businessName,
   dueDate,
+  timeRemaining,
   nextAction,
+  reason,
+  preparationSteps,
   href
 }: {
   taskTitle: string;
+  businessName: string;
   dueDate: string;
+  timeRemaining: string;
   nextAction: string;
+  reason: string;
+  preparationSteps: string[];
   href: string;
 }) {
+  const preparation = preparationSteps.length
+    ? `<ul>${preparationSteps.slice(0, 5).map((step) => `<li>${escapeHtml(step)}</li>`).join("")}</ul>`
+    : "<p>No extra preparation steps are listed for this task yet.</p>";
+
   return baseEmail({
-    title: taskTitle,
-    intro: `This Business Sorted reminder is about a deadline due ${dueDate}. Next step: ${nextAction}`,
+    title: escapeHtml(taskTitle),
+    intro: `
+      This Business Sorted reminder is for ${escapeHtml(businessName)}. The verified deadline is ${escapeHtml(dueDate)}, which is ${escapeHtml(timeRemaining)}.
+      <br /><br />
+      You are receiving this because ${escapeHtml(reason)}.
+      <br /><br />
+      Next step: ${escapeHtml(nextAction)}
+      <br /><br />
+      Preparation steps:
+      ${preparation}
+    `,
     buttonLabel: "Open task",
     href,
     expiresText:
-      "This is a deadline reminder, not accounting, tax or legal advice. Check the official source in the task if you are unsure."
+      "Business Sorted provides general compliance-support information only. It is not legal, tax, accounting or financial advice, and Business Sorted has not filed anything on your behalf."
   });
 }

@@ -20,7 +20,11 @@ const settingsSchema = z.object({
   vatPeriodEndsOn: z.string().optional(),
   employsPeople: z.enum(["YES", "NO", "NOT_SURE"]),
   firstPayday: z.string().optional(),
-  wantsEmailReminders: z.enum(["YES", "NO"])
+  wantsEmailReminders: z.enum(["YES", "NO"]),
+  reminderPreference: z.enum(["standard", "reduced", "critical"]),
+  reminderSnoozedUntil: z.string().optional(),
+  reminderPreferredHour: z.coerce.number().min(0).max(23),
+  reminderTimezone: z.string().trim().min(1).max(80)
 });
 
 const acknowledgeCompaniesHouseChangeSchema = z.object({
@@ -45,7 +49,11 @@ export async function updateBusinessSettingsAction(_: unknown, formData: FormDat
     vatPeriodEndsOn: formData.get("vatPeriodEndsOn") || undefined,
     employsPeople: formData.get("employsPeople"),
     firstPayday: formData.get("firstPayday") || undefined,
-    wantsEmailReminders: formData.get("wantsEmailReminders")
+    wantsEmailReminders: formData.get("wantsEmailReminders"),
+    reminderPreference: formData.get("reminderPreference"),
+    reminderSnoozedUntil: formData.get("reminderSnoozedUntil") || undefined,
+    reminderPreferredHour: formData.get("reminderPreferredHour"),
+    reminderTimezone: formData.get("reminderTimezone")
   });
 
   if (!parsed.success) {
@@ -89,7 +97,11 @@ export async function updateBusinessSettingsAction(_: unknown, formData: FormDat
           employsPeople: parsed.data.employsPeople,
           worksAlone: parsed.data.employsPeople === "YES" ? "NO" : "YES",
           firstPayday: toDate(parsed.data.firstPayday),
-          wantsEmailReminders: parsed.data.wantsEmailReminders === "YES"
+          wantsEmailReminders: parsed.data.wantsEmailReminders === "YES",
+          reminderPreference: parsed.data.reminderPreference,
+          reminderSnoozedUntil: toDate(parsed.data.reminderSnoozedUntil),
+          reminderPreferredHour: parsed.data.reminderPreferredHour,
+          reminderTimezone: parsed.data.reminderTimezone
         }
       }
     }

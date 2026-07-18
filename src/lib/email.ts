@@ -63,17 +63,25 @@ async function sendEmail({
 export async function sendDeadlineReminderEmail({
   email,
   taskTitle,
+  businessName,
   dueDate,
+  timeRemaining,
   nextAction,
+  reason,
+  preparationSteps,
   taskId,
-  interval
+  idempotencyKey
 }: {
   email: string;
   taskTitle: string;
+  businessName: string;
   dueDate: string;
+  timeRemaining: string;
   nextAction: string;
+  reason: string;
+  preparationSteps: string[];
   taskId: string;
-  interval: string;
+  idempotencyKey: string;
 }) {
   const url = new URL(`/app/tasks/${taskId}`, emailConfig.appUrl);
 
@@ -82,11 +90,15 @@ export async function sendDeadlineReminderEmail({
     subject: `Business Sorted reminder: ${taskTitle}`,
     html: deadlineReminderEmailHtml({
       taskTitle,
+      businessName,
       dueDate,
+      timeRemaining,
       nextAction,
+      reason,
+      preparationSteps,
       href: url.toString()
     }),
-    idempotencyKey: `deadline-${taskId}-${interval}`
+    idempotencyKey
   });
 }
 

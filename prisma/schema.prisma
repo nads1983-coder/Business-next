@@ -82,6 +82,7 @@ enum ReminderInterval {
   FOURTEEN_DAYS
   SEVEN_DAYS
   ONE_DAY
+  DUE_TODAY
   OVERDUE
 }
 
@@ -307,6 +308,10 @@ model BusinessProfile {
   usesAccountant           AnswerChoice        @default(NOT_SURE)
   businessYearEndMonth     Int?
   wantsEmailReminders      Boolean             @default(false)
+  reminderPreference       String              @default("standard")
+  reminderSnoozedUntil     DateTime?
+  reminderPreferredHour    Int                 @default(9)
+  reminderTimezone         String              @default("Europe/London")
   salesSoFarPence          Int                 @default(0)
   costsSoFarPence          Int                 @default(0)
   onboardingCompletedAt    DateTime?
@@ -372,14 +377,23 @@ model ReminderDelivery {
   id         String           @id @default(cuid())
   taskId     String
   interval   ReminderInterval
+  stage      String?
+  channel    String           @default("email")
+  dedupeKey  String?
+  ruleVersion String?
+  dueDate    DateTime?
+  reason     String?
+  status     String           @default("sent")
+  error      String?
   sentTo     String
   sentAt     DateTime         @default(now())
   providerId String?
 
   task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
-  @@unique([taskId, interval])
+  @@unique([dedupeKey])
   @@index([sentAt])
+  @@index([taskId, interval, dueDate])
 }
 
 model Deadline {
