@@ -17,6 +17,9 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
         {productConfig.name}
       </Link>
       <div className="flex min-w-0 flex-1 items-center justify-center py-6">{children}</div>
+      <p className="mx-auto max-w-md text-center text-sm leading-6 text-muted-foreground">
+        {productConfig.tradingNameDisclosure}
+      </p>
     </main>
   );
 }
