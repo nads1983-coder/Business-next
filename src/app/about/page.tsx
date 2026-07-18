@@ -1,79 +1,63 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { absoluteUrl, siteConfig } from "@/config/site";
-import { createPageMetadata, jsonLd } from "@/lib/seo";
+import { productConfig } from "@/config/product";
+import { JsonLd, breadcrumbSchema, organizationSchema, pageMetadata } from "@/lib/seo";
 import { Breadcrumbs } from "@/components/resource-guide";
 import { PublicPage } from "@/components/public-page";
+import { Badge } from "@/components/ui/badge";
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
-export const metadata: Metadata = createPageMetadata({
+export const metadata: Metadata = pageMetadata({
   title: "About Business Sorted",
-  description:
-    "Learn who Business Sorted is for, how the editorial team explains UK business deadlines and why official HMRC and Companies House sources matter.",
+  description: "Business Sorted is a plain-English UK business administration and compliance assistant for first-time founders and small-business owners.",
   path: "/about"
 });
 
 export default function AboutPage() {
-  const structuredData = [
-    {
-      "@context": "https://schema.org",
-      "@type": "AboutPage",
-      "@id": `${absoluteUrl("/about")}#webpage`,
-      url: absoluteUrl("/about"),
-      name: "About Business Sorted",
-      isPartOf: { "@id": `${siteConfig.url}/#website` }
-    },
-    {
-      "@context": "https://schema.org",
-      "@type": "BreadcrumbList",
-      itemListElement: [
-        { "@type": "ListItem", position: 1, name: "Home", item: siteConfig.url },
-        { "@type": "ListItem", position: 2, name: "About", item: absoluteUrl("/about") }
-      ]
-    }
-  ];
-
   return (
     <PublicPage narrow>
-      <script type="application/ld+json" dangerouslySetInnerHTML={jsonLd(structuredData)} />
+      <JsonLd
+        data={[
+          organizationSchema(),
+          breadcrumbSchema([{ name: "Home", path: "/" }, { name: "About", path: "/about" }])
+        ]}
+      />
       <div className="space-y-7">
         <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "About" }]} />
-        <header>
-          <p className="text-sm font-medium text-primary">About</p>
-          <h1 className="mt-2 text-4xl font-semibold tracking-normal">About Business Sorted</h1>
+        <section>
+          <Badge variant="calm">About</Badge>
+          <h1 className="mt-4 text-4xl font-semibold tracking-normal">About Business Sorted</h1>
           <p className="mt-4 text-lg leading-8 text-muted-foreground">
-            Business Sorted helps first-time UK business owners understand the admin deadlines that
-            come with running a business, using plain English and links to official sources.
+            {productConfig.tradingNameDisclosure}
           </p>
-        </header>
-        <section>
-          <h2 className="text-2xl font-semibold tracking-normal">Who writes the guides</h2>
-          <p className="mt-3 leading-7 text-muted-foreground">
-            The Business Sorted editorial team writes and maintains the resource centre. The content is
-            designed for clarity, not professional advice. Guides are checked against official HMRC and
-            Companies House terminology before publication.
+          <p className="mt-4 text-lg leading-8 text-muted-foreground">
+            Business Sorted is a plain-English UK business administration and compliance assistant for first-time founders, small limited-company owners, directors, freelancers and sole traders.
           </p>
         </section>
-        <section>
-          <h2 className="text-2xl font-semibold tracking-normal">What Business Sorted covers</h2>
-          <p className="mt-3 leading-7 text-muted-foreground">
-            We focus on deadlines and responsibilities that first-time owners often meet early:
-            Companies House filings, Corporation Tax, VAT, PAYE, Self Assessment and related business
-            record keeping.
+
+        <div className="space-y-5">
+          {[
+            ["What it does", "Business Sorted helps owners understand what needs doing, when it needs doing and what records or source links sit behind each task."],
+            ["Who it serves", "It is built for people who are new to running a UK business and want calm, practical reminders for Companies House, HMRC and routine admin."],
+            ["How information is sourced", "Guide content uses official UK sources such as GOV.UK, HMRC and Companies House where regulatory facts are involved. Pages show when they were last checked."],
+            ["How to use it", "Use Business Sorted to organise general information, deadline reminders and admin checklists. Confirm your own dates in official records and get qualified advice for your circumstances."],
+            ["What it does not do", productConfig.disclaimer]
+          ].map(([title, body]) => (
+            <Card key={title}>
+              <CardHeader>
+                <CardTitle className="text-lg">{title}</CardTitle>
+              </CardHeader>
+              <CardContent className="text-sm leading-6 text-muted-foreground">{body}</CardContent>
+            </Card>
+          ))}
+        </div>
+
+        <section className="rounded-md border bg-secondary/30 p-5">
+          <h2 className="text-xl font-semibold tracking-normal">Contact</h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            For account, product or billing support, email {productConfig.supportEmail} or use the <Link href="/support" className="text-primary underline">support page</Link>.
           </p>
         </section>
-        <section>
-          <h2 className="text-2xl font-semibold tracking-normal">How to use the information</h2>
-          <p className="mt-3 leading-7 text-muted-foreground">
-            Use the guides to understand the shape of a duty and the words HMRC or Companies House may
-            use. Before filing, paying or making a business decision, check the official source and get
-            professional advice where needed.
-          </p>
-        </section>
-        <nav className="flex flex-wrap gap-4 text-sm text-primary underline">
-          <Link href="/resources">Browse resources</Link>
-          <Link href="/editorial-policy">Editorial policy</Link>
-          <Link href="/how-we-research">How we research</Link>
-        </nav>
       </div>
     </PublicPage>
   );

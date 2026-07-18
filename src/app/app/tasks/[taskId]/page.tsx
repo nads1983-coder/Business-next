@@ -1,7 +1,7 @@
 import Link from "next/link";
 import { notFound } from "next/navigation";
 import { format } from "date-fns";
-import { ArrowLeft, ExternalLink } from "lucide-react";
+import { ArrowLeft, CheckCircle2, ExternalLink, ShieldCheck } from "lucide-react";
 import { TaskActionForms } from "../task-action-forms";
 import { daysUntilText } from "@/lib/task-engine";
 import { plainCopy } from "@/content/plain-copy";
@@ -10,6 +10,32 @@ import { requireProductAccess } from "@/lib/billing";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+
+function historyTitle(action: keyof typeof plainCopy.history, metadata: unknown) {
+  if (
+    action === "COMPLETED" &&
+    metadata &&
+    typeof metadata === "object" &&
+    !Array.isArray(metadata) &&
+    "source" in metadata &&
+    metadata.source === "companies_house"
+  ) {
+    return "Completed automatically from Companies House";
+  }
+  if (action === "RESTORED") return "Restored to active list";
+  return plainCopy.history[action];
+}
+
+function historySource(metadata: unknown) {
+  if (!metadata || typeof metadata !== "object" || Array.isArray(metadata) || !("source" in metadata)) return null;
+  if (metadata.source !== "companies_house") return null;
+  const values = metadata as Record<string, unknown>;
+  return {
+    filingDate: typeof values.filingDate === "string" ? values.filingDate : null,
+    checkedAt: typeof values.companiesHouseCheckedAt === "string" ? values.companiesHouseCheckedAt : null,
+    sourceUrl: typeof values.sourceUrl === "string" ? values.sourceUrl : null
+  };
+}
 
 export default async function TaskDetailPage({ params }: { params: Promise<{ taskId: string }> }) {
   const { taskId } = await params;
@@ -43,7 +69,10 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ tas
 
       <Card>
         <CardHeader>
-          <CardTitle>Your deadline</CardTitle>
+          <CardTitle className="flex items-center gap-2">
+            <ShieldCheck className="h-5 w-5 text-primary" aria-hidden="true" />
+            Your deadline
+          </CardTitle>
           <CardDescription>
             {task.dueDate ? `${format(task.dueDate, "d MMMM yyyy")} · ${daysUntilText(task.dueDate)}` : "We need more information before showing a date."}
           </CardDescription>
@@ -70,6 +99,7 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ tas
         <Card>
           <CardHeader>
             <CardTitle>What this means</CardTitle>
+            <CardDescription>Plain-English context before the checklist.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3 text-sm text-muted-foreground">
             <p>{task.whatThisMeans}</p>
@@ -83,6 +113,7 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ tas
         <Card>
           <CardHeader>
             <CardTitle>What to prepare</CardTitle>
+            <CardDescription>Gather these before you start so the task feels smaller.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4 text-sm text-muted-foreground">
             <ul className="list-disc space-y-1 pl-5">
@@ -120,11 +151,16 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ tas
 
       <Card>
         <CardHeader>
-          <CardTitle>Task actions</CardTitle>
-          <CardDescription>These changes are private to your business account.</CardDescription>
+          <CardTitle className="flex items-center gap-2">
+            <CheckCircle2 className="h-5 w-5 text-primary" aria-hidden="true" />
+            Finish or tidy this task
+          </CardTitle>
+          <CardDescription>
+            These changes are private to your business account. You can add a note for your own memory.
+          </CardDescription>
         </CardHeader>
         <CardContent>
-          <TaskActionForms taskId={task.id} canRestore={task.status === "NOT_APPLICABLE"} />
+          <TaskActionForms taskId={task.id} canRestore={task.status === "NOT_APPLICABLE" || task.status === "COMPLETED"} />
         </CardContent>
       </Card>
 
@@ -134,15 +170,29 @@ export default async function TaskDetailPage({ params }: { params: Promise<{ tas
         </CardHeader>
         <CardContent className="space-y-3 text-sm text-muted-foreground">
           {task.history.length ? (
-            task.history.map((item) => (
-              <div key={item.id} className="rounded-md border p-3">
-                <p className="font-medium text-foreground">{plainCopy.history[item.action]}</p>
-                <p>{format(item.createdAt, "d MMMM yyyy HH:mm")}</p>
-                {item.note ? <p className="mt-1">{item.note}</p> : null}
-              </div>
-            ))
+            task.history.map((item) => {
+              const source = historySource(item.metadata);
+              return (
+                <div key={item.id} className="rounded-md border p-3">
+                  <p className="font-medium text-foreground">{historyTitle(item.action, item.metadata)}</p>
+                  <p>{format(item.createdAt, "d MMMM yyyy HH:mm")}</p>
+                  {item.note ? <p className="mt-1">{item.note}</p> : null}
+                  {source ? (
+                    <div className="mt-2 space-y-1">
+                      {source.filingDate ? <p>Filing recorded: {format(new Date(`${source.filingDate}T12:00:00.000Z`), "d MMMM yyyy")}</p> : null}
+                      {source.checkedAt ? <p>Companies House checked: {format(new Date(source.checkedAt), "d MMMM yyyy HH:mm")}</p> : null}
+                      {source.sourceUrl ? (
+                        <a href={source.sourceUrl} className="inline-flex items-center gap-1 font-medium text-primary underline">
+                          View filing history <ExternalLink className="h-3.5 w-3.5" aria-hidden="true" />
+                        </a>
+                      ) : null}
+                    </div>
+                  ) : null}
+                </div>
+              );
+            })
           ) : (
-            <p>No history yet.</p>
+            <p>No history yet. When you complete, restore or mark a task as not applicable, the record will appear here.</p>
           )}
         </CardContent>
       </Card>

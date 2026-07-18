@@ -1,13 +1,13 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { productConfig } from "@/config/product";
-import { createPageMetadata } from "@/lib/seo";
+import { pageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = createPageMetadata({
-  title: "Account Access",
+export const metadata: Metadata = pageMetadata({
+  title: "Account access",
   description: "Sign in to Business Sorted or create an account.",
   path: "/login",
-  noIndex: true
+  noindex: true
 });
 
 export default function AuthLayout({ children }: { children: React.ReactNode }) {
@@ -16,7 +16,10 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <Link href="/" className="mx-auto text-sm font-semibold text-primary">
         {productConfig.name}
       </Link>
-      <div className="flex flex-1 items-center justify-center">{children}</div>
+      <div className="flex min-w-0 flex-1 items-center justify-center py-6">{children}</div>
+      <p className="mx-auto max-w-md text-center text-sm leading-6 text-muted-foreground">
+        {productConfig.tradingNameDisclosure}
+      </p>
     </main>
   );
 }

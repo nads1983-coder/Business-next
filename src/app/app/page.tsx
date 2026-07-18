@@ -1,7 +1,17 @@
 import Link from "next/link";
 import { redirect } from "next/navigation";
 import { format } from "date-fns";
-import { AlertCircle, ArrowRight, CheckCircle2, Clock, FileQuestion } from "lucide-react";
+import {
+  AlertCircle,
+  ArrowRight,
+  CheckCircle2,
+  Clock,
+  FileQuestion,
+  ShieldCheck,
+  Target,
+  TrendingUp
+} from "lucide-react";
+import type { LucideIcon } from "lucide-react";
 import type { BusinessProfile } from "@prisma/client";
 import { daysUntilText, taskDisplayBucket } from "@/lib/task-engine";
 import { plainCopy } from "@/content/plain-copy";
@@ -9,9 +19,11 @@ import { productConfig } from "@/config/product";
 import { formatPoundsFromPence } from "@/lib/utils";
 import { getPrisma } from "@/lib/prisma";
 import { requireProductAccess } from "@/lib/billing";
+import { onboardingDraftKey } from "@/lib/onboarding-draft";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
+import { ClearOnboardingDraft } from "@/components/clear-onboarding-draft";
 
 function missingProfileItems(profile: BusinessProfile) {
   const items: string[] = [];
@@ -34,6 +46,11 @@ export default async function DashboardPage() {
       profile: true,
       tasks: {
         orderBy: [{ dueDate: "asc" }, { createdAt: "asc" }]
+      },
+      companiesHouseChanges: {
+        where: { acknowledgedAt: null },
+        orderBy: { detectedAt: "desc" },
+        take: 5
       }
     }
   });
@@ -49,17 +66,49 @@ export default async function DashboardPage() {
   const notApplicable = tasks.filter((task) => task.status === "NOT_APPLICABLE");
   const nextTask = needsAttention[0] ?? comingUp[0];
   const missingItems = missingProfileItems(business.profile);
+  const activeTasks = needsAttention.length + comingUp.length;
+  const progressTotal = activeTasks + completedTasks.length + notApplicable.length;
+  const completionPercent = progressTotal
+    ? Math.round(((completedTasks.length + notApplicable.length) / progressTotal) * 100)
+    : 0;
+  const summaryCards: Array<{
+    label: string;
+    count: number;
+    icon: LucideIcon;
+    description: string;
+  }> = [
+    { label: "Needs attention", count: needsAttention.length, icon: Target, description: "Look here first" },
+    { label: "Coming up", count: comingUp.length, icon: Clock, description: "Plan without pressure" },
+    { label: "Completed", count: completedTasks.length, icon: CheckCircle2, description: "Saved in history" },
+    { label: "Handled", count: notApplicable.length, icon: ShieldCheck, description: "Marked not applicable" }
+  ];
   const moneyLeft = business.profile.salesSoFarPence - business.profile.costsSoFarPence;
   const estimate = Math.max(Math.round(moneyLeft * 0.25), 0);
+  const pendingCompaniesHouseChanges = business.companiesHouseChanges.length;
 
   return (
     <div className="space-y-6">
-      <div>
+      <ClearOnboardingDraft storageKey={onboardingDraftKey(user.id)} />
+      <div className="grid gap-4 lg:grid-cols-[1fr_auto] lg:items-end">
+        <div>
         <p className="text-sm font-medium text-primary">Good to see you</p>
         <h1 className="mt-1 text-3xl font-semibold tracking-normal">
           What should I do next?
         </h1>
         <p className="mt-2 max-w-3xl text-muted-foreground">{productConfig.promise}</p>
+        </div>
+        <div className="rounded-lg border bg-card p-4 shadow-sm lg:min-w-72">
+          <div className="flex items-center justify-between gap-4">
+            <p className="text-sm font-medium">Set-up progress</p>
+            <p className="text-sm font-semibold text-primary">{completionPercent}% calm</p>
+          </div>
+          <div className="mt-3 h-2 rounded-full bg-muted" aria-hidden="true">
+            <div className="h-2 rounded-full bg-primary" style={{ width: `${completionPercent}%` }} />
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">
+            Completed and not-applicable tasks count as handled. Missing profile details are shown first.
+          </p>
+        </div>
       </div>
 
       {missingItems.length ? (
@@ -81,13 +130,33 @@ export default async function DashboardPage() {
         </Card>
       ) : null}
 
+      {pendingCompaniesHouseChanges ? (
+        <Card className="border-primary/30">
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <ShieldCheck className="h-5 w-5 text-primary" aria-hidden="true" />
+              Company details changed
+            </CardTitle>
+            <CardDescription>
+              Companies House has updated {pendingCompaniesHouseChanges === 1 ? "one detail" : `${pendingCompaniesHouseChanges} details`}.
+              Review the before and after values before relying on the new information.
+            </CardDescription>
+          </CardHeader>
+          <CardContent>
+            <Button asChild>
+              <Link href="/app/settings">Review Companies House updates</Link>
+            </Button>
+          </CardContent>
+        </Card>
+      ) : null}
+
       <Card className="border-primary/30 bg-secondary/50">
         <CardHeader>
           <CardTitle className="flex items-center gap-2">
             <Clock className="h-5 w-5 text-primary" aria-hidden="true" />
-            Your next task
+            Your next best action
           </CardTitle>
-          <CardDescription>The most useful deadline to look at right now.</CardDescription>
+          <CardDescription>Chosen from the deadlines most likely to need your attention first.</CardDescription>
         </CardHeader>
         <CardContent className="space-y-4">
           {nextTask ? (
@@ -125,24 +194,28 @@ export default async function DashboardPage() {
               </Button>
             </>
           ) : (
-            <p className="text-muted-foreground">{plainCopy.emptyTasks}</p>
+            <div className="rounded-md border bg-background p-4">
+              <p className="font-medium">No active task needs your attention right now.</p>
+              <p className="mt-1 text-sm text-muted-foreground">
+                {plainCopy.emptyTasks} You can still review your profile or completed tasks any time.
+              </p>
+              <Button asChild className="mt-4" variant="outline">
+                <Link href="/app/settings">Review business details</Link>
+              </Button>
+            </div>
           )}
         </CardContent>
       </Card>
 
       <div className="grid gap-4 lg:grid-cols-4">
-        {[
-          ["Needs attention", needsAttention.length],
-          ["Coming up", comingUp.length],
-          ["Completed", completedTasks.length],
-          ["Not applicable", notApplicable.length]
-        ].map(([label, count]) => (
+        {summaryCards.map(({ label, count, icon: Icon, description }) => (
           <Card key={label}>
             <CardHeader>
               <CardTitle>{label}</CardTitle>
+              <CardDescription>{description}</CardDescription>
             </CardHeader>
             <CardContent className="flex items-center gap-3">
-              <CheckCircle2 className="h-6 w-6 text-primary" aria-hidden="true" />
+              <Icon className="h-6 w-6 text-primary" aria-hidden="true" />
               <p className="text-2xl font-semibold">{count}</p>
             </CardContent>
           </Card>
@@ -153,23 +226,32 @@ export default async function DashboardPage() {
         <Card>
           <CardHeader>
             <CardTitle>Tasks to look at first</CardTitle>
-            <CardDescription>Calm prompts, not panic buttons.</CardDescription>
+            <CardDescription>Ordered to reduce guesswork, not create panic.</CardDescription>
           </CardHeader>
           <CardContent className="space-y-3">
-            {[...needsAttention, ...comingUp].slice(0, 5).map((task) => (
-              <Link key={task.id} href={`/app/tasks/${task.id}`} className="block rounded-md border p-3 hover:bg-secondary">
-                <div className="flex items-start justify-between gap-3">
-                  <p className="font-medium">{task.title}</p>
-                  <Badge variant="outline">{plainCopy.status[task.status]}</Badge>
-                </div>
-                <p className="mt-1 text-sm text-muted-foreground">{daysUntilText(task.dueDate)}</p>
-              </Link>
-            ))}
+            {[...needsAttention, ...comingUp].slice(0, 5).length ? (
+              [...needsAttention, ...comingUp].slice(0, 5).map((task) => (
+                <Link key={task.id} href={`/app/tasks/${task.id}`} className="block rounded-md border p-3 hover:bg-secondary">
+                  <div className="flex items-start justify-between gap-3">
+                    <p className="font-medium">{task.title}</p>
+                    <Badge variant="outline">{plainCopy.status[task.status]}</Badge>
+                  </div>
+                  <p className="mt-1 text-sm text-muted-foreground">{daysUntilText(task.dueDate)}</p>
+                </Link>
+              ))
+            ) : (
+              <div className="rounded-md border p-4 text-sm text-muted-foreground">
+                Your current list is clear. Business Sorted will bring deadlines back here when they need attention.
+              </div>
+            )}
           </CardContent>
         </Card>
         <Card>
           <CardHeader>
-            <CardTitle>Planning signal</CardTitle>
+            <CardTitle className="flex items-center gap-2">
+              <TrendingUp className="h-5 w-5 text-primary" aria-hidden="true" />
+              Planning signal
+            </CardTitle>
             <CardDescription>{plainCopy.taxEstimate}</CardDescription>
           </CardHeader>
           <CardContent className="space-y-4">

@@ -1,6 +1,11 @@
 import { Resend } from "resend";
 import { emailConfig } from "@/config/email";
-import { deadlineReminderEmailHtml, passwordResetEmailHtml, verificationEmailHtml } from "@/lib/email-html";
+import {
+  deadlineReminderEmailHtml,
+  documentRenewalReminderEmailHtml,
+  passwordResetEmailHtml,
+  verificationEmailHtml
+} from "@/lib/email-html";
 
 let resendClient: Resend | null = null;
 
@@ -63,17 +68,25 @@ async function sendEmail({
 export async function sendDeadlineReminderEmail({
   email,
   taskTitle,
+  businessName,
   dueDate,
+  timeRemaining,
   nextAction,
+  reason,
+  preparationSteps,
   taskId,
-  interval
+  idempotencyKey
 }: {
   email: string;
   taskTitle: string;
+  businessName: string;
   dueDate: string;
+  timeRemaining: string;
   nextAction: string;
+  reason: string;
+  preparationSteps: string[];
   taskId: string;
-  interval: string;
+  idempotencyKey: string;
 }) {
   const url = new URL(`/app/tasks/${taskId}`, emailConfig.appUrl);
 
@@ -82,11 +95,55 @@ export async function sendDeadlineReminderEmail({
     subject: `Business Sorted reminder: ${taskTitle}`,
     html: deadlineReminderEmailHtml({
       taskTitle,
+      businessName,
       dueDate,
+      timeRemaining,
       nextAction,
+      reason,
+      preparationSteps,
       href: url.toString()
     }),
-    idempotencyKey: `deadline-${taskId}-${interval}`
+    idempotencyKey
+  });
+}
+
+export async function sendDocumentRenewalReminderEmail({
+  email,
+  documentTitle,
+  businessName,
+  documentType,
+  renewalDate,
+  timeRemaining,
+  reason,
+  documentId,
+  idempotencyKey
+}: {
+  email: string;
+  documentTitle: string;
+  businessName: string;
+  documentType: string;
+  renewalDate: string;
+  timeRemaining: string;
+  reason: string;
+  documentId: string;
+  idempotencyKey: string;
+}) {
+  const url = new URL("/app/documents", emailConfig.appUrl);
+  url.searchParams.set("document", documentId);
+
+  await sendEmail({
+    to: email,
+    subject: `Business Sorted document reminder: ${documentTitle}`,
+    html: documentRenewalReminderEmailHtml({
+      documentTitle,
+      businessName,
+      documentType,
+      renewalDate,
+      timeRemaining,
+      reason,
+      href: url.toString()
+    }),
+    idempotencyKey
   });
 }
 

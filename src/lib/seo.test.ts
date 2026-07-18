@@ -19,7 +19,7 @@ describe("SEO configuration", () => {
       path: "/pricing"
     });
 
-    expect(metadata.alternates?.canonical).toBe("/pricing");
+    expect(metadata.alternates?.canonical).toBe("https://businesssorted.uk/pricing");
     expect(metadata.openGraph?.url).toBe("https://businesssorted.uk/pricing");
     expect(metadata.openGraph?.images).toEqual(
       expect.arrayContaining([
@@ -33,7 +33,7 @@ describe("SEO configuration", () => {
   it("keeps account and private application routes out of the XML sitemap", () => {
     const urls = sitemap().map((entry) => entry.url);
 
-    expect(urls).toContain("https://businesssorted.uk/");
+    expect(urls).toContain("https://businesssorted.uk");
     expect(urls).toContain("https://businesssorted.uk/pricing");
     expect(urls).toContain("https://businesssorted.uk/resources");
     expect(urls).toContain("https://businesssorted.uk/about");

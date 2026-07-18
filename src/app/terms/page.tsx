@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
+import { pageMetadata } from "@/lib/seo";
 import { legalPages } from "@/lib/legal-content";
-import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = createPageMetadata({
-  title: "Business Sorted Terms of Use",
-  description:
-    "Read the draft Business Sorted terms covering account use, customer responsibilities and plain-English business administration guidance.",
+export const metadata: Metadata = pageMetadata({
+  title: "Terms and Conditions",
+  description: "Business Sorted terms and conditions for the UK business deadline and admin assistant.",
   path: "/terms"
 });
 

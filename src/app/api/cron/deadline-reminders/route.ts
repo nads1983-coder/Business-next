@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runDeadlineReminders } from "@/lib/reminders";
 
-export async function POST(request: NextRequest) {
+async function handleDeadlineReminders(request: NextRequest) {
   const secret = process.env.CRON_SECRET;
   const auth = request.headers.get("authorization");
 
@@ -12,4 +12,12 @@ export async function POST(request: NextRequest) {
   const dryRun = request.nextUrl.searchParams.get("dryRun") === "1";
   const result = await runDeadlineReminders({ dryRun });
   return NextResponse.json(result);
+}
+
+export async function GET(request: NextRequest) {
+  return handleDeadlineReminders(request);
+}
+
+export async function POST(request: NextRequest) {
+  return handleDeadlineReminders(request);
 }

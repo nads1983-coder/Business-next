@@ -2,6 +2,7 @@ import Link from "next/link";
 import { format } from "date-fns";
 import { AlertCircle, CheckCircle2, ExternalLink } from "lucide-react";
 import { billingConfig, getCheckoutGateDiagnostics, isControlledBillingTestUser } from "@/config/billing";
+import { productConfig } from "@/config/product";
 import { getProductAccess } from "@/lib/billing";
 import { getPrisma } from "@/lib/prisma";
 import { requireUser } from "@/lib/session";
@@ -50,6 +51,9 @@ export default async function BillingPage() {
         <h1 className="text-3xl font-semibold tracking-normal">Billing</h1>
         <p className="mt-2 max-w-3xl text-muted-foreground">
           Manage your Business Sorted access, subscription and cancellation options.
+        </p>
+        <p className="mt-2 max-w-3xl text-sm leading-6 text-muted-foreground">
+          {productConfig.tradingNameDisclosure}
         </p>
       </div>
 
@@ -134,7 +138,7 @@ export default async function BillingPage() {
             <CardTitle>Subscribe to {billingConfig.plan.name}</CardTitle>
             <CardDescription>
               {billingConfig.plan.displayPrice}. Monthly recurring billing, no annual option and no free trial. You will
-              be sent to Stripe Checkout. Access is granted only after Business Sorted receives a verified Stripe webhook.
+              be sent to Stripe Checkout. Access is granted only after Nadine Pierre Ltd receives a verified Stripe webhook for BusinessSorted.uk.
             </CardDescription>
           </CardHeader>
           <CardContent>
@@ -144,23 +148,39 @@ export default async function BillingPage() {
                 You can cancel at any time. Cancellation stops future renewal payments and normally takes effect at the end of
                 the current paid monthly period, with access continuing until then.
               </p>
-              <label className="flex items-start gap-2 text-sm">
-                <input className="mt-1" type="checkbox" name="acceptTerms" required />
-                <span>I accept the Business Sorted Terms of Use.</span>
+              <label className="flex min-h-11 items-start gap-3 rounded-md border p-3 text-sm">
+                <input className="mt-1 h-4 w-4 shrink-0" type="checkbox" name="acceptTerms" required />
+                <span className="min-w-0 leading-6">
+                  I accept the Business Sorted{" "}
+                  <Link href="/terms" className="text-primary underline">
+                    Terms and Conditions
+                  </Link>
+                  .
+                </span>
               </label>
-              <label className="flex items-start gap-2 text-sm">
-                <input className="mt-1" type="checkbox" name="acceptPrivacy" required />
-                <span>I accept the Privacy Notice.</span>
+              <label className="flex min-h-11 items-start gap-3 rounded-md border p-3 text-sm">
+                <input className="mt-1 h-4 w-4 shrink-0" type="checkbox" name="acceptPrivacy" required />
+                <span className="min-w-0 leading-6">
+                  I accept the{" "}
+                  <Link href="/privacy" className="text-primary underline">
+                    Privacy Notice
+                  </Link>
+                  .
+                </span>
               </label>
-              <label className="flex items-start gap-2 text-sm">
-                <input className="mt-1" type="checkbox" name="acceptSubscriptionTerms" required />
-                <span>
-                  I accept the Subscription and Cancellation Terms, including monthly recurring billing at{" "}
+              <label className="flex min-h-11 items-start gap-3 rounded-md border p-3 text-sm">
+                <input className="mt-1 h-4 w-4 shrink-0" type="checkbox" name="acceptSubscriptionTerms" required />
+                <span className="min-w-0 leading-6">
+                  I accept the{" "}
+                  <Link href="/subscription-terms" className="text-primary underline">
+                    Subscription and Cancellation Terms
+                  </Link>
+                  , including monthly recurring billing at{" "}
                   {billingConfig.plan.displayPrice}, no annual plan, no free trial, and cancellation taking effect at the end
                   of the current paid monthly period.
                 </span>
               </label>
-              <Button type="submit">Continue to Checkout</Button>
+              <Button type="submit" className="w-full sm:w-auto">Continue to Checkout</Button>
             </form>
           </CardContent>
         </Card>

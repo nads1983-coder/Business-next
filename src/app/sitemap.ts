@@ -1,28 +1,36 @@
 import type { MetadataRoute } from "next";
-import { absoluteUrl } from "@/config/site";
+import { guideHubs, guides } from "@/content/seo-content";
 import { resourceGuides, resourcePath } from "@/content/resources";
 
-const publicRoutes = [
-  "",
-  "/resources",
-  "/pricing",
-  "/about",
-  "/editorial-policy",
-  "/how-we-research",
-  "/support",
-  "/terms",
-  "/privacy",
-  "/subscription-terms",
-  "/refunds",
-  "/cookies"
-] as const;
+const baseUrl = "https://businesssorted.uk";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const guideRoutes = resourceGuides.map((guide) => resourcePath(guide.slug));
+  const publicRoutes = [
+    "",
+    "/about",
+    "/editorial-policy",
+    "/how-we-research",
+    "/guides",
+    ...guideHubs.map((hub) => hub.path),
+    ...guides.map((guide) => `/guides/${guide.category}/${guide.slug}`),
+    "/resources",
+    ...resourceGuides.map((guide) => resourcePath(guide.slug)),
+    "/deadlines",
+    "/checklists",
+    "/glossary",
+    "/pricing",
+    "/terms",
+    "/privacy",
+    "/subscription-terms",
+    "/refunds",
+    "/cookies",
+    "/support"
+  ];
 
-  return [...publicRoutes, ...guideRoutes].map((path) => ({
-    url: absoluteUrl(path || "/"),
-    changeFrequency: "weekly",
-    priority: path === "" ? 1 : path === "/pricing" || path === "/resources" ? 0.9 : 0.6
+  return publicRoutes.map((path) => ({
+    url: `${baseUrl}${path}`,
+    lastModified: new Date(),
+    changeFrequency: path.startsWith("/guides") || path.startsWith("/resources") ? "monthly" : "weekly",
+    priority: path === "" ? 1 : path === "/resources" || path.startsWith("/guides") ? 0.8 : 0.7
   }));
 }

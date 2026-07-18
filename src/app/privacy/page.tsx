@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
+import { pageMetadata } from "@/lib/seo";
 import { legalPages } from "@/lib/legal-content";
-import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = createPageMetadata({
-  title: "Business Sorted Privacy Notice",
-  description:
-    "Read how Business Sorted uses account, business profile, billing status and support information to run the service.",
+export const metadata: Metadata = pageMetadata({
+  title: "Privacy Notice",
+  description: "How Business Sorted handles account, business profile, billing status and support information.",
   path: "/privacy"
 });
 

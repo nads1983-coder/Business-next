@@ -32,10 +32,9 @@ function setLiveReadyEnv() {
   process.env.VERCEL_ENV = "production";
   process.env.BUSINESS_NEXT_TEST_EMAIL = "owner@example.com";
   process.env.BUSINESS_NEXT_LEGAL_OWNER_ACCEPTED = "true";
-  process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
-  process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED = "stage-3-live-owner-draft-2026-07-15";
-  process.env.BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED =
-    "stage-3-live-owner-draft-2026-07-15";
+  process.env.BUSINESS_NEXT_TERMS_VERSION_ACCEPTED = "1.0";
+  process.env.BUSINESS_NEXT_PRIVACY_VERSION_ACCEPTED = "1.0";
+  process.env.BUSINESS_NEXT_SUBSCRIPTION_TERMS_VERSION_ACCEPTED = "1.0";
 }
 
 describe("billing configuration", () => {
@@ -56,11 +55,11 @@ describe("billing configuration", () => {
     expect(getApprovedPriceId("annual")).toBeUndefined();
   });
 
-  it("uses one reviewed live owner draft version for all billing legal gates", async () => {
+  it("uses one owner-approved legal version for all billing legal gates", async () => {
     const { billingConfig } = await import("./billing");
     const { legalVersion } = await import("./legal");
 
-    expect(legalVersion).toBe("stage-3-live-owner-draft-2026-07-15");
+    expect(legalVersion).toBe("1.0");
     expect(billingConfig.legal.termsVersion).toBe(legalVersion);
     expect(billingConfig.legal.privacyVersion).toBe(legalVersion);
     expect(billingConfig.legal.subscriptionTermsVersion).toBe(legalVersion);

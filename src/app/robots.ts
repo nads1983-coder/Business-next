@@ -1,5 +1,5 @@
 import type { MetadataRoute } from "next";
-import { absoluteUrl } from "@/config/site";
+import { absoluteUrl } from "@/lib/seo";
 
 export default function robots(): MetadataRoute.Robots {
   return {
@@ -9,6 +9,8 @@ export default function robots(): MetadataRoute.Robots {
       disallow: [
         "/app/",
         "/api/",
+        "/login",
+        "/register",
         "/forgot-password",
         "/reset-password",
         "/verify-email",

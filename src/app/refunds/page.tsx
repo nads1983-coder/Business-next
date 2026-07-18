@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
+import { pageMetadata } from "@/lib/seo";
 import { legalPages } from "@/lib/legal-content";
-import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = createPageMetadata({
-  title: "Business Sorted Refund Policy",
-  description:
-    "Read the draft Business Sorted refund policy for duplicate charges, service-access problems and support-led refund requests.",
+export const metadata: Metadata = pageMetadata({
+  title: "Refund policy",
+  description: "Business Sorted refund policy and support route for billing or service-access issues.",
   path: "/refunds"
 });
 

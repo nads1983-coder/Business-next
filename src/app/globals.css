@@ -39,6 +39,35 @@ body {
   font-family: var(--font-sans);
 }
 
+main,
+section,
+article,
+aside,
+header,
+footer,
+nav,
+div,
+p,
+h1,
+h2,
+h3,
+h4,
+h5,
+h6,
+li,
+dd,
+dt {
+  min-width: 0;
+}
+
+p,
+li,
+dd,
+dt,
+a {
+  overflow-wrap: anywhere;
+}
+
 a {
   text-underline-offset: 4px;
 }

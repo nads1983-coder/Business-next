@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
+import { pageMetadata } from "@/lib/seo";
 import { legalPages } from "@/lib/legal-content";
-import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = createPageMetadata({
-  title: "Business Sorted Cookie Information",
-  description:
-    "Read how Business Sorted uses essential cookies for authentication, security and basic app operation.",
+export const metadata: Metadata = pageMetadata({
+  title: "Cookie information",
+  description: "Cookie information for Business Sorted, including essential app cookies and billing-related Stripe cookies.",
   path: "/cookies"
 });
 

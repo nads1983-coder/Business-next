@@ -94,9 +94,9 @@ Do not mix test and live Stripe keys or price IDs. Do not expose secret keys in 
 
 ### Controlled Live Stripe Launch
 
-The current reviewed legal version is centralised in `src/config/legal.ts`:
+The current owner-approved legal version is centralised in `src/config/legal.ts`:
 
-- `stage-3-live-owner-draft-2026-07-15`
+- `1.0` — effective 18 July 2026
 
 The Terms, Privacy Notice, Subscription Terms, Checkout legal gate and recorded legal acceptances must all use that same version. Checkout remains closed unless every non-secret gate matches exactly:
 

@@ -82,6 +82,7 @@ enum ReminderInterval {
   FOURTEEN_DAYS
   SEVEN_DAYS
   ONE_DAY
+  DUE_TODAY
   OVERDUE
 }
 
@@ -173,6 +174,8 @@ model User {
   auditLogs                AuditLog[]
   conversations            AIConversation[]
   taskHistory              TaskHistory[]
+  createdDocuments         Document[] @relation("DocumentCreatedBy")
+  documentRenewalHistory   DocumentRenewalHistory[]
   complianceContentChanges ComplianceRuleContentVersion[]
   entitlements             UserEntitlement[]
   stripeWebhookEvents      StripeWebhookEvent[]
@@ -243,6 +246,31 @@ model Business {
   taxEstimates         TaxEstimate[]
   documents            Document[]
   subscriptions        Subscription[]
+  companiesHouseChanges CompaniesHouseChange[]
+}
+
+model CompaniesHouseChange {
+  id                String    @id @default(cuid())
+  businessId        String
+  companyNumber     String
+  field             String
+  previousValue     Json?
+  newValue          Json?
+  previousValueHash String
+  newValueHash      String
+  detectedAt        DateTime  @default(now())
+  sourceCheckedAt   DateTime
+  affectsDeadlines  Boolean   @default(false)
+  viewedAt          DateTime?
+  acknowledgedAt    DateTime?
+  notificationSentAt DateTime?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  business Business @relation(fields: [businessId], references: [id], onDelete: Cascade)
+
+  @@unique([businessId, companyNumber, field, previousValueHash, newValueHash])
+  @@index([businessId, acknowledgedAt, detectedAt])
 }
 
 model BusinessProfile {
@@ -251,7 +279,22 @@ model BusinessProfile {
   businessType             BusinessType        @default(NOT_SURE)
   legalBusinessName        String?
   tradingName              String?
-  companyNumber            String?
+  companyNumber                            String?
+  companiesHouseConnectedAt                DateTime?
+  companiesHouseLastSyncedAt               DateTime?
+  companiesHouseSyncStatus                 String?
+  companiesHouseSyncError                  String?
+  companiesHouseCompanyStatus              String?
+  companiesHouseCompanyType                String?
+  companiesHouseRegisteredOffice           String?
+  companiesHouseSicCodes                   String[]
+  companiesHouseAccountsNextDue            DateTime?
+  companiesHouseConfirmationNextDue        DateTime?
+  companiesHouseAccountsOverdue            Boolean?
+  companiesHouseConfirmationOverdue        Boolean?
+  companiesHouseAccountingReferenceDay     Int?
+  companiesHouseAccountingReferenceMonth   Int?
+  companiesHouseSnapshot                   Json?
   worksAlone               AnswerChoice        @default(NOT_SURE)
   startedTradingOn         DateTime?
   companyRegisteredOn      DateTime?
@@ -267,6 +310,10 @@ model BusinessProfile {
   usesAccountant           AnswerChoice        @default(NOT_SURE)
   businessYearEndMonth     Int?
   wantsEmailReminders      Boolean             @default(false)
+  reminderPreference       String              @default("standard")
+  reminderSnoozedUntil     DateTime?
+  reminderPreferredHour    Int                 @default(9)
+  reminderTimezone         String              @default("Europe/London")
   salesSoFarPence          Int                 @default(0)
   costsSoFarPence          Int                 @default(0)
   onboardingCompletedAt    DateTime?
@@ -332,14 +379,23 @@ model ReminderDelivery {
   id         String           @id @default(cuid())
   taskId     String
   interval   ReminderInterval
+  stage      String?
+  channel    String           @default("email")
+  dedupeKey  String?
+  ruleVersion String?
+  dueDate    DateTime?
+  reason     String?
+  status     String           @default("sent")
+  error      String?
   sentTo     String
   sentAt     DateTime         @default(now())
   providerId String?
 
   task Task @relation(fields: [taskId], references: [id], onDelete: Cascade)
 
-  @@unique([taskId, interval])
+  @@unique([dedupeKey])
   @@index([sentAt])
+  @@index([taskId, interval, dueDate])
 }
 
 model Deadline {
@@ -402,17 +458,75 @@ model TaxEstimate {
 }
 
 model Document {
-  id          String   @id @default(cuid())
-  businessId  String
-  name        String
-  kind        String
-  storageKey  String?
-  savedByUser Boolean  @default(false)
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+  id                 String    @id @default(cuid())
+  businessId         String
+  name               String
+  kind               String
+  provider           String?
+  referenceNumber    String?
+  issueDate          DateTime?
+  startDate          DateTime?
+  renewalDate        DateTime?
+  renewalFrequency   String?
+  status             String    @default("ACTIVE")
+  notes              String?
+  reminderPreference String    @default("standard")
+  storageKey         String?
+  savedByUser        Boolean   @default(false)
+  createdByUserId    String?
+  archivedAt         DateTime?
+  createdAt          DateTime  @default(now())
+  updatedAt          DateTime  @updatedAt
 
-  business     Business              @relation(fields: [businessId], references: [id], onDelete: Cascade)
-  explanations DocumentExplanation[]
+  business           Business                   @relation(fields: [businessId], references: [id], onDelete: Cascade)
+  createdBy          User?                      @relation("DocumentCreatedBy", fields: [createdByUserId], references: [id], onDelete: SetNull)
+  explanations       DocumentExplanation[]
+  renewalHistory     DocumentRenewalHistory[]
+  reminderDeliveries DocumentReminderDelivery[]
+
+  @@index([businessId, status, renewalDate])
+  @@index([createdByUserId])
+}
+
+model DocumentRenewalHistory {
+  id                  String    @id @default(cuid())
+  documentId          String
+  userId              String?
+  action              String
+  previousRenewalDate DateTime?
+  newRenewalDate      DateTime?
+  previousStatus      String?
+  newStatus           String?
+  note                String?
+  metadata            Json?
+  createdAt           DateTime  @default(now())
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  user     User?    @relation(fields: [userId], references: [id], onDelete: SetNull)
+
+  @@index([documentId, createdAt])
+}
+
+model DocumentReminderDelivery {
+  id          String           @id @default(cuid())
+  documentId  String
+  interval    ReminderInterval
+  stage       String
+  channel     String           @default("email")
+  dedupeKey   String           @unique
+  ruleVersion String
+  renewalDate DateTime
+  reason      String
+  status      String           @default("sent")
+  error       String?
+  sentTo      String
+  sentAt      DateTime         @default(now())
+  providerId  String?
+
+  document Document @relation(fields: [documentId], references: [id], onDelete: Cascade)
+
+  @@index([documentId, interval, renewalDate])
+  @@index([sentAt])
 }
 
 model DocumentExplanation {

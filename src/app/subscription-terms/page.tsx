@@ -1,12 +1,11 @@
 import type { Metadata } from "next";
 import { LegalPage } from "@/components/legal-page";
+import { pageMetadata } from "@/lib/seo";
 import { legalPages } from "@/lib/legal-content";
-import { createPageMetadata } from "@/lib/seo";
 
-export const metadata: Metadata = createPageMetadata({
-  title: "Business Sorted Subscription Terms",
-  description:
-    "Review Business Sorted draft subscription and cancellation terms for the controlled monthly billing launch.",
+export const metadata: Metadata = pageMetadata({
+  title: "Subscription and cancellation terms",
+  description: "Business Sorted subscription, cancellation and billing terms for the monthly plan.",
   path: "/subscription-terms"
 });
 

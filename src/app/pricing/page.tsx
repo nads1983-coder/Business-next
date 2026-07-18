@@ -1,11 +1,10 @@
-import Link from "next/link";
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { billingConfig } from "@/config/billing";
 import { productConfig } from "@/config/product";
-import { absoluteUrl, siteConfig } from "@/config/site";
 import { analyticsEvents, recordAnalyticsEvent } from "@/lib/analytics";
-import { createPageMetadata, jsonLd } from "@/lib/seo";
+import { JsonLd, absoluteUrl, pageMetadata } from "@/lib/seo";
 import { PublicPage } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -13,10 +12,9 @@ import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/com
 
 export const dynamic = "force-dynamic";
 
-export const metadata: Metadata = createPageMetadata({
-  title: "Business Sorted Pricing",
-  description:
-    "Review Business Sorted pricing for first-time UK founders: plain-English business deadline guidance prepared for a controlled £9 monthly Stripe launch.",
+export const metadata: Metadata = pageMetadata({
+  title: "Business Sorted pricing",
+  description: "Pricing for Business Sorted, the plain-English UK business deadline and compliance assistant for first-time founders.",
   path: "/pricing"
 });
 
@@ -41,12 +39,9 @@ export default async function PricingPage() {
       "@type": "WebPage",
       "@id": `${absoluteUrl("/pricing")}#webpage`,
       url: absoluteUrl("/pricing"),
-      name: "Business Sorted Pricing",
+      name: "Business Sorted pricing",
       description:
-        "Pricing information for Business Sorted plain-English UK business deadline guidance.",
-      isPartOf: {
-        "@id": `${siteConfig.url}/#website`
-      }
+        "Pricing information for Business Sorted plain-English UK business deadline guidance."
     },
     {
       "@context": "https://schema.org",
@@ -64,12 +59,9 @@ export default async function PricingPage() {
 
   return (
     <PublicPage>
-      <script
-        type="application/ld+json"
-        dangerouslySetInnerHTML={jsonLd(structuredData)}
-      />
-      <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
-        <section>
+      <JsonLd data={structuredData} />
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
+        <section className="min-w-0">
           <Badge variant="calm">Pricing</Badge>
           <h1 className="mt-4 text-4xl font-semibold tracking-normal">
             Business Sorted pricing for plain-English UK business deadlines.
@@ -93,7 +85,7 @@ export default async function PricingPage() {
           </div>
         </section>
 
-        <Card className="border-primary/30">
+        <Card className="min-w-0 border-primary/30">
           <CardHeader>
             <CardTitle>{billingConfig.plan.name}</CardTitle>
             <CardDescription>{billingConfig.plan.description}</CardDescription>
@@ -114,6 +106,7 @@ export default async function PricingPage() {
               ))}
             </ul>
             <div className="space-y-2 text-sm text-muted-foreground">
+              <p>{productConfig.tradingNameDisclosure}</p>
               <p>Cancel at any time through the secure billing portal.</p>
               <p>Cancellation stops future renewal payments and normally takes effect at the end of the current paid monthly period.</p>
               <p>{productConfig.disclaimer}</p>
