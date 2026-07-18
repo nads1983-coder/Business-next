@@ -4,8 +4,8 @@ import { pageMetadata } from "@/lib/seo";
 import { legalPages } from "@/lib/legal-content";
 
 export const metadata: Metadata = pageMetadata({
-  title: "Terms of Use",
-  description: "Business Sorted terms of use for the UK business deadline and admin assistant.",
+  title: "Terms and Conditions",
+  description: "Business Sorted terms and conditions for the UK business deadline and admin assistant.",
   path: "/terms"
 });
 

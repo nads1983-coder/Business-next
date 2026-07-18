@@ -146,7 +146,7 @@ export default async function BillingPage() {
               </p>
               <label className="flex items-start gap-2 text-sm">
                 <input className="mt-1" type="checkbox" name="acceptTerms" required />
-                <span>I accept the Business Sorted Terms of Use.</span>
+                <span>I accept the Business Sorted Terms and Conditions.</span>
               </label>
               <label className="flex items-start gap-2 text-sm">
                 <input className="mt-1" type="checkbox" name="acceptPrivacy" required />

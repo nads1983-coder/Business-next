@@ -30,7 +30,7 @@ export function PublicPage({
       </div>
       <footer className="border-t">
         <div className="mx-auto flex max-w-6xl flex-col gap-3 px-6 py-6 text-sm text-muted-foreground sm:flex-row sm:items-center sm:justify-between">
-          <p>{productConfig.name}</p>
+          <p>{productConfig.name} is operated by Nadine Pierre Ltd.</p>
           <nav className="flex flex-wrap gap-4" aria-label="Legal">
             <Link href="/about" className="hover:text-foreground">About</Link>
             <Link href="/glossary" className="hover:text-foreground">Glossary</Link>

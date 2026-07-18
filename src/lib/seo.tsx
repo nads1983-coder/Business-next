@@ -74,6 +74,7 @@ export function organizationSchema() {
     "@type": "Organization",
     "@id": `${siteUrl}/#organization`,
     name: productConfig.name,
+    legalName: "Nadine Pierre Ltd",
     url: siteUrl,
     contactPoint: {
       "@type": "ContactPoint",

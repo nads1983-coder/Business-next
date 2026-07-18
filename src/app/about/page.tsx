@@ -25,7 +25,7 @@ export default function AboutPage() {
         <Badge variant="calm">About</Badge>
         <h1 className="mt-4 text-4xl font-semibold tracking-normal">About Business Sorted</h1>
         <p className="mt-4 text-lg leading-8 text-muted-foreground">
-          Business Sorted is a plain-English UK business administration and compliance assistant for first-time founders, small limited-company owners, directors, freelancers and sole traders.
+          BusinessSorted.uk is operated by Nadine Pierre Ltd. Business Sorted is a plain-English UK business administration and compliance assistant for first-time founders, small limited-company owners, directors, freelancers and sole traders.
         </p>
       </section>
 

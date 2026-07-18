@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
 import { registerAction } from "./actions";
@@ -42,6 +43,17 @@ export function RegisterForm() {
         <p className="text-xs text-muted-foreground">Use at least 8 characters. You can reset it any time.</p>
       </div>
       {state?.message ? <p className="text-sm text-destructive">{state.message}</p> : null}
+      <p className="text-xs text-muted-foreground">
+        By creating an account, you agree to the{" "}
+        <Link href="/terms" className="text-primary underline">
+          Terms and Conditions
+        </Link>{" "}
+        and acknowledge the{" "}
+        <Link href="/privacy" className="text-primary underline">
+          Privacy Notice
+        </Link>
+        .
+      </p>
       <p className="text-xs text-muted-foreground">
         Next: a short setup flow that creates your deadline list. You can change the answers later.
       </p>
