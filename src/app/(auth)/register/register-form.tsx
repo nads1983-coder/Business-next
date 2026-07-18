@@ -7,6 +7,7 @@ import { registerAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
+import { productConfig } from "@/config/product";
 
 function SubmitButton() {
   const { pending } = useFormStatus();
@@ -43,7 +44,10 @@ export function RegisterForm() {
         <p className="text-xs text-muted-foreground">Use at least 8 characters. You can reset it any time.</p>
       </div>
       {state?.message ? <p className="text-sm text-destructive">{state.message}</p> : null}
-      <p className="text-xs text-muted-foreground">
+      <p className="text-sm leading-6 text-muted-foreground">
+        {productConfig.tradingNameDisclosure}
+      </p>
+      <p className="text-sm leading-6 text-muted-foreground">
         By creating an account, you agree to the{" "}
         <Link href="/terms" className="text-primary underline">
           Terms and Conditions
@@ -54,7 +58,7 @@ export function RegisterForm() {
         </Link>
         .
       </p>
-      <p className="text-xs text-muted-foreground">
+      <p className="text-sm leading-6 text-muted-foreground">
         Next: a short setup flow that creates your deadline list. You can change the answers later.
       </p>
       <SubmitButton />

@@ -73,8 +73,9 @@ export function organizationSchema() {
     "@context": "https://schema.org",
     "@type": "Organization",
     "@id": `${siteUrl}/#organization`,
-    name: productConfig.name,
-    legalName: "Nadine Pierre Ltd",
+    name: productConfig.legalOperator,
+    legalName: productConfig.legalOperator,
+    alternateName: [productConfig.domain, productConfig.name],
     url: siteUrl,
     contactPoint: {
       "@type": "ContactPoint",

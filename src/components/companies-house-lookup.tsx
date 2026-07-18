@@ -126,7 +126,7 @@ export function CompaniesHouseLookup({
             autoComplete="off"
           />
         </div>
-        <Button type="button" className="self-end" onClick={lookup} disabled={isPending}>
+        <Button type="button" className="w-full self-end sm:w-auto" onClick={lookup} disabled={isPending}>
           <Search className="h-4 w-4" aria-hidden="true" />
           {isPending ? "Checking..." : "Check"}
         </Button>
@@ -194,7 +194,7 @@ export function CompaniesHouseLookup({
             </label>
           ) : null}
 
-          <Button type="button" onClick={confirmPreview} disabled={isPending || isDissolved}>
+          <Button type="button" className="w-full sm:w-auto" onClick={confirmPreview} disabled={isPending || isDissolved}>
             <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
             {onConfirm ? "Use these details" : "Connect Companies House"}
           </Button>
@@ -202,7 +202,7 @@ export function CompaniesHouseLookup({
       ) : null}
 
       {businessId ? (
-        <Button type="button" variant="outline" onClick={refresh} disabled={isPending}>
+        <Button type="button" variant="outline" className="w-full sm:w-auto" onClick={refresh} disabled={isPending}>
           <RefreshCw className="h-4 w-4" aria-hidden="true" />
           Refresh Companies House data
         </Button>

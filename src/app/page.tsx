@@ -4,6 +4,8 @@ import { ArrowRight, CalendarCheck, CheckCircle2, FileText, ShieldCheck } from "
 import { productConfig } from "@/config/product";
 import { guides } from "@/content/seo-content";
 import { JsonLd, organizationSchema, pageMetadata, websiteSchema } from "@/lib/seo";
+import { MobileNav } from "@/components/mobile-nav";
+import { PublicFooter, publicNavItems } from "@/components/public-page";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 
@@ -42,22 +44,23 @@ export default function MarketingPage() {
     <main className="min-h-screen bg-background">
       <JsonLd data={[organizationSchema(), websiteSchema(), softwareSchema]} />
       <header className="border-b">
-        <div className="mx-auto flex max-w-6xl items-center justify-between px-6 py-4">
+        <div className="mx-auto flex max-w-6xl items-center justify-between gap-3 px-4 py-4 sm:px-6">
           <Link href="/" className="font-semibold">
             {productConfig.name}
           </Link>
-          <nav className="flex items-center gap-4 text-sm text-muted-foreground" aria-label="Primary">
-            <Link href="/guides" className="hover:text-foreground">Guides</Link>
-            <Link href="/deadlines" className="hover:text-foreground">Deadlines</Link>
-            <Link href="/checklists" className="hover:text-foreground">Checklists</Link>
-            <Link href="/pricing" className="hover:text-foreground">Pricing</Link>
-            <Link href="/login" className="hover:text-foreground">Sign in</Link>
+          <nav className="hidden items-center gap-4 text-sm text-muted-foreground sm:flex" aria-label="Primary">
+            {publicNavItems.filter((item) => item.href !== "/support").map((item) => (
+              <Link key={item.href} href={item.href} className="hover:text-foreground">
+                {item.label}
+              </Link>
+            ))}
           </nav>
+          <MobileNav items={publicNavItems} footer={productConfig.tradingNameDisclosure} />
         </div>
       </header>
 
-      <section className="mx-auto grid min-h-[calc(100vh-73px)] max-w-6xl items-center gap-10 px-6 py-12 lg:grid-cols-[1fr_420px]">
-        <div>
+      <section className="mx-auto grid min-h-[calc(100vh-73px)] max-w-6xl items-center gap-8 px-4 py-10 sm:px-6 sm:py-12 lg:grid-cols-[minmax(0,1fr)_420px] lg:gap-10">
+        <div className="min-w-0">
           <p className="text-sm font-medium text-primary">For first-time UK founders, directors and sole traders</p>
           <h1 className="mt-4 max-w-4xl text-4xl font-semibold tracking-normal text-foreground sm:text-6xl">
             Keep your UK business deadlines under control
@@ -82,7 +85,7 @@ export default function MarketingPage() {
           </p>
         </div>
 
-        <div className="grid gap-3">
+        <div className="grid min-w-0 gap-3">
           {[
             ["Companies House", "Annual accounts and confirmation statement reminders."],
             ["HMRC", "Corporation Tax, Company Tax Return, VAT, PAYE and Self Assessment prompts where relevant."],
@@ -102,7 +105,7 @@ export default function MarketingPage() {
       </section>
 
       <section className="border-y bg-secondary/30">
-        <div className="mx-auto grid max-w-6xl gap-6 px-6 py-12 md:grid-cols-3">
+        <div className="mx-auto grid max-w-6xl gap-6 px-4 py-10 sm:px-6 sm:py-12 md:grid-cols-3">
           {[
             [CalendarCheck, "Know what is due", "Turn company details into a clearer deadline list for Companies House, HMRC and routine business admin."],
             [FileText, "Know what to prepare", "See the records, source links and practical notes that sit behind each task."],
@@ -117,7 +120,7 @@ export default function MarketingPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-6xl px-6 py-12">
+      <section className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-12">
         <div className="max-w-3xl">
           <h2 className="text-3xl font-semibold tracking-normal">Plain-English compliance for real first-year questions</h2>
           <p className="mt-3 text-muted-foreground">
@@ -140,6 +143,7 @@ export default function MarketingPage() {
           ))}
         </div>
       </section>
+      <PublicFooter />
     </main>
   );
 }

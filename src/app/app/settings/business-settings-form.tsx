@@ -78,7 +78,7 @@ export function BusinessSettingsForm({
             id="businessYearEndMonth"
             name="businessYearEndMonth"
             defaultValue={profile.businessYearEndMonth ?? ""}
-            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm"
+            className="h-11 w-full rounded-md border border-input bg-background px-3 text-base md:text-sm"
           >
             <option value="">Not sure</option>
             {Array.from({ length: 12 }, (_, index) => (
@@ -90,7 +90,7 @@ export function BusinessSettingsForm({
         </div>
         <div className="space-y-2">
           <Label htmlFor="registeredForVat">VAT registration status</Label>
-          <select id="registeredForVat" name="registeredForVat" defaultValue={profile.registeredForVat} className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm">
+          <select id="registeredForVat" name="registeredForVat" defaultValue={profile.registeredForVat} className="h-11 w-full rounded-md border border-input bg-background px-3 text-base md:text-sm">
             <option value="YES">Registered</option>
             <option value="NO">Not registered</option>
             <option value="NOT_SURE">Not sure</option>
@@ -107,7 +107,7 @@ export function BusinessSettingsForm({
         </div>
         <div className="space-y-2">
           <Label htmlFor="employsPeople">PAYE or employer status</Label>
-          <select id="employsPeople" name="employsPeople" defaultValue={profile.employsPeople} className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm">
+          <select id="employsPeople" name="employsPeople" defaultValue={profile.employsPeople} className="h-11 w-full rounded-md border border-input bg-background px-3 text-base md:text-sm">
             <option value="YES">Employs people or runs payroll</option>
             <option value="NO">No</option>
             <option value="NOT_SURE">Not sure</option>
@@ -119,7 +119,7 @@ export function BusinessSettingsForm({
         </div>
         <div className="space-y-2">
           <Label htmlFor="wantsEmailReminders">Deadline reminder emails</Label>
-          <select id="wantsEmailReminders" name="wantsEmailReminders" defaultValue={profile.wantsEmailReminders ? "YES" : "NO"} className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm">
+          <select id="wantsEmailReminders" name="wantsEmailReminders" defaultValue={profile.wantsEmailReminders ? "YES" : "NO"} className="h-11 w-full rounded-md border border-input bg-background px-3 text-base md:text-sm">
             <option value="YES">On</option>
             <option value="NO">Off</option>
           </select>
@@ -130,7 +130,7 @@ export function BusinessSettingsForm({
             id="reminderPreference"
             name="reminderPreference"
             defaultValue={profile.reminderPreference}
-            className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm"
+            className="h-11 w-full rounded-md border border-input bg-background px-3 text-base md:text-sm"
           >
             <option value="standard">Standard</option>
             <option value="reduced">Reduced frequency</option>

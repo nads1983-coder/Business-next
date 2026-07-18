@@ -16,7 +16,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <Link href="/" className="mx-auto text-sm font-semibold text-primary">
         {productConfig.name}
       </Link>
-      <div className="flex flex-1 items-center justify-center">{children}</div>
+      <div className="flex min-w-0 flex-1 items-center justify-center py-6">{children}</div>
     </main>
   );
 }

@@ -8,6 +8,7 @@ const supportEmail = productConfig.supportEmail;
 const siteDomain = "businesssorted.uk";
 const governingLaw = "the laws of England and Wales";
 const courts = "the courts of England and Wales";
+const tradingNameDisclosure = productConfig.tradingNameDisclosure;
 
 export const legalNotice = null;
 
@@ -20,7 +21,10 @@ export const legalPages = {
     sections: [
       [
         "Who we are",
-        `${serviceName} is operated by ${operatorName}. In these Terms, "Business Sorted", "we", "us" and "our" mean ${operatorName} operating the Business Sorted service at ${siteDomain}.`
+        [
+          tradingNameDisclosure,
+          `Nadine Pierre Ltd is the contracting service provider for the Service. In these Terms, "BusinessSorted", "Business Sorted", "we", "us" and "our" mean ${operatorName} operating the Business Sorted service at ${siteDomain}, unless the context requires otherwise.`
+        ]
       ],
       [
         "The Service",
@@ -84,7 +88,10 @@ export const legalPages = {
     sections: [
       [
         "Who controls your data",
-        `${serviceName} is operated by ${operatorName}. ${operatorName} is the data controller for personal information processed through Business Sorted unless a separate notice says otherwise.`
+        [
+          tradingNameDisclosure,
+          `${operatorName} is the relevant legal entity and the data controller for personal information processed through Business Sorted unless a separate notice says otherwise.`
+        ]
       ],
       [
         "Information we collect",
@@ -136,7 +143,10 @@ export const legalPages = {
     sections: [
       [
         "Who these terms apply to",
-        `${serviceName} is operated by ${operatorName}. These Subscription and Cancellation Terms apply to paid access to ${tradingName} and sit alongside the Terms and Conditions. If there is a conflict about billing or cancellation, these Subscription and Cancellation Terms apply for that issue.`
+        [
+          tradingNameDisclosure,
+          `Subscription services purchased through ${serviceName} are supplied by ${operatorName}. The subscription contract is with ${operatorName}. These Subscription and Cancellation Terms apply to paid access to ${tradingName} and sit alongside the Terms and Conditions. If there is a conflict about billing or cancellation, these Subscription and Cancellation Terms apply for that issue.`
+        ]
       ],
       [
         "Subscription arrangement",
@@ -188,7 +198,10 @@ export const legalPages = {
     sections: [
       [
         "How this policy fits with subscriptions",
-        `${serviceName} is operated by ${operatorName}. This Refund Policy applies to paid Business Sorted subscriptions and should be read with the Subscription and Cancellation Terms. Cancelling a subscription stops future renewal payments; it does not automatically create a refund for amounts already paid.`
+        [
+          tradingNameDisclosure,
+          `Refund decisions and payment-related support are handled by ${operatorName} through ${serviceName}. This Refund Policy applies to paid Business Sorted subscriptions and should be read with the Subscription and Cancellation Terms. Cancelling a subscription stops future renewal payments; it does not automatically create a refund for amounts already paid.`
+        ]
       ],
       [
         "General refund position",
@@ -222,7 +235,7 @@ export const legalPages = {
     version: billingConfig.legal.privacyVersion,
     effectiveDate: billingConfig.legal.effectiveDate,
     sections: [
-      ["Who we are", `${serviceName} is operated by ${operatorName}.`],
+      ["Who we are", tradingNameDisclosure],
       ["Essential cookies", "Business Sorted uses essential cookies for authentication, security and basic app operation."],
       ["Analytics", "Business Sorted uses internal, privacy-conscious event records and a Plausible analytics script to understand public website use without adding duplicate analytics providers."],
       ["Stripe", "Stripe Checkout and the Customer Portal may use their own cookies and security checks on Stripe-hosted pages."]
@@ -234,7 +247,7 @@ export const legalPages = {
     version: billingConfig.legal.termsVersion,
     effectiveDate: billingConfig.legal.effectiveDate,
     sections: [
-      ["Who we are", `${serviceName} is operated by ${operatorName}.`],
+      ["Who we are", tradingNameDisclosure],
       ["Contact", `Email ${supportEmail} for account, billing or product support.`],
       ["Billing support", "Do not send card details. Use the secure billing portal when it is available for payment-method updates, invoice access and cancellation."],
       ["Account deletion", "Account deletion is support-led so an active subscription can be cancelled safely before irreversible data changes are made."]

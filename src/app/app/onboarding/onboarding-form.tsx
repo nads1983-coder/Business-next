@@ -36,7 +36,7 @@ const initialAnswers: Answers = {
 function SubmitButton() {
   const { pending } = useFormStatus();
   return (
-    <Button type="submit" disabled={pending}>
+    <Button type="submit" disabled={pending} className="w-full sm:w-auto">
       <Check className="h-4 w-4" aria-hidden="true" />
       {pending ? "Saving..." : "Finish setup"}
     </Button>
@@ -221,7 +221,7 @@ export function OnboardingForm({ draftStorageKey }: { draftStorageKey: string })
             <select
               value={answers[question.id] ?? ""}
               onChange={(event) => updateAnswer(event.target.value)}
-              className="h-11 w-full rounded-md border border-input bg-background px-3 text-sm"
+              className="h-11 w-full rounded-md border border-input bg-background px-3 text-base md:text-sm"
             >
               <option value="">I am not sure</option>
               {Array.from({ length: 12 }, (_, index) => (
@@ -255,6 +255,7 @@ export function OnboardingForm({ draftStorageKey }: { draftStorageKey: string })
           type="button"
           variant="outline"
           disabled={step === 0}
+          className="w-full sm:w-auto"
           onClick={() => setStep((current) => Math.max(0, current - 1))}
         >
           <ArrowLeft className="h-4 w-4" aria-hidden="true" />
@@ -265,6 +266,7 @@ export function OnboardingForm({ draftStorageKey }: { draftStorageKey: string })
             <Button
               type="button"
               variant="ghost"
+              className="w-full sm:w-auto"
               onClick={() => {
                 updateAnswer("");
                 setStep((current) => Math.min(visibleQuestions.length - 1, current + 1));
@@ -276,6 +278,7 @@ export function OnboardingForm({ draftStorageKey }: { draftStorageKey: string })
           {step < visibleQuestions.length - 1 ? (
             <Button
               type="button"
+              className="w-full sm:w-auto"
               onClick={() =>
                 setStep((current) => Math.min(visibleQuestions.length - 1, current + 1))
               }

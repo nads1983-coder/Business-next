@@ -39,6 +39,7 @@ function baseEmail({
         <p style="font-size: 14px; color: #5f6f6b;">${expiresText}</p>
         <p style="font-size: 14px; color: #5f6f6b;">If the button does not work, copy and paste this link into your browser:</p>
         <p style="font-size: 14px; word-break: break-all;"><a href="${href}">${href}</a></p>
+        <p style="font-size: 14px; color: #5f6f6b;">${escapeHtml(productConfig.tradingNameDisclosure)}</p>
         <p style="font-size: 14px; color: #5f6f6b;">If you did not ask for this, you can ignore this email.</p>
       </div>
     </div>

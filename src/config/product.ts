@@ -12,6 +12,10 @@ import {
 
 export const productConfig = {
   name: "Business Sorted",
+  domain: "BusinessSorted.uk",
+  legalOperator: "Nadine Pierre Ltd",
+  tradingNameDisclosure:
+    "BusinessSorted.uk is a trading name of Nadine Pierre Ltd. All services provided through BusinessSorted.uk are operated by Nadine Pierre Ltd, a company registered in England and Wales.",
   promise:
     "What needs doing, when it needs doing, and what it means in plain English.",
   disclaimer:

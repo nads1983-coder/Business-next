@@ -26,8 +26,8 @@ export default async function PricingPage() {
 
   return (
     <PublicPage>
-      <div className="grid gap-8 lg:grid-cols-[1fr_380px]">
-        <section>
+      <div className="grid gap-8 lg:grid-cols-[minmax(0,1fr)_380px]">
+        <section className="min-w-0">
           <Badge variant="calm">Pricing</Badge>
           <h1 className="mt-4 text-4xl font-semibold tracking-normal">
             Start with calm, plain-English business deadlines.
@@ -51,7 +51,7 @@ export default async function PricingPage() {
           </div>
         </section>
 
-        <Card className="border-primary/30">
+        <Card className="min-w-0 border-primary/30">
           <CardHeader>
             <CardTitle>{billingConfig.plan.name}</CardTitle>
             <CardDescription>{billingConfig.plan.description}</CardDescription>
@@ -72,6 +72,7 @@ export default async function PricingPage() {
               ))}
             </ul>
             <div className="space-y-2 text-sm text-muted-foreground">
+              <p>{productConfig.tradingNameDisclosure}</p>
               <p>Cancel at any time through the secure billing portal.</p>
               <p>Cancellation stops future renewal payments and normally takes effect at the end of the current paid monthly period.</p>
               <p>{productConfig.disclaimer}</p>
