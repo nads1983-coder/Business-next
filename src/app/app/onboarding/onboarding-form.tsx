@@ -201,6 +201,7 @@ export function OnboardingForm({ draftStorageKey }: { draftStorageKey: string })
               {question.id === "companyNumber" ? (
                 <CompaniesHouseLookup
                   initialCompanyNumber={answers.companyNumber}
+                  onCompanyNumberChange={(companyNumber) => updateAnswer(companyNumber)}
                   onConfirm={(preview) => {
                     setConfirmedCompaniesHouseNumber(preview.companyNumber);
                     updateAnswers({

@@ -37,23 +37,36 @@ export function CompaniesHouseLookup({
   initialCompanyNumber,
   connectedAt,
   lastSyncedAt,
-  onConfirm
+  onConfirm,
+  onCompanyNumberChange
 }: {
   businessId?: string;
   initialCompanyNumber?: string | null;
   connectedAt?: Date | string | null;
   lastSyncedAt?: Date | string | null;
   onConfirm?: (preview: CompaniesHousePreview) => void;
+  onCompanyNumberChange?: (companyNumber: string) => void;
 }) {
-  const [companyNumber, setCompanyNumber] = useState(initialCompanyNumber ?? "");
+  const [companyNumberState, setCompanyNumberState] = useState(initialCompanyNumber ?? "");
   const [preview, setPreview] = useState<CompaniesHousePreview | null>(null);
   const [message, setMessage] = useState<ResultMessage | null>(null);
   const [useCompaniesHouseValues, setUseCompaniesHouseValues] = useState(false);
+  const [confirmedPreviewNumber, setConfirmedPreviewNumber] = useState("");
   const [isPending, startTransition] = useTransition();
+  const companyNumber = onCompanyNumberChange ? initialCompanyNumber ?? "" : companyNumberState;
   const isDissolved = preview?.companyStatus === "dissolved";
+  const previewConfirmed = Boolean(preview && confirmedPreviewNumber === preview.companyNumber);
+
+  function updateCompanyNumber(value: string) {
+    const nextValue = value.toUpperCase();
+    setCompanyNumberState(nextValue);
+    setConfirmedPreviewNumber("");
+    onCompanyNumberChange?.(nextValue);
+  }
 
   function lookup() {
     setMessage(null);
+    setConfirmedPreviewNumber("");
     startTransition(async () => {
       const result = await lookupCompaniesHouseAction({ companyNumber });
       if (!result.ok) {
@@ -61,7 +74,8 @@ export function CompaniesHouseLookup({
         setMessage({ ok: false, text: result.message });
         return;
       }
-      setCompanyNumber(result.preview.companyNumber);
+      setCompanyNumberState(result.preview.companyNumber);
+      onCompanyNumberChange?.(result.preview.companyNumber);
       setPreview(result.preview);
       setMessage({ ok: true, text: "Company found. Check the details before using them." });
     });
@@ -71,6 +85,7 @@ export function CompaniesHouseLookup({
     if (!preview) return;
     if (onConfirm) {
       onConfirm(preview);
+      setConfirmedPreviewNumber(preview.companyNumber);
       setMessage({ ok: true, text: "Companies House details added to this setup draft." });
       return;
     }
@@ -81,6 +96,9 @@ export function CompaniesHouseLookup({
         companyNumber: preview.companyNumber,
         useCompaniesHouseValues
       });
+      if (result.ok) {
+        setConfirmedPreviewNumber(preview.companyNumber);
+      }
       setMessage({ ok: result.ok, text: result.ok ? result.message : result.message });
     });
   }
@@ -121,7 +139,7 @@ export function CompaniesHouseLookup({
           <Input
             id="companies-house-number"
             value={companyNumber}
-            onChange={(event) => setCompanyNumber(event.target.value.toUpperCase())}
+            onChange={(event) => updateCompanyNumber(event.target.value)}
             placeholder="e.g. 01234567"
             autoComplete="off"
           />
@@ -194,9 +212,9 @@ export function CompaniesHouseLookup({
             </label>
           ) : null}
 
-          <Button type="button" className="w-full sm:w-auto" onClick={confirmPreview} disabled={isPending || isDissolved}>
+          <Button type="button" className="w-full sm:w-auto" onClick={confirmPreview} disabled={isPending || isDissolved || previewConfirmed}>
             <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
-            {onConfirm ? "Use these details" : "Connect Companies House"}
+            {previewConfirmed ? "Details added" : onConfirm ? "Use these details" : "Connect Companies House"}
           </Button>
         </div>
       ) : null}
