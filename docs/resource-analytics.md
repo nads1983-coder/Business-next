@@ -1,6 +1,6 @@
 # Resource centre analytics
 
-Business Sorted uses Plausible on public pages and internal database analytics for pricing and billing events. Resource-centre analytics should use Plausible custom events so no Prisma schema migration is needed for public reading behaviour.
+Business Sorted uses Nadine Analytics on public pages and internal database analytics for pricing and billing events. Resource-centre analytics should use approved Nadine Analytics events so no Prisma schema migration is needed for public reading behaviour.
 
 ## Event taxonomy
 

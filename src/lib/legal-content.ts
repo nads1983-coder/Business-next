@@ -115,7 +115,7 @@ export const legalPages = {
       ],
       [
         "Analytics, cookies and communications",
-        "We use essential cookies for authentication and security, internal product analytics, and Plausible analytics for public website usage. We may send service emails about account access, verification, security, billing, reminders and important Service changes. Marketing messages, where used, will provide any required unsubscribe route."
+        "We use essential cookies for authentication and security, internal product analytics, and Nadine Analytics for privacy-conscious public website usage. We may send service emails about account access, verification, security, billing, reminders and important Service changes. Marketing messages, where used, will provide any required unsubscribe route."
       ],
       [
         "Processors and transfers",
@@ -237,7 +237,7 @@ export const legalPages = {
     sections: [
       ["Who we are", tradingNameDisclosure],
       ["Essential cookies", "Business Sorted uses essential cookies for authentication, security and basic app operation."],
-      ["Analytics", "Business Sorted uses internal, privacy-conscious event records and a Plausible analytics script to understand public website use without adding duplicate analytics providers."],
+      ["Analytics", "Business Sorted uses internal, privacy-conscious event records and Nadine Analytics to understand public website use without adding duplicate analytics providers."],
       ["Stripe", "Stripe Checkout and the Customer Portal may use their own cookies and security checks on Stripe-hosted pages."]
     ]
   },

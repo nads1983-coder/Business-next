@@ -62,7 +62,7 @@ For a live category:
 
 ## Analytics
 
-The hub uses Plausible-only custom events documented in `docs/resource-analytics.md`. Do not send personal data, company numbers, query strings, body text or unrestricted free text.
+The hub uses Nadine Analytics events documented in `docs/resource-analytics.md`. Do not send personal data, company numbers, query strings, body text or unrestricted free text.
 
 ## Editorial standards
 

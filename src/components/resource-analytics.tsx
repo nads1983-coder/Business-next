@@ -13,13 +13,30 @@ import {
 
 declare global {
   interface Window {
-    plausible?: (eventName: string, options?: { props?: ResourceAnalyticsProps }) => void;
+    nadineAnalytics?: {
+      track: (eventName: string, properties?: Record<string, string | number | boolean>) => void;
+    };
   }
 }
 
 function trackResourceEvent(eventName: ResourceAnalyticsEventName, props?: ResourceAnalyticsProps) {
-  if (typeof window === "undefined" || typeof window.plausible !== "function") return;
-  window.plausible(eventName, { props });
+  if (typeof window === "undefined" || typeof window.nadineAnalytics?.track !== "function") return;
+
+  const nadineEventName = eventName.includes("registration")
+    ? "signup_started"
+    : props?.destination_type === "external_source"
+      ? "outbound_click"
+      : "cta_clicked";
+
+  const properties: Record<string, string | number | boolean> = {
+    ctaId: eventName,
+    contentType: "resource",
+    resource: typeof props?.resource === "string" ? props.resource : eventName
+  };
+
+  if (typeof props?.source_domain === "string") properties.referrerDomain = props.source_domain;
+
+  window.nadineAnalytics.track(nadineEventName, properties);
 }
 
 export function ResourceViewTracker({
