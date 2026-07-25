@@ -16,6 +16,10 @@ const geistMono = Geist_Mono({
   subsets: ["latin"]
 });
 
+const nadineAnalyticsSiteId = process.env.NEXT_PUBLIC_NADINE_ANALYTICS_SITE_ID;
+const nadineAnalyticsTrackingKey = process.env.NEXT_PUBLIC_NADINE_ANALYTICS_TRACKING_KEY;
+const nadineAnalyticsEndpoint = process.env.NEXT_PUBLIC_NADINE_ANALYTICS_ENDPOINT ?? "https://nadine-analytics.vercel.app";
+
 export const metadata: Metadata = {
   metadataBase: new URL(siteUrl),
   title: {
@@ -67,6 +71,16 @@ export default function RootLayout({
         <Script id="plausible-init" strategy="afterInteractive">
           {`window.plausible=window.plausible||function(){(plausible.q=plausible.q||[]).push(arguments)},plausible.init=plausible.init||function(i){plausible.o=i||{}};plausible.init();`}
         </Script>
+        {nadineAnalyticsSiteId && nadineAnalyticsTrackingKey ? (
+          <Script
+            id="nadine-analytics"
+            src={`${nadineAnalyticsEndpoint}/tracker.js`}
+            data-site-id={nadineAnalyticsSiteId}
+            data-tracking-key={nadineAnalyticsTrackingKey}
+            data-endpoint={`${nadineAnalyticsEndpoint}/api/events`}
+            strategy="afterInteractive"
+          />
+        ) : null}
         <AuthProvider>{children}</AuthProvider>
       </body>
     </html>
