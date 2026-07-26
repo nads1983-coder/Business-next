@@ -406,6 +406,21 @@ const sources = {
     href: "https://www.gov.uk/government/publications/change-the-details-of-a-director-ch01",
     publisher: "Companies House"
   },
+  companySecretaryOverview: {
+    label: "Make changes to your private limited company: Directors and company secretaries",
+    href: "https://www.gov.uk/make-changes-to-your-limited-company/directors-and-company-secretaries",
+    publisher: "GOV.UK"
+  },
+  companySecretaryDetails: {
+    label: "Update director or company secretary details",
+    href: "https://www.gov.uk/government/collections/update-director-or-company-secretary-details",
+    publisher: "Companies House"
+  },
+  companySecretaryDetailsForm: {
+    label: "Change the details of a secretary (CH03)",
+    href: "https://www.gov.uk/government/publications/change-the-details-of-a-secretary-ch03",
+    publisher: "Companies House"
+  },
   authenticationCode: {
     label: "Company authentication codes for online filing",
     href: "https://www.gov.uk/guidance/company-authentication-codes-for-online-filing",
@@ -1638,6 +1653,7 @@ export const resourceArticles = [
       }
     ],
     relatedArticleSlugs: [
+      "change-company-secretary-details",
       "change-registered-office-address",
       "change-company-director-details",
       "confirmation-statement-guide",
@@ -1663,6 +1679,7 @@ export const resourceArticles = [
       "Source-linked overview of Companies House information directors must keep current, including officers, PSCs and registered office details.",
     internalLinks: [
       { label: "Companies House resources", href: "/resources/companies-house" },
+      { label: "Change company secretary details", href: "/resources/change-company-secretary-details" },
       { label: "Change registered office address", href: "/resources/change-registered-office-address" },
       { label: "Change director details", href: "/resources/change-company-director-details" },
       { label: "How to file a confirmation statement", href: "/resources/file-confirmation-statement" },
@@ -1846,6 +1863,7 @@ export const resourceArticles = [
       }
     ],
     relatedArticleSlugs: [
+      "change-company-secretary-details",
       "company-information-keep-up-to-date",
       "confirmation-statement-guide",
       "file-confirmation-statement",
@@ -1872,8 +1890,133 @@ export const resourceArticles = [
     internalLinks: [
       { label: "Companies House resources", href: "/resources/companies-house" },
       { label: "Company information to keep up to date", href: "/resources/company-information-keep-up-to-date" },
+      { label: "How to change company secretary details", href: "/resources/change-company-secretary-details" },
       { label: "What a confirmation statement is", href: "/resources/confirmation-statement-guide" },
       { label: "Directors' responsibilities checklist", href: "/resources/directors-responsibilities-checklist" },
+      { label: "Start BusinessSorted setup", href: "/register" }
+    ]
+  },
+  {
+    title: "How to change company secretary details",
+    slug: "change-company-secretary-details",
+    description:
+      "Learn when and how to update company secretary appointments, resignations and detail changes with Companies House.",
+    category: "companies-house",
+    cluster: "company-information",
+    searchIntent:
+      "A director or administrator needs to update company secretary information and wants the correct Companies House route and timing.",
+    primaryKeyword: "change company secretary details",
+    secondaryKeywords: [
+      "Companies House company secretary details",
+      "change secretary details Companies House",
+      "company secretary change form",
+      "CH03 secretary details",
+      "appoint company secretary Companies House",
+      "resign company secretary Companies House"
+    ],
+    targetAudience:
+      "UK limited-company directors and administrators updating company secretary details with Companies House.",
+    summary:
+      "Company secretary appointments, resignations and detail changes should be reported through the relevant Companies House route rather than left until the next confirmation statement.",
+    directAnswer:
+      "Use the relevant Companies House online service or paper form to appoint a company secretary, end an appointment or change an existing secretary's details. GOV.UK says companies must tell Companies House within 14 days if company secretary details change.",
+    supportingQuestions: [
+      "Which Companies House route covers a secretary detail change?",
+      "Can secretary changes wait until the confirmation statement?",
+      "What should be checked before submitting an update?"
+    ],
+    uniqueAngle:
+      "Gives company secretaries their own task-focused guide, separating appointments, resignations and CH03 detail changes from the broader company-information overview.",
+    content: [
+      {
+        id: "what-this-guide-covers",
+        heading: "What this guide covers",
+        body: [
+          "GOV.UK groups director and company secretary updates together, but the filing route still depends on what changed. A new appointment, a resignation and a name or address change are different updates and should be treated as separate Companies House tasks.",
+          "This guide focuses on the Companies House process for company secretary changes. It does not replace legal or company secretarial advice where your constitution or governance arrangements need a closer review."
+        ]
+      },
+      {
+        id: "when-to-tell-companies-house",
+        heading: "When to tell Companies House",
+        body: [
+          "The GOV.UK overview for limited-company changes says you must tell Companies House within 14 days if you make changes to company secretaries. That timing matters whether the change is an appointment, a resignation or an update to existing details.",
+          "Do not assume the annual confirmation statement fixes everything later. Companies House guidance says officer updates should be filed through the relevant route when the change happens, then reflected accurately in the next confirmation statement."
+        ]
+      },
+      {
+        id: "choose-the-correct-filing-route",
+        heading: "Choose the correct filing route",
+        body: [
+          "Use the Companies House online service where it is available, because the official guidance says it is usually quicker than paper filing. If you need to change an existing individual secretary's name or address, Companies House points to form CH03 for that specific update.",
+          "For other officer changes, use the route that matches the event itself, such as appointing a secretary or terminating the appointment. Check the official forms collection before you file so you do not send a detail-change form for a new appointment or resignation."
+        ],
+        subsections: [
+          {
+            heading: "When CH03 is relevant",
+            body: [
+              "The CH03 guidance says the form is for changes to an individual secretary's details, such as name or address. It is not the form for making a new appointment.",
+              "If your company has a corporate secretary rather than an individual, Companies House points to a different form and route for corporate secretary detail changes."
+            ]
+          }
+        ]
+      },
+      {
+        id: "practical-checks-before-you-submit",
+        heading: "Practical checks before you submit",
+        body: [
+          "Check the secretary's name, service address and the exact effective date before you file. If more than one company officer change happened at the same time, list each action separately so the company record stays clear.",
+          "After Companies House registers the change, review the public company record and your own internal notes. That makes it easier to file the next confirmation statement without confirming outdated officer information."
+        ]
+      }
+    ],
+    keyFacts: [
+      "GOV.UK says company secretary changes must be reported to Companies House within 14 days.",
+      "Appointments, resignations and detail changes are separate officer updates and may use different Companies House routes.",
+      "Form CH03 is for changing an individual secretary's details, not for making a new appointment.",
+      "Secretary updates should be filed when they happen, then reflected in the next confirmation statement."
+    ],
+    faqs: [
+      {
+        question: "Can I use CH03 to appoint a new company secretary?",
+        answer:
+          "No. Companies House says CH03 is for changing an existing individual secretary's details, such as name or address. Use the appointment route that matches the officer change instead."
+      },
+      {
+        question: "Can I wait until the confirmation statement to update a company secretary change?",
+        answer:
+          "No. GOV.UK says company secretary changes must be reported within 14 days, so they should be handled through the relevant Companies House process when they happen."
+      }
+    ],
+    relatedArticleSlugs: [
+      "company-information-keep-up-to-date",
+      "change-company-director-details",
+      "change-registered-office-address",
+      "file-confirmation-statement"
+    ],
+    relatedProductFeature: "Officer-change task tracking",
+    ctaVariant: "company-information",
+    officialSources: [
+      sources.companySecretaryOverview,
+      sources.companySecretaryDetails,
+      sources.companySecretaryDetailsForm
+    ],
+    sourceCheckedDate: "2026-07-26",
+    lastReviewedDate: "2026-07-26",
+    author: "Business Sorted editorial team",
+    status: "published",
+    featured: false,
+    estimatedReadingTime: 6,
+    canonicalUrl: absoluteUrl("/resources/change-company-secretary-details"),
+    robots: "index",
+    socialTitle: "How to change company secretary details",
+    socialDescription:
+      "Plain-English guide to updating company secretary appointments, resignations and detail changes with Companies House.",
+    internalLinks: [
+      { label: "Companies House resources", href: "/resources/companies-house" },
+      { label: "Company information to keep up to date", href: "/resources/company-information-keep-up-to-date" },
+      { label: "How to change company director details", href: "/resources/change-company-director-details" },
+      { label: "How to file a confirmation statement", href: "/resources/file-confirmation-statement" },
       { label: "Start BusinessSorted setup", href: "/register" }
     ]
   },
