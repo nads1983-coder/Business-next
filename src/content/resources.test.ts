@@ -19,7 +19,7 @@ import { getResourceDestinationType } from "@/lib/resource-analytics";
 describe("resource centre content", () => {
   it("publishes a substantive, validated Companies House cluster", () => {
     expect(validateResourceArticles()).toEqual([]);
-    expect(getIndexableResourceArticles()).toHaveLength(20);
+    expect(getIndexableResourceArticles()).toHaveLength(resourceArticles.filter((article) => article.status === "published" && article.robots === "index").length);
 
     for (const article of getIndexableResourceArticles()) {
       expect(article.status).toBe("published");

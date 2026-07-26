@@ -421,6 +421,11 @@ const sources = {
     href: "https://www.gov.uk/government/publications/change-the-details-of-a-secretary-ch03",
     publisher: "Companies House"
   },
+  companySecretaryTerminationForm: {
+    label: "Terminate an appointment of a secretary (TM02)",
+    href: "https://www.gov.uk/government/publications/terminate-an-appointment-of-a-secretary-tm02",
+    publisher: "Companies House"
+  },
   authenticationCode: {
     label: "Company authentication codes for online filing",
     href: "https://www.gov.uk/guidance/company-authentication-codes-for-online-filing",
@@ -2016,6 +2021,130 @@ export const resourceArticles = [
       { label: "Companies House resources", href: "/resources/companies-house" },
       { label: "Company information to keep up to date", href: "/resources/company-information-keep-up-to-date" },
       { label: "How to change company director details", href: "/resources/change-company-director-details" },
+      { label: "How to file a confirmation statement", href: "/resources/file-confirmation-statement" },
+      { label: "Start BusinessSorted setup", href: "/register" }
+    ]
+  },
+{
+    title: "How to remove a company secretary at Companies House",
+    slug: "remove-company-secretary",
+    description:
+      "Learn the practical Companies House route for removing a company secretary and checking the company record afterwards.",
+    category: "companies-house",
+    cluster: "company-information",
+    searchIntent:
+      "A director or company administrator needs to remove a company secretary and wants the correct Companies House route in plain English.",
+    primaryKeyword: "remove company secretary",
+    secondaryKeywords: [
+      "remove company secretary Companies House",
+      "terminate company secretary appointment",
+      "TM02 company secretary",
+      "resign company secretary",
+      "company secretary resignation Companies House",
+      "end company secretary appointment"
+    ],
+    targetAudience:
+      "UK limited-company directors and administrators updating officer records with Companies House.",
+    summary:
+      "Use the correct Companies House route to end a company secretary appointment, then check the public company record reflects the change.",
+    directAnswer:
+      "To remove a company secretary, tell Companies House that the appointment has ended using the official online filing route or form TM02. Check the effective date and then confirm the company record has updated correctly.",
+    supportingQuestions: [
+      "Which Companies House route removes a company secretary?",
+      "What should be checked before the appointment ends is filed?",
+      "What should you review after Companies House registers the change?"
+    ],
+    uniqueAngle:
+      "Separates company secretary removals from broader officer-change guidance so directors can complete one specific Companies House task without guessing which form applies.",
+    content: [
+      {
+        id: "what-removal-means",
+        heading: "What removing a company secretary actually means",
+        body: [
+          "Removing a company secretary means notifying Companies House that the secretary's appointment has ended. For many small private companies this is an administrative company-record update rather than a strategic company-law problem, but the filing still needs to match what actually happened.",
+          "Private limited companies do not usually have to appoint a company secretary, so this guide focuses on ending an appointment cleanly and keeping the register accurate. It is not a substitute for legal advice where shareholder agreements, constitutional documents or internal disputes complicate the position."
+        ]
+      },
+      {
+        id: "use-the-correct-route",
+        heading: "Use the correct Companies House route",
+        body: [
+          "GOV.UK's guidance on directors and company secretaries says changes to those appointments must be reported to Companies House. If the secretary's appointment has ended, the official Companies House TM02 route is the specific filing path for terminating the appointment.",
+          "Companies House also says to use the online filing route where available because it is normally quicker than posting paper forms. Use the paper form only when that route is genuinely needed for the circumstances."
+        ]
+      },
+      {
+        id: "check-before-you-file",
+        heading: "Check the details before you file",
+        body: [
+          "Before you submit the update, check the exact date the appointment ended and the name of the secretary as shown on the current company record. A simple mismatch can slow the update down or make the company record look inconsistent.",
+          "If other company information is also changing, keep those tasks separate. Ending a secretary appointment is not the same filing step as changing a registered office address or updating a director's details."
+        ],
+        subsections: [
+          {
+            heading: "Keep the wider record consistent",
+            body: [
+              "If the company has internal records, access permissions or recurring filing notes that mention the outgoing secretary, update those at the same time.",
+              "That helps the next confirmation statement and day-to-day company administration reflect the same picture."
+            ]
+          }
+        ]
+      },
+      {
+        id: "after-companies-house-updates-the-record",
+        heading: "After Companies House updates the record",
+        body: [
+          "Once Companies House processes the change, check the public record and your own internal notes. You want the company record, the filing history and your internal task list to say the same thing.",
+          "If the company still has other officer or register updates outstanding, deal with those separately rather than assuming one officer filing corrects everything else."
+        ]
+      }
+    ],
+    keyFacts: [
+      "Changes to company secretaries should be reported to Companies House using the official route for the event that actually happened.",
+      "TM02 is the official Companies House form for terminating a company secretary appointment.",
+      "The online route is usually quicker than paper filing where it is available.",
+      "Check the public company record after the filing is processed."
+    ],
+    faqs: [
+      {
+        question: "Which form removes a company secretary?",
+        answer:
+          "Companies House publishes form TM02 for terminating the appointment of an individual or corporate secretary."
+      },
+      {
+        question: "Do I need to change other officer records at the same time?",
+        answer:
+          "Only if something else has also changed. Keep separate officer and register updates on the correct filing routes rather than assuming one form covers everything."
+      }
+    ],
+    relatedArticleSlugs: [
+      "change-company-secretary-details",
+      "company-information-keep-up-to-date",
+      "change-company-director-details",
+      "file-confirmation-statement"
+    ],
+    relatedProductFeature: "Officer-change task tracking",
+    ctaVariant: "company-information",
+    officialSources: [
+      sources.companySecretaryOverview,
+      sources.companySecretaryTerminationForm,
+      sources.companyChanges
+    ],
+    sourceCheckedDate: "2026-07-26",
+    lastReviewedDate: "2026-07-26",
+    author: "Business Sorted editorial team",
+    status: "published",
+    featured: false,
+    estimatedReadingTime: 5,
+    canonicalUrl: absoluteUrl("/resources/remove-company-secretary"),
+    robots: "index",
+    socialTitle: "How to remove a company secretary at Companies House",
+    socialDescription:
+      "Plain-English guide to removing a company secretary using the correct Companies House route.",
+    internalLinks: [
+      { label: "Companies House resources", href: "/resources/companies-house" },
+      { label: "How to change company secretary details", href: "/resources/change-company-secretary-details" },
+      { label: "Company information to keep up to date", href: "/resources/company-information-keep-up-to-date" },
       { label: "How to file a confirmation statement", href: "/resources/file-confirmation-statement" },
       { label: "Start BusinessSorted setup", href: "/register" }
     ]
