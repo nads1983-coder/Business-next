@@ -1,7 +1,11 @@
 import "dotenv/config";
-import { defineConfig, env } from "prisma/config";
+import { defineConfig } from "prisma/config";
 
-const migrationDatabaseUrl = process.env.DIRECT_URL ?? env("DATABASE_URL");
+const placeholderDatabaseUrl = "postgresql://placeholder:placeholder@localhost:5432/business_next?sslmode=disable";
+const migrationDatabaseUrl =
+  process.env.DIRECT_URL ??
+  process.env.DATABASE_URL ??
+  placeholderDatabaseUrl;
 
 export default defineConfig({
   schema: "prisma/schema.prisma",

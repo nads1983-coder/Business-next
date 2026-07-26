@@ -56,6 +56,7 @@ export function CompaniesHouseLookup({
   const companyNumber = onCompanyNumberChange ? initialCompanyNumber ?? "" : companyNumberState;
   const isDissolved = preview?.companyStatus === "dissolved";
   const previewConfirmed = Boolean(preview && confirmedPreviewNumber === preview.companyNumber);
+  const confirmDisabled = isDissolved || previewConfirmed || (!onConfirm && isPending);
 
   function updateCompanyNumber(value: string) {
     const nextValue = value.toUpperCase();
@@ -212,7 +213,7 @@ export function CompaniesHouseLookup({
             </label>
           ) : null}
 
-          <Button type="button" className="w-full sm:w-auto" onClick={confirmPreview} disabled={isPending || isDissolved || previewConfirmed}>
+          <Button type="button" className="w-full sm:w-auto" onClick={confirmPreview} disabled={confirmDisabled}>
             <CheckCircle2 className="h-4 w-4" aria-hidden="true" />
             {previewConfirmed ? "Details added" : onConfirm ? "Use these details" : "Connect Companies House"}
           </Button>

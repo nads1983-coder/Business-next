@@ -1,6 +1,7 @@
 import type { NextAuthOptions } from "next-auth";
 import CredentialsProvider from "next-auth/providers/credentials";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import type { PrismaClient } from "@prisma/client";
 import { compare } from "bcryptjs";
 import { z } from "zod";
 import { getPrisma } from "@/lib/prisma";
@@ -10,8 +11,14 @@ const credentialsSchema = z.object({
   password: z.string().min(8)
 });
 
+const prismaAdapterClient = new Proxy({} as PrismaClient, {
+  get(_target, property, receiver) {
+    return Reflect.get(getPrisma(), property, receiver);
+  }
+});
+
 export const authOptions: NextAuthOptions = {
-  adapter: PrismaAdapter(getPrisma()),
+  adapter: PrismaAdapter(prismaAdapterClient),
   secret: process.env.AUTH_SECRET ?? process.env.NEXTAUTH_SECRET,
   session: {
     strategy: "jwt"
