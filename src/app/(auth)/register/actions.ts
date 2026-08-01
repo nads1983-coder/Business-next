@@ -5,6 +5,8 @@ import { redirect } from "next/navigation";
 import { z } from "zod";
 import { createVerificationToken } from "@/lib/auth-tokens";
 import { sendVerificationEmail } from "@/lib/email";
+import { logNotificationFailure } from "@/lib/notifications/email-client";
+import { sendSignupNotification } from "@/lib/notifications/send-signup-notification";
 import { getPrisma } from "@/lib/prisma";
 
 const registerSchema = z.object({
@@ -53,6 +55,17 @@ export async function registerAction(_: unknown, formData: FormData) {
 
   const token = await createVerificationToken(user.id);
   await sendVerificationEmail({ email, token });
+  try {
+    await sendSignupNotification({
+      userId: user.id,
+      name: user.name,
+      email,
+      source: "/register",
+      submittedAt: user.createdAt
+    });
+  } catch (error) {
+    logNotificationFailure({ eventType: "signup", recordId: user.id, error });
+  }
 
   redirect("/check-email?type=verify");
 }

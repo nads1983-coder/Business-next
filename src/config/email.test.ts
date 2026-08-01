@@ -7,6 +7,7 @@ function resetUrlEnv() {
   delete process.env.NEXTAUTH_URL;
   delete process.env.EMAIL_FROM;
   delete process.env.EMAIL_REPLY_TO;
+  delete process.env.NOTIFICATION_EMAIL;
 }
 
 describe("email and app URL configuration", () => {
@@ -38,11 +39,13 @@ describe("email and app URL configuration", () => {
   it("uses the configured BusinessSorted sender and support reply-to", async () => {
     process.env.EMAIL_FROM = "BusinessSorted <support@businesssorted.uk>";
     process.env.EMAIL_REPLY_TO = "support@businesssorted.uk";
+    process.env.NOTIFICATION_EMAIL = "owner@example.com";
 
     const { emailConfig } = await import("./email");
 
     expect(emailConfig.from).toBe("BusinessSorted <support@businesssorted.uk>");
     expect(emailConfig.replyTo).toBe("support@businesssorted.uk");
+    expect(emailConfig.notificationEmail).toBe("owner@example.com");
   });
 
   it("defaults reply-to to the BusinessSorted support mailbox", async () => {

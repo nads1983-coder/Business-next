@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { Mail, ShieldCheck } from "lucide-react";
+import { SupportForm } from "./support-form";
 import { productConfig } from "@/config/product";
 import { PublicPage } from "@/components/public-page";
 import { JsonLd, breadcrumbSchema, pageMetadata } from "@/lib/seo";
@@ -25,7 +26,7 @@ export default function SupportPage() {
           <p className="text-sm font-medium text-primary">Business Sorted support</p>
           <h1 className="text-3xl font-semibold tracking-normal">Contact support</h1>
           <p className="text-base leading-7 text-muted-foreground">
-            Email Business Sorted for account, billing or product support. Please do not send card details,
+            Use the support form for account, billing or product questions. Please do not send card details,
             passwords, authentication codes or private tax documents.
           </p>
           <div className="flex flex-col gap-3 sm:flex-row">
@@ -40,6 +41,15 @@ export default function SupportPage() {
             </Button>
           </div>
         </section>
+
+        <Card className="border-primary/30">
+          <CardHeader>
+            <CardTitle className="text-lg">Send an enquiry</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <SupportForm />
+          </CardContent>
+        </Card>
 
         <Card className="border-primary/30">
           <CardHeader>
