@@ -2,7 +2,8 @@
 
 import { useActionState } from "react";
 import { useFormStatus } from "react-dom";
-import { submitSupportEnquiryAction, type EnquiryActionState } from "./actions";
+import type { EnquiryActionState } from "@/lib/support-enquiries";
+import { submitSupportEnquiryAction } from "./actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";

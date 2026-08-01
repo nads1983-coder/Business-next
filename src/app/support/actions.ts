@@ -1,8 +1,7 @@
 "use server";
 
-import { submitSupportEnquiry, type EnquiryActionState } from "@/lib/support-enquiries";
-
-export type { EnquiryActionState };
+import { submitSupportEnquiry } from "@/lib/support-enquiries";
+import type { EnquiryActionState } from "@/lib/support-enquiries";
 
 export async function submitSupportEnquiryAction(
   _: EnquiryActionState | null,
