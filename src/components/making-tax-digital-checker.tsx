@@ -227,7 +227,7 @@ export function MakingTaxDigitalChecker() {
             </div>
             <div className="flex flex-col gap-3">
               <Button asChild>
-                <Link href="/register">Create deadline reminders</Link>
+                <Link href="/mtd-starter-pack">Get the MTD Starter Pack</Link>
               </Button>
               <Button asChild variant="outline">
                 <a href="https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax">

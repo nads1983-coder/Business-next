@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { JsonLd, absoluteUrl, breadcrumbSchema, pageMetadata } from "@/lib/seo";
 import { MakingTaxDigitalChecker } from "@/components/making-tax-digital-checker";
+import { MtdOfferCards } from "@/components/mtd-offers";
 import { PublicPage } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -141,6 +142,17 @@ export default function MakingTaxDigitalCheckerPage() {
             <CardContent className="text-sm leading-6 text-muted-foreground">{body}</CardContent>
           </Card>
         ))}
+      </section>
+
+      <section className="mt-12">
+        <div className="mb-5 max-w-3xl">
+          <Badge variant="calm">Hands-off next step</Badge>
+          <h2 className="mt-3 text-3xl font-semibold tracking-normal">Turn your MTD result into a simple system</h2>
+          <p className="mt-3 text-sm leading-6 text-muted-foreground">
+            The checker gives the quick answer. The paid packs give the practical "now what?" for records, software, expenses and quarterly routines.
+          </p>
+        </div>
+        <MtdOfferCards />
       </section>
 
       <section className="mt-12 rounded-md border bg-secondary/30 p-5">

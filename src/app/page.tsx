@@ -96,8 +96,8 @@ export default function MarketingPage() {
         <div className="grid min-w-0 gap-3">
           {[
             ["Making Tax Digital", "Check if MTD for Income Tax may apply from 2026, 2027 or 2028."],
+            ["MTD Starter Pack", "Buy the simple checklist and quarterly routine after using the free checker."],
             ["Companies House", "Annual accounts and confirmation statement reminders."],
-            ["HMRC", "Corporation Tax, Company Tax Return, VAT, PAYE and Self Assessment prompts where relevant."],
           ].map(([title, body]) => (
             <Card key={title}>
               <CardHeader className="pb-3">

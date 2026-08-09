@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Download } from "lucide-react";
 import { downloadableResources, downloadPath } from "@/content/authority";
+import { MtdOfferCards } from "@/components/mtd-offers";
 import { JsonLd, breadcrumbSchema, pageMetadata } from "@/lib/seo";
 import { PublicPage } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
@@ -39,6 +40,15 @@ export default function DownloadsPage() {
             </CardContent>
           </Card>
         ))}
+      </section>
+      <section className="mt-12">
+        <div className="mb-5 max-w-3xl">
+          <h2 className="text-2xl font-semibold tracking-normal">Making Tax Digital paid downloads</h2>
+          <p className="mt-2 text-sm leading-6 text-muted-foreground">
+            For sole traders and landlords who need a simple MTD readiness routine rather than another vague article.
+          </p>
+        </div>
+        <MtdOfferCards />
       </section>
     </PublicPage>
   );

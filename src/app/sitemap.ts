@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { comparisonPath, comparisonResources } from "@/content/authority";
+import { mtdContentPages } from "@/content/mtd-products";
 import { guideHubs, guides } from "@/content/seo-content";
 import {
   getIndexableResourceArticles,
@@ -22,8 +23,10 @@ function sitemapEntry(path: string, lastModified = defaultLastModified): Metadat
     priority:
       path === ""
         ? 1
-        : path === "/making-tax-digital-checker"
+        : path === "/making-tax-digital-checker" || path.startsWith("/making-tax-digital/")
           ? 0.9
+        : path === "/mtd-starter-pack" || path === "/mtd-setup-kit"
+          ? 0.85
         : path === "/resources" || path === "/tools" || path === "/comparisons" || path.startsWith("/guides")
           ? 0.8
           : 0.7
@@ -41,6 +44,9 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...guides.map((guide) => `/guides/${guide.category}/${guide.slug}`),
     "/tools",
     "/making-tax-digital-checker",
+    ...mtdContentPages.map((page) => `/making-tax-digital/${page.slug}`),
+    "/mtd-starter-pack",
+    "/mtd-setup-kit",
     "/tools/deadline-calculators",
     "/tools/decision-tools",
     "/comparisons",

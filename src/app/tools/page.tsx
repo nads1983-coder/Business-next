@@ -17,9 +17,16 @@ const tools = [
   {
     title: "Making Tax Digital checker",
     description:
-      "Estimate whether MTD for Income Tax may apply to you, when to prepare and what records or software to check next.",
+      "Estimate whether MTD for Income Tax may apply to you, then get the starter pack if you need a simple records routine.",
     href: "/making-tax-digital-checker",
     icon: FileSpreadsheet
+  },
+  {
+    title: "MTD Starter Pack",
+    description:
+      "A paid download for turning your checker result into a quarterly routine, expense checklist and accountant question list.",
+    href: "/mtd-starter-pack",
+    icon: ListChecks
   },
   {
     title: "Deadline calculators",
