@@ -445,6 +445,119 @@ const sources = {
 
 export const resourceArticles = [
   {
+    title: "Limited Company Annual Filing Calendar",
+    slug: "limited-company-annual-filing-calendar",
+    description:
+      "Build a practical annual filing calendar for a UK limited company, covering accounts, confirmation statements and official source checks.",
+    category: "companies-house",
+    cluster: "company-accounts",
+    searchIntent:
+      "A UK limited-company director wants a single annual calendar view of Companies House filing tasks and where to check official dates.",
+    primaryKeyword: "limited company annual filing calendar",
+    secondaryKeywords: [
+      "limited company filing deadlines",
+      "Companies House annual calendar",
+      "accounts confirmation statement calendar"
+    ],
+    targetAudience:
+      "UK limited-company directors and administrators who want to keep recurring Companies House dates visible across the year.",
+    summary:
+      "A limited-company annual filing calendar should separate accounts, confirmation statements, company record changes and tax-related reminders, then link each task back to the official source.",
+    directAnswer:
+      "To build a limited-company annual filing calendar, record the company accounts deadline, confirmation statement review period and filing window, Corporation Tax dates where relevant, and any planned company-record reviews. Check the Companies House register and GOV.UK guidance before relying on a saved date.",
+    supportingQuestions: [
+      "Which annual filing dates should a limited company calendar include?",
+      "How do Companies House dates differ from HMRC dates?",
+      "Where should directors check the official deadline?"
+    ],
+    uniqueAngle:
+      "Turns separate Companies House resources into a practical annual calendar structure without pretending every company has the same date pattern.",
+    content: [
+      {
+        id: "calendar-items",
+        heading: "What to put in the calendar",
+        body: [
+          "Start with the filings that recur for most UK limited companies: annual accounts and the confirmation statement. The calendar should show the task name, the official filing body, the source link, the company-specific date and the internal preparation date.",
+          "Annual accounts and confirmation statements are separate Companies House tasks. Accounts report financial information for a company period, while the confirmation statement confirms that key register information is correct or has been updated."
+        ]
+      },
+      {
+        id: "source-checks",
+        heading: "Where to check official dates",
+        body: [
+          "Use the Companies House register to check the filing deadline shown for the specific company. GOV.UK guidance explains common private-company accounts timing, but the register is still the practical place to verify a company-specific date before acting.",
+          "For confirmation statements, track the review period and filing window separately from accounts. If the company is new, has changed its accounting reference date or has missed a filing, check the detailed guidance instead of copying last year's reminder."
+        ]
+      },
+      {
+        id: "working-rhythm",
+        heading: "A practical annual rhythm",
+        body: [
+          "Set preparation reminders before the filing deadline, not only on the final due date. Directors often need time to gather records, review company information, confirm access to Companies House services and coordinate with an accountant or administrator.",
+          "After each filing, update the calendar with the next expected review date and keep a note of the official source checked. This gives the next person a clear audit trail without suggesting BusinessSorted replaces Companies House, HMRC or professional advice."
+        ]
+      },
+      {
+        id: "next-steps",
+        heading: "Useful next steps",
+        body: [
+          "Read the annual accounts guide, check the confirmation statement guidance and add the first accounts deadline if the company is still in its first year. Keep the calendar connected to the official source links so it can be reviewed before each filing."
+        ]
+      }
+    ],
+    keyFacts: [
+      "Annual accounts and confirmation statements are separate Companies House tasks.",
+      "Company-specific filing dates should be checked against official sources before acting.",
+      "First accounts and changed accounting reference dates can affect calendar planning.",
+      "Preparation reminders should sit before the filing deadline, not only on the due date."
+    ],
+    faqs: [
+      {
+        question: "Is a filing calendar the same as official Companies House guidance?",
+        answer:
+          "No. A calendar is an internal planning tool. Directors should check Companies House and GOV.UK sources before filing or relying on a date."
+      },
+      {
+        question: "Should HMRC dates be kept on the same calendar?",
+        answer:
+          "They can be shown together for planning, but Companies House and HMRC filings are different responsibilities with separate deadlines and processes."
+      }
+    ],
+    relatedArticleSlugs: [
+      "companies-house-deadlines",
+      "annual-accounts-guide",
+      "confirmation-statement-due",
+      "first-company-accounts-deadline",
+      "accounting-reference-date"
+    ],
+    relatedProductFeature: "Company filing calendar reminders",
+    ctaVariant: "deadline-dashboard",
+    officialSources: [
+      sources.accountsAndTaxReturns,
+      sources.accountsGuidance,
+      sources.confirmationStatementGuidance
+    ],
+    sourceCheckedDate: "2026-08-09",
+    lastReviewedDate: "2026-08-09",
+    author: "Business Sorted editorial team",
+    status: "published",
+    featured: false,
+    estimatedReadingTime: 5,
+    canonicalUrl: absoluteUrl("/resources/limited-company-annual-filing-calendar"),
+    robots: "index",
+    socialTitle: "Limited company annual filing calendar",
+    socialDescription:
+      "Source-linked annual filing calendar guidance for UK limited-company directors tracking accounts and confirmation statements.",
+    internalLinks: [
+      { label: "Companies House resources", href: "/resources/companies-house" },
+      { label: "Companies House deadlines", href: "/resources/companies-house-deadlines" },
+      { label: "Annual accounts guide", href: "/resources/annual-accounts-guide" },
+      { label: "Confirmation statement due date", href: "/resources/confirmation-statement-due" },
+      { label: "First accounts deadline", href: "/resources/first-company-accounts-deadline" },
+      { label: "Start BusinessSorted setup", href: "/register" }
+    ]
+  },
+  {
     title: "What is a confirmation statement?",
     slug: "confirmation-statement-guide",
     description:
