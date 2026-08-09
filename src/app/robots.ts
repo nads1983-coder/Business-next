@@ -14,7 +14,10 @@ export default function robots(): MetadataRoute.Robots {
         "/forgot-password",
         "/reset-password",
         "/verify-email",
-        "/check-email"
+        "/check-email",
+        "/mtd-delivery/",
+        "/mtd-starter-pack/success",
+        "/mtd-setup-kit/success"
       ]
     },
     sitemap: absoluteUrl("/sitemap.xml")
