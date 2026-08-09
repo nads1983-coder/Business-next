@@ -1,5 +1,6 @@
 import type { MetadataRoute } from "next";
 import { comparisonPath, comparisonResources } from "@/content/authority";
+import { recommendedBusinessEssentialsPath } from "@/content/affiliate-recommendations";
 import { mtdContentPages } from "@/content/mtd-products";
 import { guideHubs, guides } from "@/content/seo-content";
 import {
@@ -49,6 +50,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     "/mtd-setup-kit",
     "/tools/deadline-calculators",
     "/tools/decision-tools",
+    recommendedBusinessEssentialsPath,
     "/comparisons",
     ...comparisonResources.map((comparison) => comparisonPath(comparison.slug)),
     "/downloads",

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import Link from "next/link";
 import { ArrowRight, BookOpenCheck, CheckCircle2, Clock, ListChecks, SearchCheck } from "lucide-react";
 import {
   businessComplianceHubCategories,
@@ -296,6 +297,26 @@ export default function ResourcesPage() {
               >
                 Start setup <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </ResourceTrackedLink>
+            </Button>
+          </div>
+        </section>
+
+        <section className="rounded-md border p-5 sm:p-6" aria-labelledby="business-essentials-heading">
+          <div className="grid gap-5 lg:grid-cols-[minmax(0,1fr)_280px] lg:items-center">
+            <div>
+              <h2 id="business-essentials-heading" className="text-2xl font-semibold tracking-normal">
+                Setting up your work essentials?
+              </h2>
+              <p className="mt-3 max-w-3xl text-sm leading-6 text-muted-foreground">
+                The compliance guides should stay your main starting point. If you also need basic
+                office, paperwork or postage kit, there is a secondary Amazon UK recommendations
+                page with clear affiliate disclosure.
+              </p>
+            </div>
+            <Button asChild variant="outline">
+              <Link href="/recommended-business-essentials">
+                View business essentials <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              </Link>
             </Button>
           </div>
         </section>

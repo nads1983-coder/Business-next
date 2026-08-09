@@ -21,6 +21,7 @@ export function PublicFooter() {
         <nav className="flex min-w-0 max-w-3xl flex-wrap gap-3 sm:gap-4 lg:justify-end" aria-label="Legal">
           <Link href="/resources" className="hover:text-foreground">Resources</Link>
           <Link href="/resources/companies-house" className="hover:text-foreground">Companies House resources</Link>
+          <Link href="/recommended-business-essentials" className="hover:text-foreground">Business essentials</Link>
           <Link href="/tools" className="hover:text-foreground">Tools</Link>
           <Link href="/comparisons" className="hover:text-foreground">Comparisons</Link>
           <Link href="/downloads" className="hover:text-foreground">Downloads</Link>
