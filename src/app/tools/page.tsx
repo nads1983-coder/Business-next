@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import Link from "next/link";
-import { ArrowRight, Calculator, ListChecks } from "lucide-react";
+import { ArrowRight, Calculator, FileSpreadsheet, ListChecks } from "lucide-react";
 import { JsonLd, breadcrumbSchema, pageMetadata } from "@/lib/seo";
 import { PublicPage } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,13 @@ export const metadata: Metadata = pageMetadata({
 });
 
 const tools = [
+  {
+    title: "Making Tax Digital checker",
+    description:
+      "Estimate whether MTD for Income Tax may apply to you, when to prepare and what records or software to check next.",
+    href: "/making-tax-digital-checker",
+    icon: FileSpreadsheet
+  },
   {
     title: "Deadline calculators",
     description:

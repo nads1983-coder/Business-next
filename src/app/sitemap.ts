@@ -22,6 +22,8 @@ function sitemapEntry(path: string, lastModified = defaultLastModified): Metadat
     priority:
       path === ""
         ? 1
+        : path === "/making-tax-digital-checker"
+          ? 0.9
         : path === "/resources" || path === "/tools" || path === "/comparisons" || path.startsWith("/guides")
           ? 0.8
           : 0.7
@@ -38,6 +40,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
     ...guideHubs.map((hub) => hub.path),
     ...guides.map((guide) => `/guides/${guide.category}/${guide.slug}`),
     "/tools",
+    "/making-tax-digital-checker",
     "/tools/deadline-calculators",
     "/tools/decision-tools",
     "/comparisons",

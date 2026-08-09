@@ -78,8 +78,8 @@ export default function MarketingPage() {
           </p>
           <div className="mt-8 flex flex-col gap-3 sm:flex-row">
             <Button asChild size="lg">
-              <Link href="/register">
-                Find my business deadlines <ArrowRight className="h-4 w-4" aria-hidden="true" />
+              <Link href="/making-tax-digital-checker">
+                Check if MTD applies <ArrowRight className="h-4 w-4" aria-hidden="true" />
               </Link>
             </Button>
             <Button asChild variant="outline" size="lg">
@@ -95,9 +95,9 @@ export default function MarketingPage() {
 
         <div className="grid min-w-0 gap-3">
           {[
+            ["Making Tax Digital", "Check if MTD for Income Tax may apply from 2026, 2027 or 2028."],
             ["Companies House", "Annual accounts and confirmation statement reminders."],
             ["HMRC", "Corporation Tax, Company Tax Return, VAT, PAYE and Self Assessment prompts where relevant."],
-            ["Business admin", "Records, paperwork and recurring checklist tasks in one place."]
           ].map(([title, body]) => (
             <Card key={title}>
               <CardHeader className="pb-3">
