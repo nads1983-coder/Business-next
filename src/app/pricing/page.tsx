@@ -3,14 +3,11 @@ import Link from "next/link";
 import { ArrowRight, CheckCircle2 } from "lucide-react";
 import { billingConfig } from "@/config/billing";
 import { productConfig } from "@/config/product";
-import { analyticsEvents, recordAnalyticsEvent } from "@/lib/analytics";
 import { JsonLd, absoluteUrl, pageMetadata } from "@/lib/seo";
 import { PublicPage } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
-
-export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = pageMetadata({
   title: "Business Sorted pricing",
@@ -27,12 +24,7 @@ const pricingFaqs = [
   ["Is there a free trial?", "No. The public launch uses one monthly Stripe price with no free trial."]
 ] as const;
 
-export default async function PricingPage() {
-  recordAnalyticsEvent({
-    name: analyticsEvents.pricingPageViewed,
-    path: "/pricing"
-  }).catch(() => undefined);
-
+export default function PricingPage() {
   const structuredData = [
     {
       "@context": "https://schema.org",

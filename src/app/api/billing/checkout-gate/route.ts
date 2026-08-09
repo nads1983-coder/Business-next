@@ -3,6 +3,7 @@ import { billingConfig, getCheckoutGateDiagnostics } from "@/config/billing";
 import { legalVersion } from "@/config/legal";
 
 export const dynamic = "force-dynamic";
+export const maxDuration = 5;
 
 export function GET() {
   const diagnostics = getCheckoutGateDiagnostics();

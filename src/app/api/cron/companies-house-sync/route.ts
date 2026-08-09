@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { companiesHouseSyncConfig, runCompaniesHouseSync } from "@/lib/companies-house/sync";
 
+export const maxDuration = 60;
+
 async function handleCompaniesHouseSync(request: NextRequest) {
   const secret = process.env.CRON_SECRET;
   const auth = request.headers.get("authorization");

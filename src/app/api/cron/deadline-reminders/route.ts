@@ -1,6 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { runDeadlineReminders } from "@/lib/reminders";
 
+export const maxDuration = 60;
+
 async function handleDeadlineReminders(request: NextRequest) {
   const secret = process.env.CRON_SECRET;
   const auth = request.headers.get("authorization");
