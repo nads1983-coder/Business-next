@@ -3,6 +3,7 @@ import Link from "next/link";
 import { ArrowRight } from "lucide-react";
 import { mtdProducts } from "@/content/mtd-products";
 import { JsonLd, breadcrumbSchema, pageMetadata } from "@/lib/seo";
+import { DeliveryNotice } from "@/components/delivery-notice";
 import { MtdOfferCards } from "@/components/mtd-offers";
 import { PublicPage } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
@@ -44,6 +45,7 @@ export default function MtdSetupKitPage() {
         ]}
       />
       <section className="max-w-3xl">
+        <DeliveryNotice />
         <Badge variant="calm">Digital download</Badge>
         <h1 className="mt-4 text-4xl font-semibold tracking-normal">MTD Setup Kit</h1>
         <p className="mt-4 text-lg leading-8 text-muted-foreground">{product.description}</p>

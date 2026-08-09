@@ -149,7 +149,7 @@ export default function MakingTaxDigitalCheckerPage() {
           <Badge variant="calm">Hands-off next step</Badge>
           <h2 className="mt-3 text-3xl font-semibold tracking-normal">Turn your MTD result into a simple system</h2>
           <p className="mt-3 text-sm leading-6 text-muted-foreground">
-            The checker gives the quick answer. The paid packs give the practical "now what?" for records, software, expenses and quarterly routines.
+            The checker gives the quick answer. The paid packs give the practical &quot;now what?&quot; for records, software, expenses and quarterly routines.
           </p>
         </div>
         <MtdOfferCards />

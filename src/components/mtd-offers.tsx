@@ -142,7 +142,7 @@ export function MtdDeliveryContent({ kit }: { kit: "starter" | "setup" }) {
       <div className="rounded-md border p-5">
         <h2 className="text-lg font-semibold tracking-normal">Save a copy</h2>
         <p className="mt-2 text-sm leading-6 text-muted-foreground">
-          Use your browser print command and choose "Save as PDF" if you want an offline copy. This avoids account logins and keeps delivery hands-off.
+          Use your browser print command and choose &quot;Save as PDF&quot; if you want an offline copy. This avoids account logins and keeps delivery hands-off.
         </p>
         <Button asChild className="mt-4" variant="outline">
           <Link href="/making-tax-digital-checker">

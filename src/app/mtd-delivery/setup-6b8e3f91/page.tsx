@@ -1,14 +1,32 @@
 import type { Metadata } from "next";
+import { redirect } from "next/navigation";
+import { getSessionId, productRedirectUrl, validateMtdCheckoutSession } from "@/lib/mtd-delivery";
 import { MtdDeliveryContent } from "@/components/mtd-offers";
 import { PublicPage } from "@/components/public-page";
 import { Badge } from "@/components/ui/badge";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Your MTD Setup Kit | Business Sorted",
   robots: { index: false, follow: false }
 };
 
-export default function MtdSetupKitDeliveryPage() {
+type PageProps = {
+  searchParams: Promise<Record<string, string | string[] | undefined>>;
+};
+
+export default async function MtdSetupKitDeliveryPage({ searchParams }: PageProps) {
+  const params = await searchParams;
+  const validation = await validateMtdCheckoutSession({
+    pack: "setup",
+    sessionId: getSessionId(params)
+  });
+
+  if (!validation.ok) {
+    redirect(productRedirectUrl("setup", validation.reason));
+  }
+
   return (
     <PublicPage>
       <section className="max-w-3xl">
