@@ -2,8 +2,6 @@ import { NextResponse } from "next/server";
 import { getStripe, getStripeWebhookSecret } from "@/lib/stripe";
 import { processStripeEvent } from "@/lib/stripe-billing";
 
-export const maxDuration = 10;
-
 export async function POST(request: Request) {
   const signature = request.headers.get("stripe-signature");
 
