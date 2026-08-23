@@ -9,6 +9,7 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit",
     "test": "vitest run",
+    "pseo:sync": "tsx scripts/sync-programmatic-seo.ts",
     "validate:resources": "vitest run src/content/resources.test.ts",
     "test:watch": "vitest",
     "db:generate": "prisma generate",

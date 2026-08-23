@@ -1,0 +1,2264 @@
+{
+  "schemaVersion": "business-sorted-pseo-v1",
+  "syncedAt": "1970-01-01T00:00:00.000Z",
+  "source": {
+    "system": "standalone-programmatic-seo",
+    "exportId": "business-sorted",
+    "sourceOrigin": "programmatic-seo-engine"
+  },
+  "target": {
+    "site": "Business Sorted",
+    "origin": "https://businesssorted.uk",
+    "urlFormat": "non-www, no trailing slash"
+  },
+  "records": [
+    {
+      "schemaVersion": "business-sorted-pseo-v1",
+      "source": "standalone-programmatic-seo",
+      "slug": "mtd-income-tax-deadline-plan-for-sole-traders",
+      "canonicalPath": "/resources/mtd-income-tax-deadline-plan-for-sole-traders",
+      "canonicalUrl": "https://businesssorted.uk/resources/mtd-income-tax-deadline-plan-for-sole-traders",
+      "family": "mtd-income-tax-scenario",
+      "primaryKeyword": "MTD deadline plan for sole traders",
+      "primaryIntent": "A sole trader wants to know if MTD applies and what dates to prepare for before quarterly updates begin.",
+      "targetUser": "UK sole traders in Self Assessment who may cross an MTD for Income Tax threshold.",
+      "businessStructureOrScenario": "sole-trader-mtd-deadline-plan",
+      "uniqueStructuredData": [
+        "WebPage",
+        "Article",
+        "FAQPage",
+        "BreadcrumbList"
+      ],
+      "officialSources": [
+        {
+          "title": "Find out if and when you need to use Making Tax Digital for Income Tax",
+          "url": "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Use Making Tax Digital for Income Tax - Create digital records",
+          "url": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/create-digital-records",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Use Making Tax Digital for Income Tax - Send quarterly updates",
+          "url": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates",
+          "authority": "HM Revenue & Customs"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "title": "Find out if and when you need to use Making Tax Digital for Income Tax",
+          "url": "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-03-26",
+          "reviewDate": "2026-11-30",
+          "claim": "MTD for Income Tax applies to sole traders and landlords in Self Assessment when qualifying income exceeds the relevant threshold: over GBP 50,000 from 6 April 2026, over GBP 30,000 from 6 April 2027 and over GBP 20,000 from 6 April 2028."
+        },
+        {
+          "title": "Use Making Tax Digital for Income Tax - Create digital records",
+          "url": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/create-digital-records",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-07-16",
+          "reviewDate": "2026-11-30",
+          "claim": "Relevant MTD users must create and store digital records for self-employment and property income and expenses using compatible software, while continuing to keep normal Self Assessment evidence such as bank statements and invoices."
+        },
+        {
+          "title": "Use Making Tax Digital for Income Tax - Send quarterly updates",
+          "url": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-07-16",
+          "reviewDate": "2026-11-30",
+          "claim": "Quarterly updates are summaries of digital records, not full tax returns. Standard and calendar update periods use deadlines of 7 August, 7 November, 7 February and 7 May."
+        }
+      ],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [
+        "/making-tax-digital-checker",
+        "/tools/deadline-calculators"
+      ],
+      "relevantPaidProduct": "/mtd-starter-pack",
+      "internalLinkOpportunities": [
+        "/making-tax-digital-checker",
+        "/making-tax-digital/sole-traders",
+        "/making-tax-digital/quarterly-update-dates",
+        "/mtd-starter-pack"
+      ],
+      "existingCompetingPage": "/making-tax-digital/sole-traders",
+      "cannibalisationAssessment": "Approved because the existing MTD sole-trader page owns broad awareness, while this page owns deadline planning and record-readiness sequencing.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 95,
+        "dimensions": {
+          "searchIntent": 17,
+          "relevance": 10,
+          "uniqueValue": 14,
+          "structuredData": 9,
+          "factualConfidence": 10,
+          "conversionRelevance": 9,
+          "internalLinks": 8,
+          "duplicationRisk": 4,
+          "cannibalisationRisk": 4,
+          "contentDepth": 10
+        }
+      },
+      "status": "approved",
+      "approvalJustification": "Approved for the first Business Sorted release because it has source-backed facts, clear search intent, distinct scenario content and strong internal-link support.",
+      "resourceArticle": {
+        "title": "MTD Income Tax deadline plan for sole traders",
+        "description": "Plan Making Tax Digital for Income Tax as a sole trader, including thresholds, start dates, quarterly updates, records and review points.",
+        "category": "hmrc",
+        "cluster": "mtd-income-tax",
+        "searchIntent": "A sole trader wants a practical MTD deadline plan that separates threshold checks, digital records and quarterly update dates.",
+        "primaryKeyword": "MTD deadline plan for sole traders",
+        "secondaryKeywords": [
+          "Making Tax Digital sole trader deadlines",
+          "sole trader MTD quarterly updates",
+          "MTD Income Tax thresholds"
+        ],
+        "targetAudience": "UK sole traders in Self Assessment who need to plan MTD for Income Tax before the first required update.",
+        "summary": "Sole traders should plan MTD around the official qualifying-income threshold, the tax year that HMRC reviews, the start date for digital records and the quarterly update rhythm.",
+        "directAnswer": "A sole trader may need MTD for Income Tax if they are in Self Assessment, have self-employment income and their qualifying income is over the relevant threshold. Check the tax year HMRC uses, prepare digital records before the start date and build reminders for 7 August, 7 November, 7 February and 7 May where MTD applies.",
+        "supportingQuestions": [
+          "Which MTD Income Tax threshold applies to my sole-trader income?",
+          "When do sole traders need to start keeping digital records?",
+          "How do quarterly update deadlines fit with Self Assessment?"
+        ],
+        "uniqueAngle": "Focuses on the planning sequence for sole traders rather than repeating a generic MTD explainer.",
+        "content": [
+          {
+            "id": "who-this-plan-applies-to",
+            "heading": "Who this plan applies to",
+            "body": [
+              "Use this plan if you trade as a sole trader, are registered for Self Assessment and need to check whether your self-employment income puts you into MTD for Income Tax. The official threshold is based on qualifying income, not profit after expenses.",
+              "The current phase-in uses qualifying income over GBP 50,000 in the 2024 to 2025 tax year for an April 2026 start, over GBP 30,000 in the 2025 to 2026 tax year for an April 2027 start, and over GBP 20,000 in the 2026 to 2027 tax year for an April 2028 start."
+            ]
+          },
+          {
+            "id": "records-before-deadlines",
+            "heading": "Records to prepare before the first update",
+            "body": [
+              "Before the first update date matters, decide how you will capture sales, takings, fees, expenses, invoices, receipts and bank evidence in software that supports MTD for Income Tax. Keeping a tidy spreadsheet may still require a compatible digital link or bridging process.",
+              "If you run more than one sole-trader business, HMRC says you will need separate digital records and separate quarterly updates for each source of self-employment income. That makes early structure more important than a last-minute software choice."
+            ]
+          },
+          {
+            "id": "quarterly-update-rhythm",
+            "heading": "Quarterly update rhythm",
+            "body": [
+              "For standard update periods, the dates are 7 August, 7 November, 7 February and 7 May. Calendar update periods use the same deadlines but align the period ends to month-end dates, which may suit businesses that already run month-end bookkeeping.",
+              "A quarterly update is a summary from digital records rather than a full tax return. It still needs clean records, because incorrect or missing transactions can affect the figures you review before sending the update."
+            ]
+          },
+          {
+            "id": "business-sorted-next-steps",
+            "heading": "Business Sorted next steps",
+            "body": [
+              "Use the free MTD checker to confirm the likely timing, then set preparation reminders before the first digital-record date. The MTD Starter Pack is the better fit when you need a checklist and quarterly routine rather than a full setup workflow.",
+              "Business Sorted is not HMRC or an accountant. Treat this page as an organisation guide, then check official guidance and ask a qualified adviser if your income, accounting period or exemption position is uncertain."
+            ]
+          }
+        ],
+        "keyFacts": [
+          "MTD Income Tax thresholds are based on qualifying income from self-employment and property, not taxable profit after expenses.",
+          "Sole traders with more than one business may need separate digital records and quarterly updates for each business.",
+          "Quarterly update deadlines are 7 August, 7 November, 7 February and 7 May where MTD applies."
+        ],
+        "faqs": [
+          {
+            "question": "Does every sole trader need MTD for Income Tax?",
+            "answer": "No. MTD for Income Tax depends on Self Assessment status, income source and qualifying income being over the relevant threshold for the tax year HMRC reviews."
+          },
+          {
+            "question": "Is a quarterly update the same as my Self Assessment tax return?",
+            "answer": "No. HMRC describes quarterly updates as summaries from digital records. You still need to finalise your tax position through the required year-end process."
+          }
+        ],
+        "relatedArticleSlugs": [
+          "sole-trader-deadline-calendar",
+          "first-year-sole-trader-compliance-plan",
+          "vat-registered-business-deadline-calendar"
+        ],
+        "relatedProductFeature": "MTD readiness checklist and quarterly update planning",
+        "ctaVariant": "mtd-readiness",
+        "officialSources": [
+          {
+            "label": "Find out if and when you need to use Making Tax Digital for Income Tax",
+            "href": "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax",
+            "publisher": "HM Revenue & Customs"
+          },
+          {
+            "label": "Use Making Tax Digital for Income Tax - Create digital records",
+            "href": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/create-digital-records",
+            "publisher": "HM Revenue & Customs"
+          },
+          {
+            "label": "Use Making Tax Digital for Income Tax - Send quarterly updates",
+            "href": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates",
+            "publisher": "HM Revenue & Customs"
+          }
+        ],
+        "estimatedReadingTime": 6,
+        "internalLinks": [
+          {
+            "label": "Use the Making Tax Digital checker",
+            "href": "/making-tax-digital-checker"
+          },
+          {
+            "label": "Read the broad sole-trader MTD guide",
+            "href": "/making-tax-digital/sole-traders"
+          },
+          {
+            "label": "Compare MTD quarterly update dates",
+            "href": "/making-tax-digital/quarterly-update-dates"
+          },
+          {
+            "label": "Get the MTD Starter Pack",
+            "href": "/mtd-starter-pack"
+          }
+        ],
+        "slug": "mtd-income-tax-deadline-plan-for-sole-traders",
+        "sourceCheckedDate": "2026-08-23",
+        "lastReviewedDate": "2026-08-23",
+        "author": "Business Sorted editorial team",
+        "status": "published",
+        "featured": false,
+        "canonicalUrl": "https://businesssorted.uk/resources/mtd-income-tax-deadline-plan-for-sole-traders",
+        "robots": "index",
+        "socialTitle": "MTD Income Tax deadline plan for sole traders",
+        "socialDescription": "Plan Making Tax Digital for Income Tax as a sole trader, including thresholds, start dates, quarterly updates, records and review points."
+      },
+      "indexability": {
+        "index": true,
+        "follow": true,
+        "includeInSitemap": true,
+        "canonicalUrl": "https://businesssorted.uk/resources/mtd-income-tax-deadline-plan-for-sole-traders"
+      },
+      "sitemap": {
+        "eligible": true,
+        "canonicalPath": "/resources/mtd-income-tax-deadline-plan-for-sole-traders"
+      }
+    },
+    {
+      "schemaVersion": "business-sorted-pseo-v1",
+      "source": "standalone-programmatic-seo",
+      "slug": "mtd-income-tax-deadline-plan-for-landlords",
+      "canonicalPath": "/resources/mtd-income-tax-deadline-plan-for-landlords",
+      "canonicalUrl": "https://businesssorted.uk/resources/mtd-income-tax-deadline-plan-for-landlords",
+      "family": "mtd-income-tax-scenario",
+      "primaryKeyword": "MTD deadline plan for landlords",
+      "primaryIntent": "A landlord wants to understand MTD timing, property record responsibilities and quarterly update planning.",
+      "targetUser": "UK landlords in Self Assessment with property income that may cross MTD thresholds.",
+      "businessStructureOrScenario": "landlord-mtd-deadline-plan",
+      "uniqueStructuredData": [
+        "WebPage",
+        "Article",
+        "FAQPage",
+        "BreadcrumbList"
+      ],
+      "officialSources": [
+        {
+          "title": "Find out if and when you need to use Making Tax Digital for Income Tax",
+          "url": "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Use Making Tax Digital for Income Tax - Create digital records",
+          "url": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/create-digital-records",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Use Making Tax Digital for Income Tax - Send quarterly updates",
+          "url": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates",
+          "authority": "HM Revenue & Customs"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "title": "Find out if and when you need to use Making Tax Digital for Income Tax",
+          "url": "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-03-26",
+          "reviewDate": "2026-11-30",
+          "claim": "MTD for Income Tax applies to sole traders and landlords in Self Assessment when qualifying income exceeds the relevant threshold: over GBP 50,000 from 6 April 2026, over GBP 30,000 from 6 April 2027 and over GBP 20,000 from 6 April 2028."
+        },
+        {
+          "title": "Use Making Tax Digital for Income Tax - Create digital records",
+          "url": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/create-digital-records",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-07-16",
+          "reviewDate": "2026-11-30",
+          "claim": "Relevant MTD users must create and store digital records for self-employment and property income and expenses using compatible software, while continuing to keep normal Self Assessment evidence such as bank statements and invoices."
+        },
+        {
+          "title": "Use Making Tax Digital for Income Tax - Send quarterly updates",
+          "url": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-07-16",
+          "reviewDate": "2026-11-30",
+          "claim": "Quarterly updates are summaries of digital records, not full tax returns. Standard and calendar update periods use deadlines of 7 August, 7 November, 7 February and 7 May."
+        }
+      ],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [
+        "/making-tax-digital-checker"
+      ],
+      "relevantPaidProduct": "/mtd-setup-kit",
+      "internalLinkOpportunities": [
+        "/making-tax-digital-checker",
+        "/making-tax-digital/landlords",
+        "/making-tax-digital/quarterly-update-dates",
+        "/mtd-setup-kit"
+      ],
+      "existingCompetingPage": "/making-tax-digital/landlords",
+      "cannibalisationAssessment": "Approved because the existing landlord page is a broad overview, while this page owns deadline planning and landlord-specific record structure.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 94,
+        "dimensions": {
+          "searchIntent": 16,
+          "relevance": 10,
+          "uniqueValue": 14,
+          "structuredData": 9,
+          "factualConfidence": 10,
+          "conversionRelevance": 9,
+          "internalLinks": 8,
+          "duplicationRisk": 4,
+          "cannibalisationRisk": 4,
+          "contentDepth": 10
+        }
+      },
+      "status": "approved",
+      "approvalJustification": "Approved for the first Business Sorted release because it has source-backed facts, clear search intent, distinct scenario content and strong internal-link support.",
+      "resourceArticle": {
+        "title": "MTD Income Tax deadline plan for landlords",
+        "description": "Plan Making Tax Digital for landlord property income, including thresholds, digital property records, quarterly updates and common review points.",
+        "category": "hmrc",
+        "cluster": "mtd-income-tax",
+        "searchIntent": "A landlord wants to know when MTD for Income Tax applies and how to organise property records before quarterly updates.",
+        "primaryKeyword": "MTD deadline plan for landlords",
+        "secondaryKeywords": [
+          "Making Tax Digital landlord deadlines",
+          "landlord MTD quarterly updates",
+          "property income digital records"
+        ],
+        "targetAudience": "UK landlords who report property income through Self Assessment and need a practical MTD preparation sequence.",
+        "summary": "Landlords should plan MTD around property income, digital record categories, jointly let property choices and the quarterly update dates that apply once they are in scope.",
+        "directAnswer": "A landlord may need MTD for Income Tax if they are in Self Assessment, receive property income and their qualifying income is over the relevant threshold. Prepare digital rent and expense records before the first required update and check whether joint property, Rent-a-Room or property allowance details affect the way records are captured.",
+        "supportingQuestions": [
+          "Which landlord income counts for MTD Income Tax?",
+          "Do landlords need separate records for each property?",
+          "What changes before the first landlord quarterly update?"
+        ],
+        "uniqueAngle": "Uses landlord-specific record issues instead of treating property income like a generic sole-trader sales ledger.",
+        "content": [
+          {
+            "id": "landlord-scope",
+            "heading": "Check landlord scope first",
+            "body": [
+              "MTD for Income Tax can apply to landlords in Self Assessment when property income, self-employment income or both take qualifying income over the official threshold for the relevant tax year. The threshold check should be done before choosing a tool or buying a template.",
+              "HMRC will review Self Assessment returns and may write to people who need to use MTD, but the guidance also says it remains your responsibility to check if and when you need to sign up."
+            ]
+          },
+          {
+            "id": "property-records",
+            "heading": "Build property records around the income source",
+            "body": [
+              "For UK property income, HMRC treats one or more UK properties as one UK property business for MTD records. That does not mean you should lose property-level detail internally; it means the compatible software can bring the records together for the quarterly update.",
+              "Keep rent, agent statements, repairs, insurance, service costs, mortgage interest records and other supporting documents in a digital routine. If you jointly let property, decide early whether expenses are included quarterly or handled after the end of the tax year."
+            ]
+          },
+          {
+            "id": "quarterly-landlord-rhythm",
+            "heading": "Quarterly rhythm for landlords",
+            "body": [
+              "Quarterly updates use 7 August, 7 November, 7 February and 7 May deadlines. The update is based on totals from digital records, so the work is mostly about maintaining consistent rent and expense records before the deadline arrives.",
+              "Calendar update periods can align better with month-end property statements. If you choose calendar periods, make that choice in software before sending the first quarterly update for the tax year."
+            ]
+          },
+          {
+            "id": "next-steps-for-landlords",
+            "heading": "Next steps for landlords",
+            "body": [
+              "Use the MTD checker first, then decide whether you need a lightweight starter checklist or a fuller setup workflow. Landlords with several properties, joint ownership or agent statements usually need more structure before the first update.",
+              "This guide is educational and source-linked. It does not decide your tax treatment, exemption status or allowable expenses, so check official guidance and professional advice where your situation is not straightforward."
+            ]
+          }
+        ],
+        "keyFacts": [
+          "MTD Income Tax applies by qualifying income threshold and Self Assessment status, not simply by being a landlord.",
+          "UK properties are treated as one UK property business for MTD records, but property-level evidence can still be useful internally.",
+          "Jointly let property can affect how income and expenses are included in quarterly updates."
+        ],
+        "faqs": [
+          {
+            "question": "Do landlords need one digital record set per property?",
+            "answer": "HMRC says UK properties are treated as one UK property business for MTD, but keeping property-level evidence can still make rent, repair and agent-statement checks easier."
+          },
+          {
+            "question": "Can a landlord wait until the first quarterly deadline?",
+            "answer": "That is risky. Digital records may need to start from 6 April or 1 April depending on the update period, so the record system should be ready before the first update is due."
+          }
+        ],
+        "relatedArticleSlugs": [
+          "mtd-income-tax-deadline-plan-for-sole-traders",
+          "vat-registered-business-deadline-calendar",
+          "sole-trader-deadline-calendar"
+        ],
+        "relatedProductFeature": "Landlord MTD setup checklist and digital record workflow",
+        "ctaVariant": "mtd-setup",
+        "officialSources": [
+          {
+            "label": "Find out if and when you need to use Making Tax Digital for Income Tax",
+            "href": "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax",
+            "publisher": "HM Revenue & Customs"
+          },
+          {
+            "label": "Use Making Tax Digital for Income Tax - Create digital records",
+            "href": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/create-digital-records",
+            "publisher": "HM Revenue & Customs"
+          },
+          {
+            "label": "Use Making Tax Digital for Income Tax - Send quarterly updates",
+            "href": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates",
+            "publisher": "HM Revenue & Customs"
+          }
+        ],
+        "estimatedReadingTime": 6,
+        "internalLinks": [
+          {
+            "label": "Use the Making Tax Digital checker",
+            "href": "/making-tax-digital-checker"
+          },
+          {
+            "label": "Read the broad landlord MTD guide",
+            "href": "/making-tax-digital/landlords"
+          },
+          {
+            "label": "Compare quarterly update dates",
+            "href": "/making-tax-digital/quarterly-update-dates"
+          },
+          {
+            "label": "Get the MTD Setup Kit",
+            "href": "/mtd-setup-kit"
+          }
+        ],
+        "slug": "mtd-income-tax-deadline-plan-for-landlords",
+        "sourceCheckedDate": "2026-08-23",
+        "lastReviewedDate": "2026-08-23",
+        "author": "Business Sorted editorial team",
+        "status": "published",
+        "featured": false,
+        "canonicalUrl": "https://businesssorted.uk/resources/mtd-income-tax-deadline-plan-for-landlords",
+        "robots": "index",
+        "socialTitle": "MTD Income Tax deadline plan for landlords",
+        "socialDescription": "Plan Making Tax Digital for landlord property income, including thresholds, digital property records, quarterly updates and common review points."
+      },
+      "indexability": {
+        "index": true,
+        "follow": true,
+        "includeInSitemap": true,
+        "canonicalUrl": "https://businesssorted.uk/resources/mtd-income-tax-deadline-plan-for-landlords"
+      },
+      "sitemap": {
+        "eligible": true,
+        "canonicalPath": "/resources/mtd-income-tax-deadline-plan-for-landlords"
+      }
+    },
+    {
+      "schemaVersion": "business-sorted-pseo-v1",
+      "source": "standalone-programmatic-seo",
+      "slug": "sole-trader-deadline-calendar",
+      "canonicalPath": "/resources/sole-trader-deadline-calendar",
+      "canonicalUrl": "https://businesssorted.uk/resources/sole-trader-deadline-calendar",
+      "family": "business-deadline-calendar",
+      "primaryKeyword": "sole trader deadline calendar",
+      "primaryIntent": "A sole trader wants a source-linked annual calendar of tax, MTD and VAT dates.",
+      "targetUser": "New and existing UK sole traders who want key compliance dates in one practical view.",
+      "businessStructureOrScenario": "sole-trader-calendar",
+      "uniqueStructuredData": [
+        "WebPage",
+        "Article",
+        "FAQPage",
+        "BreadcrumbList"
+      ],
+      "officialSources": [
+        {
+          "title": "Self Assessment tax returns: Deadlines",
+          "url": "https://www.gov.uk/self-assessment-tax-returns/deadlines",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Become a sole trader",
+          "url": "https://www.gov.uk/become-sole-trader",
+          "authority": "GOV.UK"
+        },
+        {
+          "title": "Find out if and when you need to use Making Tax Digital for Income Tax",
+          "url": "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Register for VAT: When to register for VAT",
+          "url": "https://www.gov.uk/register-for-vat/when-register-for-vat",
+          "authority": "HM Revenue & Customs"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "title": "Self Assessment tax returns: Deadlines",
+          "url": "https://www.gov.uk/self-assessment-tax-returns/deadlines",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-08-23",
+          "reviewDate": "2026-11-30",
+          "claim": "For the 2025 to 2026 tax year, new Self Assessment registration is due by 5 October 2026, paper returns by 31 October 2026, online returns and tax payment by 31 January 2027, with a second payment-on-account date of 31 July where applicable."
+        },
+        {
+          "title": "Become a sole trader",
+          "url": "https://www.gov.uk/become-sole-trader",
+          "authority": "GOV.UK",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-08-22",
+          "reviewDate": "2026-11-30",
+          "claim": "Sole traders can start trading before registration, but must register for Self Assessment if they earn more than GBP 1,000 in a tax year and must keep records from the start of trading."
+        },
+        {
+          "title": "Find out if and when you need to use Making Tax Digital for Income Tax",
+          "url": "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-03-26",
+          "reviewDate": "2026-11-30",
+          "claim": "MTD for Income Tax applies to sole traders and landlords in Self Assessment when qualifying income exceeds the relevant threshold: over GBP 50,000 from 6 April 2026, over GBP 30,000 from 6 April 2027 and over GBP 20,000 from 6 April 2028."
+        },
+        {
+          "title": "Register for VAT: When to register for VAT",
+          "url": "https://www.gov.uk/register-for-vat/when-register-for-vat",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-08-23",
+          "reviewDate": "2026-11-30",
+          "claim": "A business must register for VAT if taxable turnover for the last 12 months goes over GBP 90,000, or if it expects taxable turnover to go over GBP 90,000 in the next 30 days."
+        }
+      ],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [
+        "/tools/deadline-calculators"
+      ],
+      "relevantPaidProduct": "/mtd-starter-pack",
+      "internalLinkOpportunities": [
+        "/tools/deadline-calculators",
+        "/making-tax-digital-checker",
+        "/guides/sole-traders/sole-trader-tax-and-record-keeping-checklist",
+        "/comparisons/limited-company-vs-sole-trader"
+      ],
+      "existingCompetingPage": "/guides/sole-traders/sole-trader-tax-and-record-keeping-checklist",
+      "cannibalisationAssessment": "Approved because the existing guide owns record-keeping checklist intent, while this page owns calendar and deadline sequencing.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 95,
+        "dimensions": {
+          "searchIntent": 17,
+          "relevance": 10,
+          "uniqueValue": 15,
+          "structuredData": 9,
+          "factualConfidence": 10,
+          "conversionRelevance": 8,
+          "internalLinks": 8,
+          "duplicationRisk": 4,
+          "cannibalisationRisk": 4,
+          "contentDepth": 10
+        }
+      },
+      "status": "approved",
+      "approvalJustification": "Approved for the first Business Sorted release because it has source-backed facts, clear search intent, distinct scenario content and strong internal-link support.",
+      "resourceArticle": {
+        "title": "Sole trader deadline calendar",
+        "description": "Build a source-linked sole trader deadline calendar for Self Assessment, payments on account, VAT checks and MTD preparation.",
+        "category": "hmrc",
+        "cluster": "self-assessment",
+        "searchIntent": "A sole trader wants the main annual HMRC dates and practical preparation points in one calendar-style guide.",
+        "primaryKeyword": "sole trader deadline calendar",
+        "secondaryKeywords": [
+          "sole trader tax dates",
+          "Self Assessment deadlines sole trader",
+          "sole trader VAT deadline planning"
+        ],
+        "targetAudience": "UK sole traders who need a repeatable calendar for Self Assessment, payment and registration checks.",
+        "summary": "A sole trader deadline calendar should combine Self Assessment registration, return, payment, payments-on-account, VAT and MTD review dates without pretending every business has identical obligations.",
+        "directAnswer": "For the 2025 to 2026 tax year, key sole-trader Self Assessment dates include 5 October 2026 to tell HMRC you need a return, 31 October 2026 for paper returns, 31 January 2027 for online returns and payment, and 31 July for a second payment on account where it applies. VAT and MTD dates depend on your turnover, registration and MTD threshold position.",
+        "supportingQuestions": [
+          "Which Self Assessment dates should a sole trader calendar include?",
+          "Where do VAT checks fit in a sole trader calendar?",
+          "How often should sole traders review MTD readiness?"
+        ],
+        "uniqueAngle": "Combines fixed annual Self Assessment dates with conditional VAT and MTD review points, so the calendar is useful without inventing personalised deadlines.",
+        "content": [
+          {
+            "id": "fixed-self-assessment-dates",
+            "heading": "Start with fixed Self Assessment dates",
+            "body": [
+              "The fixed dates give the calendar its spine. For the 2025 to 2026 tax year, GOV.UK lists 5 October 2026 for telling HMRC you need to complete a return, 31 October 2026 for paper returns, and 31 January 2027 for online returns and payment.",
+              "If payments on account apply, the second payment deadline is 31 July. That date should sit in the calendar even if the exact amount is not known when you first create the reminder."
+            ]
+          },
+          {
+            "id": "conditional-vat-and-mtd",
+            "heading": "Add conditional VAT and MTD checks",
+            "body": [
+              "A sole trader does not add VAT dates just because they trade. Add a VAT review reminder if taxable turnover is approaching the registration threshold, and add return dates only if the business is VAT registered.",
+              "MTD for Income Tax also depends on qualifying income and Self Assessment status. A useful calendar has a recurring threshold review so you are not discovering an MTD start date after the digital-record period has begun."
+            ]
+          },
+          {
+            "id": "monthly-admin-rhythm",
+            "heading": "Use monthly admin dates before official deadlines",
+            "body": [
+              "A calendar that only includes final filing dates is not very protective. Add monthly reminders to reconcile income, check expenses, save receipts, review bank records and flag unusual transactions while they are still easy to explain.",
+              "Business Sorted can help turn the official dates into practical tasks, but the official dates should remain linked to HMRC guidance or the relevant online account. Do not rely on an old saved calendar without checking the source again."
+            ]
+          },
+          {
+            "id": "what-not-to-include",
+            "heading": "What not to overstate",
+            "body": [
+              "Do not assume every sole trader needs VAT, payroll, MTD or payments on account. Those items depend on turnover, staff, income level or HMRC calculations, so treat them as review points until they become confirmed obligations.",
+              "If your records, tax year, accounting period or residence position is unusual, use the calendar as a prompt to ask HMRC or a professional adviser rather than as a substitute for advice."
+            ]
+          }
+        ],
+        "keyFacts": [
+          "The 2025 to 2026 online Self Assessment return and payment deadline is 31 January 2027.",
+          "New Self Assessment registration for that year is due by 5 October 2026 where required.",
+          "VAT and MTD dates should be added only when the business meets the relevant conditions."
+        ],
+        "faqs": [
+          {
+            "question": "Should a sole trader calendar include VAT dates?",
+            "answer": "Only if VAT is relevant. Add VAT threshold review reminders first, then add VAT return dates once the business is registered for VAT."
+          },
+          {
+            "question": "Can Business Sorted calculate my exact tax bill?",
+            "answer": "No. Business Sorted helps organise tasks and source-linked reminders. HMRC, your records and professional advice determine exact tax figures."
+          }
+        ],
+        "relatedArticleSlugs": [
+          "mtd-income-tax-deadline-plan-for-sole-traders",
+          "first-year-sole-trader-compliance-plan",
+          "vat-registered-business-deadline-calendar"
+        ],
+        "relatedProductFeature": "Source-linked deadline reminders for sole trader tax tasks",
+        "ctaVariant": "deadline-dashboard",
+        "officialSources": [
+          {
+            "label": "Self Assessment tax returns: Deadlines",
+            "href": "https://www.gov.uk/self-assessment-tax-returns/deadlines",
+            "publisher": "HM Revenue & Customs"
+          },
+          {
+            "label": "Become a sole trader",
+            "href": "https://www.gov.uk/become-sole-trader",
+            "publisher": "GOV.UK"
+          },
+          {
+            "label": "Find out if and when you need to use Making Tax Digital for Income Tax",
+            "href": "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax",
+            "publisher": "HM Revenue & Customs"
+          },
+          {
+            "label": "Register for VAT: When to register for VAT",
+            "href": "https://www.gov.uk/register-for-vat/when-register-for-vat",
+            "publisher": "HM Revenue & Customs"
+          }
+        ],
+        "estimatedReadingTime": 6,
+        "internalLinks": [
+          {
+            "label": "Use the deadline calculators",
+            "href": "/tools/deadline-calculators"
+          },
+          {
+            "label": "Check MTD readiness",
+            "href": "/making-tax-digital-checker"
+          },
+          {
+            "label": "Read sole-trader record guidance",
+            "href": "/guides/sole-traders/sole-trader-tax-and-record-keeping-checklist"
+          },
+          {
+            "label": "Compare company and sole trader admin",
+            "href": "/comparisons/limited-company-vs-sole-trader"
+          }
+        ],
+        "slug": "sole-trader-deadline-calendar",
+        "sourceCheckedDate": "2026-08-23",
+        "lastReviewedDate": "2026-08-23",
+        "author": "Business Sorted editorial team",
+        "status": "published",
+        "featured": false,
+        "canonicalUrl": "https://businesssorted.uk/resources/sole-trader-deadline-calendar",
+        "robots": "index",
+        "socialTitle": "Sole trader deadline calendar",
+        "socialDescription": "Build a source-linked sole trader deadline calendar for Self Assessment, payments on account, VAT checks and MTD preparation."
+      },
+      "indexability": {
+        "index": true,
+        "follow": true,
+        "includeInSitemap": true,
+        "canonicalUrl": "https://businesssorted.uk/resources/sole-trader-deadline-calendar"
+      },
+      "sitemap": {
+        "eligible": true,
+        "canonicalPath": "/resources/sole-trader-deadline-calendar"
+      }
+    },
+    {
+      "schemaVersion": "business-sorted-pseo-v1",
+      "source": "standalone-programmatic-seo",
+      "slug": "vat-registered-business-deadline-calendar",
+      "canonicalPath": "/resources/vat-registered-business-deadline-calendar",
+      "canonicalUrl": "https://businesssorted.uk/resources/vat-registered-business-deadline-calendar",
+      "family": "business-deadline-calendar",
+      "primaryKeyword": "VAT registered business deadline calendar",
+      "primaryIntent": "A VAT-registered business wants a practical calendar for VAT returns, payments, MTD VAT and turnover review.",
+      "targetUser": "UK small businesses that are VAT registered or close to the VAT registration threshold.",
+      "businessStructureOrScenario": "vat-registered-calendar",
+      "uniqueStructuredData": [
+        "WebPage",
+        "Article",
+        "FAQPage",
+        "BreadcrumbList"
+      ],
+      "officialSources": [
+        {
+          "title": "Sending a VAT Return",
+          "url": "https://www.gov.uk/submit-vat-return",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Register for VAT: When to register for VAT",
+          "url": "https://www.gov.uk/register-for-vat/when-register-for-vat",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Making Tax Digital for VAT",
+          "url": "https://www.gov.uk/government/collections/making-tax-digital-for-vat",
+          "authority": "HM Revenue & Customs"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "title": "Sending a VAT Return",
+          "url": "https://www.gov.uk/submit-vat-return",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-08-23",
+          "reviewDate": "2026-11-30",
+          "claim": "VAT returns are usually submitted every 3 months, and the submission and payment deadline is usually one calendar month and 7 days after the accounting period ends."
+        },
+        {
+          "title": "Register for VAT: When to register for VAT",
+          "url": "https://www.gov.uk/register-for-vat/when-register-for-vat",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-08-23",
+          "reviewDate": "2026-11-30",
+          "claim": "A business must register for VAT if taxable turnover for the last 12 months goes over GBP 90,000, or if it expects taxable turnover to go over GBP 90,000 in the next 30 days."
+        },
+        {
+          "title": "Making Tax Digital for VAT",
+          "url": "https://www.gov.uk/government/collections/making-tax-digital-for-vat",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2024-02-09",
+          "reviewDate": "2026-11-30",
+          "claim": "VAT-registered businesses should keep VAT records and submit VAT returns using compatible software unless exempt."
+        }
+      ],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [
+        "/tools/deadline-calculators"
+      ],
+      "relevantPaidProduct": "/recommended-business-essentials",
+      "internalLinkOpportunities": [
+        "/tools/deadline-calculators",
+        "/recommended-business-essentials",
+        "/making-tax-digital-checker",
+        "/resources/sole-trader-deadline-calendar"
+      ],
+      "existingCompetingPage": "/tools/deadline-calculators",
+      "cannibalisationAssessment": "Approved because calculators provide interaction, while this resource owns explanatory VAT calendar and source context.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 95,
+        "dimensions": {
+          "searchIntent": 16,
+          "relevance": 10,
+          "uniqueValue": 14,
+          "structuredData": 9,
+          "factualConfidence": 10,
+          "conversionRelevance": 8,
+          "internalLinks": 8,
+          "duplicationRisk": 5,
+          "cannibalisationRisk": 5,
+          "contentDepth": 10
+        }
+      },
+      "status": "approved",
+      "approvalJustification": "Approved for the first Business Sorted release because it has source-backed facts, clear search intent, distinct scenario content and strong internal-link support.",
+      "resourceArticle": {
+        "title": "VAT registered business deadline calendar",
+        "description": "Plan VAT return and payment dates, MTD VAT records and VAT registration threshold reviews for a UK small business.",
+        "category": "hmrc",
+        "cluster": "vat-deadlines",
+        "searchIntent": "A VAT-registered business wants to understand the recurring VAT return and payment rhythm and how to keep records ready.",
+        "primaryKeyword": "VAT registered business deadline calendar",
+        "secondaryKeywords": [
+          "VAT return deadline calendar",
+          "VAT payment deadline UK",
+          "Making Tax Digital VAT records"
+        ],
+        "targetAudience": "UK business owners and administrators who need to keep VAT return and payment dates visible.",
+        "summary": "A VAT deadline calendar should show the VAT accounting period, the return deadline, payment clearance date, MTD record routine and threshold review points for growing businesses.",
+        "directAnswer": "VAT returns are usually due every 3 months, and the online return and payment deadline is usually one calendar month and 7 days after the accounting period ends. VAT-registered businesses should keep VAT records digitally and submit returns using compatible software unless exempt.",
+        "supportingQuestions": [
+          "When is a VAT return usually due?",
+          "When should a business review the VAT registration threshold?",
+          "How does Making Tax Digital for VAT affect the calendar?"
+        ],
+        "uniqueAngle": "Turns VAT obligations into a calendar workflow that includes record preparation, payment clearance and threshold reviews.",
+        "content": [
+          {
+            "id": "vat-return-rhythm",
+            "heading": "Set the VAT return rhythm",
+            "body": [
+              "Most VAT returns are submitted every 3 months. GOV.UK says the online submission deadline is usually one calendar month and 7 days after the accounting period ends, and this is usually also the payment deadline.",
+              "The calendar should show the accounting period end, the return submission date and the date the payment must clear HMRC. Those can feel like one date, but payment method and bank processing still matter."
+            ]
+          },
+          {
+            "id": "mtd-vat-records",
+            "heading": "Keep MTD VAT records ready",
+            "body": [
+              "HMRC says VAT-registered businesses should keep VAT records and submit VAT returns using compatible software unless exempt. That makes the weekly or monthly record routine part of the deadline system, not an optional extra.",
+              "Add reminders for sales invoices, purchase invoices, bank reconciliation, reverse-charge checks and unusual transactions before the return deadline. The return should be a review of maintained records, not a rushed reconstruction."
+            ]
+          },
+          {
+            "id": "threshold-review",
+            "heading": "Review the registration threshold",
+            "body": [
+              "Businesses that are not yet registered should review taxable turnover against the VAT registration threshold. GOV.UK says registration is required if taxable turnover for the last 12 months goes over GBP 90,000 or if it is expected to go over GBP 90,000 in the next 30 days.",
+              "A growing business should not wait for year end to check this. A monthly rolling turnover review is more useful because the VAT test looks at a moving 12-month period and near-future expectations."
+            ]
+          },
+          {
+            "id": "calendar-next-steps",
+            "heading": "Calendar next steps",
+            "body": [
+              "Use Business Sorted's tools to keep the deadline visible, then connect the calendar to your VAT online account and software. If you use an accountant or bookkeeper, agree who checks the records and who submits the return.",
+              "This page is not VAT advice. It is a planning guide that points to official sources, so check HMRC guidance for exemptions, schemes, unusual supplies or cross-border rules."
+            ]
+          }
+        ],
+        "keyFacts": [
+          "VAT returns are usually submitted every 3 months.",
+          "The VAT return and payment deadline is usually one calendar month and 7 days after the accounting period ends.",
+          "The VAT registration threshold is taxable turnover over GBP 90,000 in the last 12 months or expected in the next 30 days."
+        ],
+        "faqs": [
+          {
+            "question": "Is the VAT payment deadline separate from the return deadline?",
+            "answer": "GOV.UK says the online return deadline is usually also the payment deadline, but you still need to allow enough time for the payment to reach HMRC."
+          },
+          {
+            "question": "Should non-VAT businesses use this calendar?",
+            "answer": "They should use it mainly for threshold reviews. VAT return dates become relevant once the business is registered for VAT or has chosen voluntary registration."
+          }
+        ],
+        "relatedArticleSlugs": [
+          "sole-trader-deadline-calendar",
+          "mtd-income-tax-deadline-plan-for-sole-traders",
+          "employer-payroll-deadline-calendar"
+        ],
+        "relatedProductFeature": "VAT deadline and threshold review reminders",
+        "ctaVariant": "business-essentials",
+        "officialSources": [
+          {
+            "label": "Sending a VAT Return",
+            "href": "https://www.gov.uk/submit-vat-return",
+            "publisher": "HM Revenue & Customs"
+          },
+          {
+            "label": "Register for VAT: When to register for VAT",
+            "href": "https://www.gov.uk/register-for-vat/when-register-for-vat",
+            "publisher": "HM Revenue & Customs"
+          },
+          {
+            "label": "Making Tax Digital for VAT",
+            "href": "https://www.gov.uk/government/collections/making-tax-digital-for-vat",
+            "publisher": "HM Revenue & Customs"
+          }
+        ],
+        "estimatedReadingTime": 5,
+        "internalLinks": [
+          {
+            "label": "Use the deadline calculators",
+            "href": "/tools/deadline-calculators"
+          },
+          {
+            "label": "Browse recommended business essentials",
+            "href": "/recommended-business-essentials"
+          },
+          {
+            "label": "Check MTD readiness",
+            "href": "/making-tax-digital-checker"
+          },
+          {
+            "label": "Read the sole trader deadline calendar",
+            "href": "/resources/sole-trader-deadline-calendar"
+          }
+        ],
+        "slug": "vat-registered-business-deadline-calendar",
+        "sourceCheckedDate": "2026-08-23",
+        "lastReviewedDate": "2026-08-23",
+        "author": "Business Sorted editorial team",
+        "status": "published",
+        "featured": false,
+        "canonicalUrl": "https://businesssorted.uk/resources/vat-registered-business-deadline-calendar",
+        "robots": "index",
+        "socialTitle": "VAT registered business deadline calendar",
+        "socialDescription": "Plan VAT return and payment dates, MTD VAT records and VAT registration threshold reviews for a UK small business."
+      },
+      "indexability": {
+        "index": true,
+        "follow": true,
+        "includeInSitemap": true,
+        "canonicalUrl": "https://businesssorted.uk/resources/vat-registered-business-deadline-calendar"
+      },
+      "sitemap": {
+        "eligible": true,
+        "canonicalPath": "/resources/vat-registered-business-deadline-calendar"
+      }
+    },
+    {
+      "schemaVersion": "business-sorted-pseo-v1",
+      "source": "standalone-programmatic-seo",
+      "slug": "first-year-sole-trader-compliance-plan",
+      "canonicalPath": "/resources/first-year-sole-trader-compliance-plan",
+      "canonicalUrl": "https://businesssorted.uk/resources/first-year-sole-trader-compliance-plan",
+      "family": "first-year-compliance-plan",
+      "primaryKeyword": "first year sole trader compliance plan",
+      "primaryIntent": "A new sole trader wants a first-year plan covering registration, records, tax dates and conditional VAT or MTD checks.",
+      "targetUser": "First-time UK sole traders and side-hustle owners moving into paid self-employment.",
+      "businessStructureOrScenario": "first-year-sole-trader",
+      "uniqueStructuredData": [
+        "WebPage",
+        "Article",
+        "FAQPage",
+        "BreadcrumbList"
+      ],
+      "officialSources": [
+        {
+          "title": "Become a sole trader",
+          "url": "https://www.gov.uk/become-sole-trader",
+          "authority": "GOV.UK"
+        },
+        {
+          "title": "Self Assessment tax returns: Deadlines",
+          "url": "https://www.gov.uk/self-assessment-tax-returns/deadlines",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Register for VAT: When to register for VAT",
+          "url": "https://www.gov.uk/register-for-vat/when-register-for-vat",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Find out if and when you need to use Making Tax Digital for Income Tax",
+          "url": "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax",
+          "authority": "HM Revenue & Customs"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "title": "Become a sole trader",
+          "url": "https://www.gov.uk/become-sole-trader",
+          "authority": "GOV.UK",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-08-22",
+          "reviewDate": "2026-11-30",
+          "claim": "Sole traders can start trading before registration, but must register for Self Assessment if they earn more than GBP 1,000 in a tax year and must keep records from the start of trading."
+        },
+        {
+          "title": "Self Assessment tax returns: Deadlines",
+          "url": "https://www.gov.uk/self-assessment-tax-returns/deadlines",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-08-23",
+          "reviewDate": "2026-11-30",
+          "claim": "For the 2025 to 2026 tax year, new Self Assessment registration is due by 5 October 2026, paper returns by 31 October 2026, online returns and tax payment by 31 January 2027, with a second payment-on-account date of 31 July where applicable."
+        },
+        {
+          "title": "Register for VAT: When to register for VAT",
+          "url": "https://www.gov.uk/register-for-vat/when-register-for-vat",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-08-23",
+          "reviewDate": "2026-11-30",
+          "claim": "A business must register for VAT if taxable turnover for the last 12 months goes over GBP 90,000, or if it expects taxable turnover to go over GBP 90,000 in the next 30 days."
+        },
+        {
+          "title": "Find out if and when you need to use Making Tax Digital for Income Tax",
+          "url": "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-03-26",
+          "reviewDate": "2026-11-30",
+          "claim": "MTD for Income Tax applies to sole traders and landlords in Self Assessment when qualifying income exceeds the relevant threshold: over GBP 50,000 from 6 April 2026, over GBP 30,000 from 6 April 2027 and over GBP 20,000 from 6 April 2028."
+        }
+      ],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [
+        "/tools/decision-tools",
+        "/tools/deadline-calculators"
+      ],
+      "relevantPaidProduct": "/recommended-business-essentials",
+      "internalLinkOpportunities": [
+        "/tools/decision-tools",
+        "/tools/deadline-calculators",
+        "/comparisons/limited-company-vs-sole-trader",
+        "/recommended-business-essentials"
+      ],
+      "existingCompetingPage": "/guides/sole-traders/sole-trader-tax-and-record-keeping-checklist",
+      "cannibalisationAssessment": "Approved because it owns first-year sequencing from setup to first return, while the existing guide owns record-keeping checklist intent.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 95,
+        "dimensions": {
+          "searchIntent": 16,
+          "relevance": 10,
+          "uniqueValue": 15,
+          "structuredData": 9,
+          "factualConfidence": 10,
+          "conversionRelevance": 8,
+          "internalLinks": 8,
+          "duplicationRisk": 4,
+          "cannibalisationRisk": 5,
+          "contentDepth": 10
+        }
+      },
+      "status": "approved",
+      "approvalJustification": "Approved for the first Business Sorted release because it has source-backed facts, clear search intent, distinct scenario content and strong internal-link support.",
+      "resourceArticle": {
+        "title": "First-year sole trader compliance plan",
+        "description": "A first-year sole trader plan for UK registration, records, Self Assessment dates, VAT threshold checks and MTD readiness.",
+        "category": "hmrc",
+        "cluster": "first-year-business",
+        "searchIntent": "A new sole trader wants a plain-English first-year compliance plan with official dates and conditional responsibilities.",
+        "primaryKeyword": "first year sole trader compliance plan",
+        "secondaryKeywords": [
+          "first year self employed checklist",
+          "new sole trader tax dates",
+          "sole trader setup requirements UK"
+        ],
+        "targetAudience": "People starting as UK sole traders who need to know what to organise in their first trading year.",
+        "summary": "The first year as a sole trader is about keeping records from day one, knowing when to register for Self Assessment, planning the first tax return and checking whether VAT, MTD or employer duties become relevant.",
+        "directAnswer": "In your first year as a sole trader, keep records from the start of trading, register for Self Assessment if you earn more than GBP 1,000 in a tax year, plan for the 5 October registration deadline where required, and keep 31 January visible for online filing and payment after the tax year ends. Add VAT, MTD and payroll checks only if they apply.",
+        "supportingQuestions": [
+          "When does a new sole trader need to register for Self Assessment?",
+          "What records should be kept from the first sale?",
+          "Which first-year checks are conditional rather than automatic?"
+        ],
+        "uniqueAngle": "Separates universal first-year sole-trader admin from conditional VAT, MTD and employer duties.",
+        "content": [
+          {
+            "id": "month-one-setup",
+            "heading": "Month-one setup",
+            "body": [
+              "Start with records, not paperwork panic. GOV.UK says sole traders must keep records when they start trading because those records help work out profit or loss for the Self Assessment tax return.",
+              "Choose a simple structure for invoices, receipts, bank evidence and mileage or home-working notes if relevant. The structure can be simple, but it should be consistent enough that January is not a reconstruction exercise."
+            ]
+          },
+          {
+            "id": "registration-and-tax-year",
+            "heading": "Registration and tax-year planning",
+            "body": [
+              "You can start trading before registering, but GOV.UK says you must register for Self Assessment as a sole trader if you earn more than GBP 1,000 in a tax year. The tax year runs from 6 April to 5 April.",
+              "For the 2025 to 2026 tax year, HMRC says people who need to tell HMRC about a return should do so by 5 October 2026, with online filing and payment due by 31 January 2027. Future years should be checked against the current GOV.UK deadline page."
+            ]
+          },
+          {
+            "id": "conditional-first-year-checks",
+            "heading": "Conditional checks in the first year",
+            "body": [
+              "VAT is not automatic for every sole trader. Add a monthly rolling turnover check if sales are growing, because compulsory VAT registration depends on taxable turnover going over the official threshold or being expected to do so soon.",
+              "MTD for Income Tax is also conditional. Sole traders in Self Assessment should review qualifying income against the MTD thresholds and prepare digital records before the start date if they are in scope."
+            ]
+          },
+          {
+            "id": "first-year-next-steps",
+            "heading": "First-year next steps",
+            "body": [
+              "Use Business Sorted's decision tools to keep the structure question separate from the deadline question, then create reminders for registration, record reviews and tax return preparation. Recommended business essentials can help with practical admin choices, but they do not replace official guidance.",
+              "If your business takes on staff, imports goods, sells internationally or has regulated activity, add specialist checks early. This plan covers common first-year admin, not every industry rule."
+            ]
+          }
+        ],
+        "keyFacts": [
+          "A sole trader must keep records from the start of trading.",
+          "Self Assessment registration is required if sole-trader earnings are more than GBP 1,000 in a tax year.",
+          "VAT, MTD and payroll duties are conditional and should be reviewed rather than assumed."
+        ],
+        "faqs": [
+          {
+            "question": "Can I start as a sole trader before registering?",
+            "answer": "GOV.UK says you can start trading before registering, but you must register for Self Assessment if you earn more than GBP 1,000 in a tax year."
+          },
+          {
+            "question": "Do I need accounting software in my first month?",
+            "answer": "Not always, but you need a reliable record system from the start. If MTD for Income Tax or VAT applies, compatible software may become necessary."
+          }
+        ],
+        "relatedArticleSlugs": [
+          "sole-trader-deadline-calendar",
+          "mtd-income-tax-deadline-plan-for-sole-traders",
+          "vat-registered-business-deadline-calendar"
+        ],
+        "relatedProductFeature": "First-year setup checklist and source-linked reminders",
+        "ctaVariant": "business-essentials",
+        "officialSources": [
+          {
+            "label": "Become a sole trader",
+            "href": "https://www.gov.uk/become-sole-trader",
+            "publisher": "GOV.UK"
+          },
+          {
+            "label": "Self Assessment tax returns: Deadlines",
+            "href": "https://www.gov.uk/self-assessment-tax-returns/deadlines",
+            "publisher": "HM Revenue & Customs"
+          },
+          {
+            "label": "Register for VAT: When to register for VAT",
+            "href": "https://www.gov.uk/register-for-vat/when-register-for-vat",
+            "publisher": "HM Revenue & Customs"
+          },
+          {
+            "label": "Find out if and when you need to use Making Tax Digital for Income Tax",
+            "href": "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax",
+            "publisher": "HM Revenue & Customs"
+          }
+        ],
+        "estimatedReadingTime": 6,
+        "internalLinks": [
+          {
+            "label": "Use the decision tools",
+            "href": "/tools/decision-tools"
+          },
+          {
+            "label": "Use the deadline calculators",
+            "href": "/tools/deadline-calculators"
+          },
+          {
+            "label": "Compare limited company and sole trader admin",
+            "href": "/comparisons/limited-company-vs-sole-trader"
+          },
+          {
+            "label": "Browse recommended business essentials",
+            "href": "/recommended-business-essentials"
+          }
+        ],
+        "slug": "first-year-sole-trader-compliance-plan",
+        "sourceCheckedDate": "2026-08-23",
+        "lastReviewedDate": "2026-08-23",
+        "author": "Business Sorted editorial team",
+        "status": "published",
+        "featured": false,
+        "canonicalUrl": "https://businesssorted.uk/resources/first-year-sole-trader-compliance-plan",
+        "robots": "index",
+        "socialTitle": "First-year sole trader compliance plan",
+        "socialDescription": "A first-year sole trader plan for UK registration, records, Self Assessment dates, VAT threshold checks and MTD readiness."
+      },
+      "indexability": {
+        "index": true,
+        "follow": true,
+        "includeInSitemap": true,
+        "canonicalUrl": "https://businesssorted.uk/resources/first-year-sole-trader-compliance-plan"
+      },
+      "sitemap": {
+        "eligible": true,
+        "canonicalPath": "/resources/first-year-sole-trader-compliance-plan"
+      }
+    },
+    {
+      "schemaVersion": "business-sorted-pseo-v1",
+      "source": "standalone-programmatic-seo",
+      "slug": "employer-payroll-deadline-calendar",
+      "canonicalPath": "/resources/employer-payroll-deadline-calendar",
+      "canonicalUrl": "https://businesssorted.uk/resources/employer-payroll-deadline-calendar",
+      "family": "business-deadline-calendar",
+      "primaryKeyword": "employer payroll deadline calendar",
+      "primaryIntent": "A small employer wants a PAYE and workplace pension deadline calendar for payroll reporting and payments.",
+      "targetUser": "UK small-business owners who run payroll or are about to take on employees.",
+      "businessStructureOrScenario": "employer-payroll-calendar",
+      "uniqueStructuredData": [
+        "WebPage",
+        "Article",
+        "FAQPage",
+        "BreadcrumbList"
+      ],
+      "officialSources": [
+        {
+          "title": "Running payroll: Reporting to HMRC",
+          "url": "https://www.gov.uk/running-payroll/reporting-to-hmrc",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Pay employers' PAYE",
+          "url": "https://www.gov.uk/pay-paye-tax",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Set up and manage a workplace pension scheme",
+          "url": "https://www.gov.uk/workplace-pensions-employers",
+          "authority": "GOV.UK"
+        }
+      ],
+      "sourceEvidence": [
+        {
+          "title": "Running payroll: Reporting to HMRC",
+          "url": "https://www.gov.uk/running-payroll/reporting-to-hmrc",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-08-23",
+          "reviewDate": "2026-11-30",
+          "claim": "Employers use payroll software to send a Full Payment Submission on or before employees' payday, and can usually view PAYE due from the 10th of the next tax month."
+        },
+        {
+          "title": "Pay employers' PAYE",
+          "url": "https://www.gov.uk/pay-paye-tax",
+          "authority": "HM Revenue & Customs",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-08-23",
+          "reviewDate": "2026-11-30",
+          "claim": "Monthly PAYE bills are due by the 22nd of the next tax month when paying electronically, or by the 19th if paying by post. Quarterly PAYE has separate quarter-end payment timing."
+        },
+        {
+          "title": "Set up and manage a workplace pension scheme",
+          "url": "https://www.gov.uk/workplace-pensions-employers",
+          "authority": "GOV.UK",
+          "dateChecked": "2026-08-23",
+          "effectiveDate": "2026-08-23",
+          "reviewDate": "2026-11-30",
+          "claim": "Employers must provide a workplace pension scheme for eligible staff from the duties start date and enrol eligible staff aged 22 to State Pension age earning at least GBP 10,000 a year."
+        }
+      ],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [
+        "/tools/deadline-calculators"
+      ],
+      "relevantPaidProduct": "/recommended-business-essentials",
+      "internalLinkOpportunities": [
+        "/tools/deadline-calculators",
+        "/guides/business-admin/small-business-administration-checklist",
+        "/recommended-business-essentials",
+        "/resources/vat-registered-business-deadline-calendar"
+      ],
+      "existingCompetingPage": "/guides/business-admin/small-business-administration-checklist",
+      "cannibalisationAssessment": "Approved because the existing checklist is broad admin guidance, while this page owns payroll reporting and payment calendar intent.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 92,
+        "dimensions": {
+          "searchIntent": 15,
+          "relevance": 9,
+          "uniqueValue": 14,
+          "structuredData": 9,
+          "factualConfidence": 10,
+          "conversionRelevance": 7,
+          "internalLinks": 8,
+          "duplicationRisk": 5,
+          "cannibalisationRisk": 5,
+          "contentDepth": 10
+        }
+      },
+      "status": "approved",
+      "approvalJustification": "Approved for the first Business Sorted release because it has source-backed facts, clear search intent, distinct scenario content and strong internal-link support.",
+      "resourceArticle": {
+        "title": "Employer payroll deadline calendar",
+        "description": "Build a small-employer payroll deadline calendar for FPS reporting, PAYE payments, EPS checks and workplace pension duties.",
+        "category": "hmrc",
+        "cluster": "paye-payroll",
+        "searchIntent": "A small employer wants recurring payroll reporting and payment dates in a practical, source-linked calendar.",
+        "primaryKeyword": "employer payroll deadline calendar",
+        "secondaryKeywords": [
+          "PAYE payment deadline",
+          "FPS payroll deadline",
+          "small employer payroll calendar UK"
+        ],
+        "targetAudience": "UK small employers, first-time employers and administrators responsible for PAYE reminders.",
+        "summary": "An employer payroll calendar should show payday reporting, PAYE payment dates, EPS review points and workplace pension duties, with payroll software and official accounts as the source of exact amounts.",
+        "directAnswer": "Employers usually send a Full Payment Submission on or before payday. HMRC says monthly PAYE payments are due by the 22nd of the next tax month when paying electronically, or by the 19th if paying by post. Workplace pension duties can start when the first member of staff starts working.",
+        "supportingQuestions": [
+          "When should an employer send an FPS?",
+          "When is PAYE usually paid to HMRC?",
+          "Where do workplace pension duties fit into the payroll calendar?"
+        ],
+        "uniqueAngle": "Connects payroll reporting, payment and pension timing into one planning calendar for small employers.",
+        "content": [
+          {
+            "id": "payday-reporting",
+            "heading": "Put payday reporting first",
+            "body": [
+              "GOV.UK says employers use payroll software to send a Full Payment Submission to HMRC on or before employees' payday. The calendar should therefore start with actual paydays, not just month-end tax dates.",
+              "If staff are paid on different days in the same tax month, each payday can create a reporting point. Keep the usual payday visible even when a bank holiday or operational issue changes the payment timing."
+            ]
+          },
+          {
+            "id": "paye-payment-dates",
+            "heading": "Add PAYE payment dates",
+            "body": [
+              "HMRC says monthly PAYE bills are due by the 22nd of the next tax month when paying electronically, or by the 19th if paying by post. Quarterly PAYE payment timing can apply in some cases, so the payment basis should be confirmed before building reminders.",
+              "After sending payroll reports, employers can usually view the amount due in the next tax month. Add a review reminder before the payment date so there is time to check statutory pay, corrections or Employer Payment Summary items."
+            ]
+          },
+          {
+            "id": "pension-duties",
+            "heading": "Include workplace pension duties",
+            "body": [
+              "GOV.UK says employers have to provide a workplace pension scheme for eligible staff as soon as their first member of staff starts working. Eligible staff criteria include age, earnings and usually working in the UK.",
+              "A practical calendar should include pension assessment, staff communications, contribution payment checks and re-enrolment review points. Business Sorted can hold reminders, but the exact duties should be confirmed against official pension guidance and payroll records."
+            ]
+          },
+          {
+            "id": "small-employer-next-steps",
+            "heading": "Small-employer next steps",
+            "body": [
+              "Use the deadline calculators and admin checklist to keep payroll tasks visible alongside tax, VAT and business-admin dates. If payroll is outsourced, agree who owns each reminder so reporting and payment responsibilities are not assumed by both sides.",
+              "This is general organisation guidance. Payroll, tax code, statutory pay and pension situations can become technical quickly, so use HMRC, The Pensions Regulator and professional support where needed."
+            ]
+          }
+        ],
+        "keyFacts": [
+          "A Full Payment Submission is usually sent on or before employees' payday.",
+          "Monthly PAYE is usually paid electronically by the 22nd of the next tax month.",
+          "Workplace pension duties can begin from the first staff member's start date."
+        ],
+        "faqs": [
+          {
+            "question": "Is payday or month end the most important payroll date?",
+            "answer": "Payday is crucial because the Full Payment Submission is usually due on or before the date employees are paid."
+          },
+          {
+            "question": "Does Business Sorted run payroll?",
+            "answer": "No. Business Sorted helps organise reminders and guidance links. Payroll submissions, calculations and pension duties should be handled through suitable payroll processes and official guidance."
+          }
+        ],
+        "relatedArticleSlugs": [
+          "vat-registered-business-deadline-calendar",
+          "sole-trader-deadline-calendar",
+          "first-year-sole-trader-compliance-plan"
+        ],
+        "relatedProductFeature": "Payroll reporting and PAYE payment reminders",
+        "ctaVariant": "deadline-dashboard",
+        "officialSources": [
+          {
+            "label": "Running payroll: Reporting to HMRC",
+            "href": "https://www.gov.uk/running-payroll/reporting-to-hmrc",
+            "publisher": "HM Revenue & Customs"
+          },
+          {
+            "label": "Pay employers' PAYE",
+            "href": "https://www.gov.uk/pay-paye-tax",
+            "publisher": "HM Revenue & Customs"
+          },
+          {
+            "label": "Set up and manage a workplace pension scheme",
+            "href": "https://www.gov.uk/workplace-pensions-employers",
+            "publisher": "GOV.UK"
+          }
+        ],
+        "estimatedReadingTime": 6,
+        "internalLinks": [
+          {
+            "label": "Use the deadline calculators",
+            "href": "/tools/deadline-calculators"
+          },
+          {
+            "label": "Read the small-business admin checklist",
+            "href": "/guides/business-admin/small-business-administration-checklist"
+          },
+          {
+            "label": "Browse recommended business essentials",
+            "href": "/recommended-business-essentials"
+          },
+          {
+            "label": "Read the VAT deadline calendar",
+            "href": "/resources/vat-registered-business-deadline-calendar"
+          }
+        ],
+        "slug": "employer-payroll-deadline-calendar",
+        "sourceCheckedDate": "2026-08-23",
+        "lastReviewedDate": "2026-08-23",
+        "author": "Business Sorted editorial team",
+        "status": "published",
+        "featured": false,
+        "canonicalUrl": "https://businesssorted.uk/resources/employer-payroll-deadline-calendar",
+        "robots": "index",
+        "socialTitle": "Employer payroll deadline calendar",
+        "socialDescription": "Build a small-employer payroll deadline calendar for FPS reporting, PAYE payments, EPS checks and workplace pension duties."
+      },
+      "indexability": {
+        "index": true,
+        "follow": true,
+        "includeInSitemap": true,
+        "canonicalUrl": "https://businesssorted.uk/resources/employer-payroll-deadline-calendar"
+      },
+      "sitemap": {
+        "eligible": true,
+        "canonicalPath": "/resources/employer-payroll-deadline-calendar"
+      }
+    }
+  ],
+  "rejected": [
+    {
+      "schemaVersion": "business-sorted-pseo-v1",
+      "source": "standalone-programmatic-seo",
+      "slug": "making-tax-digital-for-sole-traders",
+      "canonicalPath": "/making-tax-digital/sole-traders",
+      "canonicalUrl": "https://businesssorted.uk/making-tax-digital/sole-traders",
+      "family": "mtd-income-tax-business-type",
+      "primaryKeyword": "Making Tax Digital for sole traders",
+      "primaryIntent": "Broad sole-trader MTD overview.",
+      "targetUser": "Sole traders in Self Assessment.",
+      "businessStructureOrScenario": "sole-trader-broad-mtd",
+      "uniqueStructuredData": [],
+      "officialSources": [],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [],
+      "relevantPaidProduct": null,
+      "internalLinkOpportunities": [],
+      "existingCompetingPage": "/making-tax-digital/sole-traders",
+      "cannibalisationAssessment": "Rejected because the existing page already owns the broad MTD sole-trader intent.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 69,
+        "dimensions": {}
+      },
+      "status": "rejected",
+      "rejectionReasons": [
+        "Rejected because the existing page already owns the broad MTD sole-trader intent."
+      ]
+    },
+    {
+      "schemaVersion": "business-sorted-pseo-v1",
+      "source": "standalone-programmatic-seo",
+      "slug": "making-tax-digital-for-landlords",
+      "canonicalPath": "/making-tax-digital/landlords",
+      "canonicalUrl": "https://businesssorted.uk/making-tax-digital/landlords",
+      "family": "mtd-income-tax-business-type",
+      "primaryKeyword": "Making Tax Digital for landlords",
+      "primaryIntent": "Broad landlord MTD overview.",
+      "targetUser": "UK landlords.",
+      "businessStructureOrScenario": "landlord-broad-mtd",
+      "uniqueStructuredData": [],
+      "officialSources": [],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [],
+      "relevantPaidProduct": null,
+      "internalLinkOpportunities": [],
+      "existingCompetingPage": "/making-tax-digital/landlords",
+      "cannibalisationAssessment": "Rejected because the existing page already owns broad landlord MTD intent.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 68,
+        "dimensions": {}
+      },
+      "status": "rejected",
+      "rejectionReasons": [
+        "Rejected because the existing page already owns broad landlord MTD intent."
+      ]
+    },
+    {
+      "schemaVersion": "business-sorted-pseo-v1",
+      "source": "standalone-programmatic-seo",
+      "slug": "mtd-for-self-employed-consultants",
+      "canonicalPath": "/resources/mtd-for-self-employed-consultants",
+      "canonicalUrl": "https://businesssorted.uk/resources/mtd-for-self-employed-consultants",
+      "family": "mtd-income-tax-business-type",
+      "primaryKeyword": "MTD for self-employed consultants",
+      "primaryIntent": "Consultant-specific MTD overview.",
+      "targetUser": "Self-employed consultants.",
+      "businessStructureOrScenario": "consultants-mtd",
+      "uniqueStructuredData": [],
+      "officialSources": [],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [],
+      "relevantPaidProduct": null,
+      "internalLinkOpportunities": [],
+      "existingCompetingPage": "/making-tax-digital/sole-traders",
+      "cannibalisationAssessment": "Rejected because the entity-specific facts were mostly record examples and did not clear the unique-value threshold.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 72,
+        "dimensions": {}
+      },
+      "status": "rejected",
+      "rejectionReasons": [
+        "Rejected because the entity-specific facts were mostly record examples and did not clear the unique-value threshold."
+      ]
+    },
+    {
+      "schemaVersion": "business-sorted-pseo-v1",
+      "source": "standalone-programmatic-seo",
+      "slug": "mtd-for-tradespeople",
+      "canonicalPath": "/resources/mtd-for-tradespeople",
+      "canonicalUrl": "https://businesssorted.uk/resources/mtd-for-tradespeople",
+      "family": "mtd-income-tax-business-type",
+      "primaryKeyword": "MTD for tradespeople",
+      "primaryIntent": "Tradesperson-specific MTD overview.",
+      "targetUser": "Self-employed tradespeople.",
+      "businessStructureOrScenario": "tradespeople-mtd",
+      "uniqueStructuredData": [],
+      "officialSources": [],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [],
+      "relevantPaidProduct": null,
+      "internalLinkOpportunities": [],
+      "existingCompetingPage": "/making-tax-digital/sole-traders",
+      "cannibalisationAssessment": "Rejected because the score remains below 75 and the content risked becoming occupational examples on top of the broad sole-trader page.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 74,
+        "dimensions": {}
+      },
+      "status": "rejected",
+      "rejectionReasons": [
+        "Rejected because the score remains below 75 and the content risked becoming occupational examples on top of the broad sole-trader page."
+      ]
+    },
+    {
+      "schemaVersion": "business-sorted-pseo-v1",
+      "source": "standalone-programmatic-seo",
+      "slug": "first-year-limited-company-compliance-plan",
+      "canonicalPath": "/resources/first-year-limited-company-compliance-plan",
+      "canonicalUrl": "https://businesssorted.uk/resources/first-year-limited-company-compliance-plan",
+      "family": "first-year-compliance-plan",
+      "primaryKeyword": "first year limited company compliance plan",
+      "primaryIntent": "First-year limited-company plan.",
+      "targetUser": "First-time company directors.",
+      "businessStructureOrScenario": "first-year-limited-company",
+      "uniqueStructuredData": [],
+      "officialSources": [],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [],
+      "relevantPaidProduct": null,
+      "internalLinkOpportunities": [],
+      "existingCompetingPage": "/resources/first-year-companies-house-checklist",
+      "cannibalisationAssessment": "Rejected because existing Companies House and limited-company resources already cover first-year company filing intent.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 71,
+        "dimensions": {}
+      },
+      "status": "rejected",
+      "rejectionReasons": [
+        "Rejected because existing Companies House and limited-company resources already cover first-year company filing intent."
+      ]
+    },
+    {
+      "schemaVersion": "business-sorted-pseo-v1",
+      "source": "standalone-programmatic-seo",
+      "slug": "limited-company-deadline-calendar",
+      "canonicalPath": "/resources/limited-company-deadline-calendar",
+      "canonicalUrl": "https://businesssorted.uk/resources/limited-company-deadline-calendar",
+      "family": "business-deadline-calendar",
+      "primaryKeyword": "limited company deadline calendar",
+      "primaryIntent": "Limited-company filing calendar.",
+      "targetUser": "Limited-company directors.",
+      "businessStructureOrScenario": "limited-company-calendar",
+      "uniqueStructuredData": [],
+      "officialSources": [],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [],
+      "relevantPaidProduct": null,
+      "internalLinkOpportunities": [],
+      "existingCompetingPage": "/resources/limited-company-annual-filing-calendar",
+      "cannibalisationAssessment": "Rejected because the existing annual filing calendar owns this route family.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 70,
+        "dimensions": {}
+      },
+      "status": "rejected",
+      "rejectionReasons": [
+        "Rejected because the existing annual filing calendar owns this route family."
+      ]
+    },
+    {
+      "schemaVersion": "business-sorted-pseo-v1",
+      "source": "standalone-programmatic-seo",
+      "slug": "first-vat-year-checklist",
+      "canonicalPath": "/resources/first-vat-year-checklist",
+      "canonicalUrl": "https://businesssorted.uk/resources/first-vat-year-checklist",
+      "family": "first-year-compliance-plan",
+      "primaryKeyword": "first VAT year checklist",
+      "primaryIntent": "First VAT year checklist.",
+      "targetUser": "Newly VAT-registered businesses.",
+      "businessStructureOrScenario": "first-vat-year",
+      "uniqueStructuredData": [],
+      "officialSources": [],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [],
+      "relevantPaidProduct": null,
+      "internalLinkOpportunities": [],
+      "existingCompetingPage": "/resources/vat-registered-business-deadline-calendar",
+      "cannibalisationAssessment": "Rejected from the first release because it materially overlaps with the approved VAT calendar and should wait for more entity-specific data.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 73,
+        "dimensions": {}
+      },
+      "status": "rejected",
+      "rejectionReasons": [
+        "Rejected from the first release because it materially overlaps with the approved VAT calendar and should wait for more entity-specific data."
+      ]
+    },
+    {
+      "schemaVersion": "business-sorted-pseo-v1",
+      "source": "standalone-programmatic-seo",
+      "slug": "business-deadlines-for-online-sellers",
+      "canonicalPath": "/resources/business-deadlines-for-online-sellers",
+      "canonicalUrl": "https://businesssorted.uk/resources/business-deadlines-for-online-sellers",
+      "family": "business-type-deadline-calendar",
+      "primaryKeyword": "online seller business deadlines UK",
+      "primaryIntent": "Deadline calendar for online sellers.",
+      "targetUser": "Marketplace and ecommerce sellers.",
+      "businessStructureOrScenario": "online-seller-calendar",
+      "uniqueStructuredData": [],
+      "officialSources": [],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [],
+      "relevantPaidProduct": null,
+      "internalLinkOpportunities": [],
+      "existingCompetingPage": "/resources/sole-trader-deadline-calendar",
+      "cannibalisationAssessment": "Rejected because the official-source evidence supports VAT and Self Assessment checks, but marketplace-specific duties need more confirmed destination and content depth.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 72,
+        "dimensions": {}
+      },
+      "status": "rejected",
+      "rejectionReasons": [
+        "Rejected because the official-source evidence supports VAT and Self Assessment checks, but marketplace-specific duties need more confirmed destination and content depth."
+      ]
+    }
+  ],
+  "candidates": [
+    {
+      "slug": "mtd-income-tax-deadline-plan-for-sole-traders",
+      "canonicalPath": "/resources/mtd-income-tax-deadline-plan-for-sole-traders",
+      "family": "mtd-income-tax-scenario",
+      "primaryKeyword": "MTD deadline plan for sole traders",
+      "primaryIntent": "A sole trader wants to know if MTD applies and what dates to prepare for before quarterly updates begin.",
+      "targetUser": "UK sole traders in Self Assessment who may cross an MTD for Income Tax threshold.",
+      "businessStructureOrScenario": "sole-trader-mtd-deadline-plan",
+      "uniqueStructuredData": [
+        "WebPage",
+        "Article",
+        "FAQPage",
+        "BreadcrumbList"
+      ],
+      "officialSources": [
+        {
+          "title": "Find out if and when you need to use Making Tax Digital for Income Tax",
+          "url": "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Use Making Tax Digital for Income Tax - Create digital records",
+          "url": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/create-digital-records",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Use Making Tax Digital for Income Tax - Send quarterly updates",
+          "url": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates",
+          "authority": "HM Revenue & Customs"
+        }
+      ],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [
+        "/making-tax-digital-checker",
+        "/tools/deadline-calculators"
+      ],
+      "relevantPaidProduct": "/mtd-starter-pack",
+      "internalLinkOpportunities": [
+        "/making-tax-digital-checker",
+        "/making-tax-digital/sole-traders",
+        "/making-tax-digital/quarterly-update-dates",
+        "/mtd-starter-pack"
+      ],
+      "existingCompetingPage": "/making-tax-digital/sole-traders",
+      "cannibalisationAssessment": "Approved because the existing MTD sole-trader page owns broad awareness, while this page owns deadline planning and record-readiness sequencing.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 95,
+        "dimensions": {
+          "searchIntent": 17,
+          "relevance": 10,
+          "uniqueValue": 14,
+          "structuredData": 9,
+          "factualConfidence": 10,
+          "conversionRelevance": 9,
+          "internalLinks": 8,
+          "duplicationRisk": 4,
+          "cannibalisationRisk": 4,
+          "contentDepth": 10
+        }
+      },
+      "status": "approved",
+      "approvalJustification": "Approved for the first Business Sorted release because it has source-backed facts, clear search intent, distinct scenario content and strong internal-link support."
+    },
+    {
+      "slug": "mtd-income-tax-deadline-plan-for-landlords",
+      "canonicalPath": "/resources/mtd-income-tax-deadline-plan-for-landlords",
+      "family": "mtd-income-tax-scenario",
+      "primaryKeyword": "MTD deadline plan for landlords",
+      "primaryIntent": "A landlord wants to understand MTD timing, property record responsibilities and quarterly update planning.",
+      "targetUser": "UK landlords in Self Assessment with property income that may cross MTD thresholds.",
+      "businessStructureOrScenario": "landlord-mtd-deadline-plan",
+      "uniqueStructuredData": [
+        "WebPage",
+        "Article",
+        "FAQPage",
+        "BreadcrumbList"
+      ],
+      "officialSources": [
+        {
+          "title": "Find out if and when you need to use Making Tax Digital for Income Tax",
+          "url": "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Use Making Tax Digital for Income Tax - Create digital records",
+          "url": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/create-digital-records",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Use Making Tax Digital for Income Tax - Send quarterly updates",
+          "url": "https://www.gov.uk/guidance/use-making-tax-digital-for-income-tax/send-quarterly-updates",
+          "authority": "HM Revenue & Customs"
+        }
+      ],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [
+        "/making-tax-digital-checker"
+      ],
+      "relevantPaidProduct": "/mtd-setup-kit",
+      "internalLinkOpportunities": [
+        "/making-tax-digital-checker",
+        "/making-tax-digital/landlords",
+        "/making-tax-digital/quarterly-update-dates",
+        "/mtd-setup-kit"
+      ],
+      "existingCompetingPage": "/making-tax-digital/landlords",
+      "cannibalisationAssessment": "Approved because the existing landlord page is a broad overview, while this page owns deadline planning and landlord-specific record structure.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 94,
+        "dimensions": {
+          "searchIntent": 16,
+          "relevance": 10,
+          "uniqueValue": 14,
+          "structuredData": 9,
+          "factualConfidence": 10,
+          "conversionRelevance": 9,
+          "internalLinks": 8,
+          "duplicationRisk": 4,
+          "cannibalisationRisk": 4,
+          "contentDepth": 10
+        }
+      },
+      "status": "approved",
+      "approvalJustification": "Approved for the first Business Sorted release because it has source-backed facts, clear search intent, distinct scenario content and strong internal-link support."
+    },
+    {
+      "slug": "sole-trader-deadline-calendar",
+      "canonicalPath": "/resources/sole-trader-deadline-calendar",
+      "family": "business-deadline-calendar",
+      "primaryKeyword": "sole trader deadline calendar",
+      "primaryIntent": "A sole trader wants a source-linked annual calendar of tax, MTD and VAT dates.",
+      "targetUser": "New and existing UK sole traders who want key compliance dates in one practical view.",
+      "businessStructureOrScenario": "sole-trader-calendar",
+      "uniqueStructuredData": [
+        "WebPage",
+        "Article",
+        "FAQPage",
+        "BreadcrumbList"
+      ],
+      "officialSources": [
+        {
+          "title": "Self Assessment tax returns: Deadlines",
+          "url": "https://www.gov.uk/self-assessment-tax-returns/deadlines",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Become a sole trader",
+          "url": "https://www.gov.uk/become-sole-trader",
+          "authority": "GOV.UK"
+        },
+        {
+          "title": "Find out if and when you need to use Making Tax Digital for Income Tax",
+          "url": "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Register for VAT: When to register for VAT",
+          "url": "https://www.gov.uk/register-for-vat/when-register-for-vat",
+          "authority": "HM Revenue & Customs"
+        }
+      ],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [
+        "/tools/deadline-calculators"
+      ],
+      "relevantPaidProduct": "/mtd-starter-pack",
+      "internalLinkOpportunities": [
+        "/tools/deadline-calculators",
+        "/making-tax-digital-checker",
+        "/guides/sole-traders/sole-trader-tax-and-record-keeping-checklist",
+        "/comparisons/limited-company-vs-sole-trader"
+      ],
+      "existingCompetingPage": "/guides/sole-traders/sole-trader-tax-and-record-keeping-checklist",
+      "cannibalisationAssessment": "Approved because the existing guide owns record-keeping checklist intent, while this page owns calendar and deadline sequencing.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 95,
+        "dimensions": {
+          "searchIntent": 17,
+          "relevance": 10,
+          "uniqueValue": 15,
+          "structuredData": 9,
+          "factualConfidence": 10,
+          "conversionRelevance": 8,
+          "internalLinks": 8,
+          "duplicationRisk": 4,
+          "cannibalisationRisk": 4,
+          "contentDepth": 10
+        }
+      },
+      "status": "approved",
+      "approvalJustification": "Approved for the first Business Sorted release because it has source-backed facts, clear search intent, distinct scenario content and strong internal-link support."
+    },
+    {
+      "slug": "vat-registered-business-deadline-calendar",
+      "canonicalPath": "/resources/vat-registered-business-deadline-calendar",
+      "family": "business-deadline-calendar",
+      "primaryKeyword": "VAT registered business deadline calendar",
+      "primaryIntent": "A VAT-registered business wants a practical calendar for VAT returns, payments, MTD VAT and turnover review.",
+      "targetUser": "UK small businesses that are VAT registered or close to the VAT registration threshold.",
+      "businessStructureOrScenario": "vat-registered-calendar",
+      "uniqueStructuredData": [
+        "WebPage",
+        "Article",
+        "FAQPage",
+        "BreadcrumbList"
+      ],
+      "officialSources": [
+        {
+          "title": "Sending a VAT Return",
+          "url": "https://www.gov.uk/submit-vat-return",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Register for VAT: When to register for VAT",
+          "url": "https://www.gov.uk/register-for-vat/when-register-for-vat",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Making Tax Digital for VAT",
+          "url": "https://www.gov.uk/government/collections/making-tax-digital-for-vat",
+          "authority": "HM Revenue & Customs"
+        }
+      ],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [
+        "/tools/deadline-calculators"
+      ],
+      "relevantPaidProduct": "/recommended-business-essentials",
+      "internalLinkOpportunities": [
+        "/tools/deadline-calculators",
+        "/recommended-business-essentials",
+        "/making-tax-digital-checker",
+        "/resources/sole-trader-deadline-calendar"
+      ],
+      "existingCompetingPage": "/tools/deadline-calculators",
+      "cannibalisationAssessment": "Approved because calculators provide interaction, while this resource owns explanatory VAT calendar and source context.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 95,
+        "dimensions": {
+          "searchIntent": 16,
+          "relevance": 10,
+          "uniqueValue": 14,
+          "structuredData": 9,
+          "factualConfidence": 10,
+          "conversionRelevance": 8,
+          "internalLinks": 8,
+          "duplicationRisk": 5,
+          "cannibalisationRisk": 5,
+          "contentDepth": 10
+        }
+      },
+      "status": "approved",
+      "approvalJustification": "Approved for the first Business Sorted release because it has source-backed facts, clear search intent, distinct scenario content and strong internal-link support."
+    },
+    {
+      "slug": "first-year-sole-trader-compliance-plan",
+      "canonicalPath": "/resources/first-year-sole-trader-compliance-plan",
+      "family": "first-year-compliance-plan",
+      "primaryKeyword": "first year sole trader compliance plan",
+      "primaryIntent": "A new sole trader wants a first-year plan covering registration, records, tax dates and conditional VAT or MTD checks.",
+      "targetUser": "First-time UK sole traders and side-hustle owners moving into paid self-employment.",
+      "businessStructureOrScenario": "first-year-sole-trader",
+      "uniqueStructuredData": [
+        "WebPage",
+        "Article",
+        "FAQPage",
+        "BreadcrumbList"
+      ],
+      "officialSources": [
+        {
+          "title": "Become a sole trader",
+          "url": "https://www.gov.uk/become-sole-trader",
+          "authority": "GOV.UK"
+        },
+        {
+          "title": "Self Assessment tax returns: Deadlines",
+          "url": "https://www.gov.uk/self-assessment-tax-returns/deadlines",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Register for VAT: When to register for VAT",
+          "url": "https://www.gov.uk/register-for-vat/when-register-for-vat",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Find out if and when you need to use Making Tax Digital for Income Tax",
+          "url": "https://www.gov.uk/guidance/find-out-if-and-when-you-need-to-use-making-tax-digital-for-income-tax",
+          "authority": "HM Revenue & Customs"
+        }
+      ],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [
+        "/tools/decision-tools",
+        "/tools/deadline-calculators"
+      ],
+      "relevantPaidProduct": "/recommended-business-essentials",
+      "internalLinkOpportunities": [
+        "/tools/decision-tools",
+        "/tools/deadline-calculators",
+        "/comparisons/limited-company-vs-sole-trader",
+        "/recommended-business-essentials"
+      ],
+      "existingCompetingPage": "/guides/sole-traders/sole-trader-tax-and-record-keeping-checklist",
+      "cannibalisationAssessment": "Approved because it owns first-year sequencing from setup to first return, while the existing guide owns record-keeping checklist intent.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 95,
+        "dimensions": {
+          "searchIntent": 16,
+          "relevance": 10,
+          "uniqueValue": 15,
+          "structuredData": 9,
+          "factualConfidence": 10,
+          "conversionRelevance": 8,
+          "internalLinks": 8,
+          "duplicationRisk": 4,
+          "cannibalisationRisk": 5,
+          "contentDepth": 10
+        }
+      },
+      "status": "approved",
+      "approvalJustification": "Approved for the first Business Sorted release because it has source-backed facts, clear search intent, distinct scenario content and strong internal-link support."
+    },
+    {
+      "slug": "employer-payroll-deadline-calendar",
+      "canonicalPath": "/resources/employer-payroll-deadline-calendar",
+      "family": "business-deadline-calendar",
+      "primaryKeyword": "employer payroll deadline calendar",
+      "primaryIntent": "A small employer wants a PAYE and workplace pension deadline calendar for payroll reporting and payments.",
+      "targetUser": "UK small-business owners who run payroll or are about to take on employees.",
+      "businessStructureOrScenario": "employer-payroll-calendar",
+      "uniqueStructuredData": [
+        "WebPage",
+        "Article",
+        "FAQPage",
+        "BreadcrumbList"
+      ],
+      "officialSources": [
+        {
+          "title": "Running payroll: Reporting to HMRC",
+          "url": "https://www.gov.uk/running-payroll/reporting-to-hmrc",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Pay employers' PAYE",
+          "url": "https://www.gov.uk/pay-paye-tax",
+          "authority": "HM Revenue & Customs"
+        },
+        {
+          "title": "Set up and manage a workplace pension scheme",
+          "url": "https://www.gov.uk/workplace-pensions-employers",
+          "authority": "GOV.UK"
+        }
+      ],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [
+        "/tools/deadline-calculators"
+      ],
+      "relevantPaidProduct": "/recommended-business-essentials",
+      "internalLinkOpportunities": [
+        "/tools/deadline-calculators",
+        "/guides/business-admin/small-business-administration-checklist",
+        "/recommended-business-essentials",
+        "/resources/vat-registered-business-deadline-calendar"
+      ],
+      "existingCompetingPage": "/guides/business-admin/small-business-administration-checklist",
+      "cannibalisationAssessment": "Approved because the existing checklist is broad admin guidance, while this page owns payroll reporting and payment calendar intent.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 92,
+        "dimensions": {
+          "searchIntent": 15,
+          "relevance": 9,
+          "uniqueValue": 14,
+          "structuredData": 9,
+          "factualConfidence": 10,
+          "conversionRelevance": 7,
+          "internalLinks": 8,
+          "duplicationRisk": 5,
+          "cannibalisationRisk": 5,
+          "contentDepth": 10
+        }
+      },
+      "status": "approved",
+      "approvalJustification": "Approved for the first Business Sorted release because it has source-backed facts, clear search intent, distinct scenario content and strong internal-link support."
+    },
+    {
+      "slug": "making-tax-digital-for-sole-traders",
+      "canonicalPath": "/making-tax-digital/sole-traders",
+      "family": "mtd-income-tax-business-type",
+      "primaryKeyword": "Making Tax Digital for sole traders",
+      "primaryIntent": "Broad sole-trader MTD overview.",
+      "targetUser": "Sole traders in Self Assessment.",
+      "businessStructureOrScenario": "sole-trader-broad-mtd",
+      "uniqueStructuredData": [],
+      "officialSources": [],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [],
+      "relevantPaidProduct": null,
+      "internalLinkOpportunities": [],
+      "existingCompetingPage": "/making-tax-digital/sole-traders",
+      "cannibalisationAssessment": "Rejected because the existing page already owns the broad MTD sole-trader intent.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 69,
+        "dimensions": {}
+      },
+      "status": "rejected",
+      "rejectionReasons": [
+        "Rejected because the existing page already owns the broad MTD sole-trader intent."
+      ]
+    },
+    {
+      "slug": "making-tax-digital-for-landlords",
+      "canonicalPath": "/making-tax-digital/landlords",
+      "family": "mtd-income-tax-business-type",
+      "primaryKeyword": "Making Tax Digital for landlords",
+      "primaryIntent": "Broad landlord MTD overview.",
+      "targetUser": "UK landlords.",
+      "businessStructureOrScenario": "landlord-broad-mtd",
+      "uniqueStructuredData": [],
+      "officialSources": [],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [],
+      "relevantPaidProduct": null,
+      "internalLinkOpportunities": [],
+      "existingCompetingPage": "/making-tax-digital/landlords",
+      "cannibalisationAssessment": "Rejected because the existing page already owns broad landlord MTD intent.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 68,
+        "dimensions": {}
+      },
+      "status": "rejected",
+      "rejectionReasons": [
+        "Rejected because the existing page already owns broad landlord MTD intent."
+      ]
+    },
+    {
+      "slug": "mtd-for-self-employed-consultants",
+      "canonicalPath": "/resources/mtd-for-self-employed-consultants",
+      "family": "mtd-income-tax-business-type",
+      "primaryKeyword": "MTD for self-employed consultants",
+      "primaryIntent": "Consultant-specific MTD overview.",
+      "targetUser": "Self-employed consultants.",
+      "businessStructureOrScenario": "consultants-mtd",
+      "uniqueStructuredData": [],
+      "officialSources": [],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [],
+      "relevantPaidProduct": null,
+      "internalLinkOpportunities": [],
+      "existingCompetingPage": "/making-tax-digital/sole-traders",
+      "cannibalisationAssessment": "Rejected because the entity-specific facts were mostly record examples and did not clear the unique-value threshold.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 72,
+        "dimensions": {}
+      },
+      "status": "rejected",
+      "rejectionReasons": [
+        "Rejected because the entity-specific facts were mostly record examples and did not clear the unique-value threshold."
+      ]
+    },
+    {
+      "slug": "mtd-for-tradespeople",
+      "canonicalPath": "/resources/mtd-for-tradespeople",
+      "family": "mtd-income-tax-business-type",
+      "primaryKeyword": "MTD for tradespeople",
+      "primaryIntent": "Tradesperson-specific MTD overview.",
+      "targetUser": "Self-employed tradespeople.",
+      "businessStructureOrScenario": "tradespeople-mtd",
+      "uniqueStructuredData": [],
+      "officialSources": [],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [],
+      "relevantPaidProduct": null,
+      "internalLinkOpportunities": [],
+      "existingCompetingPage": "/making-tax-digital/sole-traders",
+      "cannibalisationAssessment": "Rejected because the score remains below 75 and the content risked becoming occupational examples on top of the broad sole-trader page.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 74,
+        "dimensions": {}
+      },
+      "status": "rejected",
+      "rejectionReasons": [
+        "Rejected because the score remains below 75 and the content risked becoming occupational examples on top of the broad sole-trader page."
+      ]
+    },
+    {
+      "slug": "first-year-limited-company-compliance-plan",
+      "canonicalPath": "/resources/first-year-limited-company-compliance-plan",
+      "family": "first-year-compliance-plan",
+      "primaryKeyword": "first year limited company compliance plan",
+      "primaryIntent": "First-year limited-company plan.",
+      "targetUser": "First-time company directors.",
+      "businessStructureOrScenario": "first-year-limited-company",
+      "uniqueStructuredData": [],
+      "officialSources": [],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [],
+      "relevantPaidProduct": null,
+      "internalLinkOpportunities": [],
+      "existingCompetingPage": "/resources/first-year-companies-house-checklist",
+      "cannibalisationAssessment": "Rejected because existing Companies House and limited-company resources already cover first-year company filing intent.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 71,
+        "dimensions": {}
+      },
+      "status": "rejected",
+      "rejectionReasons": [
+        "Rejected because existing Companies House and limited-company resources already cover first-year company filing intent."
+      ]
+    },
+    {
+      "slug": "limited-company-deadline-calendar",
+      "canonicalPath": "/resources/limited-company-deadline-calendar",
+      "family": "business-deadline-calendar",
+      "primaryKeyword": "limited company deadline calendar",
+      "primaryIntent": "Limited-company filing calendar.",
+      "targetUser": "Limited-company directors.",
+      "businessStructureOrScenario": "limited-company-calendar",
+      "uniqueStructuredData": [],
+      "officialSources": [],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [],
+      "relevantPaidProduct": null,
+      "internalLinkOpportunities": [],
+      "existingCompetingPage": "/resources/limited-company-annual-filing-calendar",
+      "cannibalisationAssessment": "Rejected because the existing annual filing calendar owns this route family.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 70,
+        "dimensions": {}
+      },
+      "status": "rejected",
+      "rejectionReasons": [
+        "Rejected because the existing annual filing calendar owns this route family."
+      ]
+    },
+    {
+      "slug": "first-vat-year-checklist",
+      "canonicalPath": "/resources/first-vat-year-checklist",
+      "family": "first-year-compliance-plan",
+      "primaryKeyword": "first VAT year checklist",
+      "primaryIntent": "First VAT year checklist.",
+      "targetUser": "Newly VAT-registered businesses.",
+      "businessStructureOrScenario": "first-vat-year",
+      "uniqueStructuredData": [],
+      "officialSources": [],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [],
+      "relevantPaidProduct": null,
+      "internalLinkOpportunities": [],
+      "existingCompetingPage": "/resources/vat-registered-business-deadline-calendar",
+      "cannibalisationAssessment": "Rejected from the first release because it materially overlaps with the approved VAT calendar and should wait for more entity-specific data.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 73,
+        "dimensions": {}
+      },
+      "status": "rejected",
+      "rejectionReasons": [
+        "Rejected from the first release because it materially overlaps with the approved VAT calendar and should wait for more entity-specific data."
+      ]
+    },
+    {
+      "slug": "business-deadlines-for-online-sellers",
+      "canonicalPath": "/resources/business-deadlines-for-online-sellers",
+      "family": "business-type-deadline-calendar",
+      "primaryKeyword": "online seller business deadlines UK",
+      "primaryIntent": "Deadline calendar for online sellers.",
+      "targetUser": "Marketplace and ecommerce sellers.",
+      "businessStructureOrScenario": "online-seller-calendar",
+      "uniqueStructuredData": [],
+      "officialSources": [],
+      "parentRoute": "/resources/hmrc",
+      "relatedTools": [],
+      "relevantPaidProduct": null,
+      "internalLinkOpportunities": [],
+      "existingCompetingPage": "/resources/sole-trader-deadline-calendar",
+      "cannibalisationAssessment": "Rejected because the official-source evidence supports VAT and Self Assessment checks, but marketplace-specific duties need more confirmed destination and content depth.",
+      "factualReviewDate": "2026-11-30",
+      "score": {
+        "total": 72,
+        "dimensions": {}
+      },
+      "status": "rejected",
+      "rejectionReasons": [
+        "Rejected because the official-source evidence supports VAT and Self Assessment checks, but marketplace-specific duties need more confirmed destination and content depth."
+      ]
+    }
+  ]
+}

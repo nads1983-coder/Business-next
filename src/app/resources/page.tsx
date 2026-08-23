@@ -25,10 +25,9 @@ export const metadata: Metadata = createPageMetadata({
   path: "/resources"
 });
 
-const liveCompaniesHouseArticleCount = getIndexableResourceArticles().filter(
-  (article) => article.category === "companies-house"
-).length;
+const indexableArticles = getIndexableResourceArticles();
 const featuredArticles = getBusinessComplianceHubFeaturedArticles();
+const liveCategories = businessComplianceHubCategories.filter((category) => category.status === "live");
 
 export default function ResourcesPage() {
   const featuredItemList = featuredArticles.map((article, index) => ({
@@ -57,14 +56,12 @@ export default function ResourcesPage() {
             "@type": "ItemList",
             "@id": `${absoluteUrl("/resources")}#live-categories`,
             name: "Live business compliance guide categories",
-            itemListElement: [
-              {
+            itemListElement: liveCategories.map((category, index) => ({
                 "@type": "ListItem",
-                position: 1,
-                url: absoluteUrl("/resources/companies-house"),
-                name: "Companies House"
-              }
-            ]
+              position: index + 1,
+              url: absoluteUrl(category.destination),
+              name: category.name
+            }))
           },
           {
             "@context": "https://schema.org",
@@ -121,8 +118,8 @@ export default function ResourcesPage() {
               Compliance guide categories
             </h2>
             <p className="mt-2 text-sm leading-6 text-muted-foreground">
-              Companies House guides are live now. Other categories are shown as planned so the hub
-              can grow without publishing empty or thin category pages.
+              Live categories have source-linked guides. Planned categories stay unpublished until
+              there is enough substantive guidance to justify a public page.
             </p>
           </div>
           <ul className="grid gap-4 md:grid-cols-2 xl:grid-cols-3">
@@ -156,7 +153,7 @@ export default function ResourcesPage() {
                       {isLive ? (
                         <>
                           <p className="font-medium text-foreground">
-                            {liveCompaniesHouseArticleCount} published guides
+                            {indexableArticles.filter((article) => article.category === category.slug).length} published guides
                           </p>
                           {featuredGuide ? (
                             <p>

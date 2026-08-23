@@ -35,21 +35,28 @@ describe("resource centre content", () => {
   });
 
   it("keeps categories explicit and routable", () => {
-    expect(Object.keys(resourceCategories)).toEqual(["companies-house"]);
+    expect(Object.keys(resourceCategories)).toEqual(["companies-house", "hmrc"]);
     expect(resourceCategoryPath("companies-house")).toBe("/resources/companies-house");
+    expect(resourceCategoryPath("hmrc")).toBe("/resources/hmrc");
     expect(Object.keys(resourceGroups)).toEqual([
       "confirmation-statements",
       "company-accounts",
       "company-information",
       "authentication-access",
       "dormant-companies",
-      "directors-first-year"
+      "directors-first-year",
+      "mtd-income-tax",
+      "self-assessment",
+      "vat-deadlines",
+      "first-year-business",
+      "paye-payroll"
     ]);
   });
 
   it("models the Business Compliance Hub without publishing thin future category pages", () => {
     expect(businessComplianceHubCategories.map((category) => category.slug)).toEqual([
       "companies-house",
+      "hmrc",
       "corporation-tax",
       "vat",
       "paye",
@@ -64,6 +71,15 @@ describe("resource centre content", () => {
         status: "live",
         destination: "/resources/companies-house",
         ctaLabel: "Explore Companies House guides"
+      })
+    );
+
+    const hmrcCategory = businessComplianceHubCategories.find((category) => category.slug === "hmrc");
+    expect(hmrcCategory).toEqual(
+      expect.objectContaining({
+        status: "live",
+        destination: "/resources/hmrc",
+        ctaLabel: "Explore HMRC guides"
       })
     );
 
@@ -97,7 +113,10 @@ describe("resource centre content", () => {
 
       for (const link of article.internalLinks) {
         expect(link.href).not.toBe(resourcePath(article.slug));
-        if (link.href.startsWith("/resources/") && link.href !== "/resources/companies-house") {
+        if (Object.values(resourceCategories).some((category) => resourceCategoryPath(category.slug) === link.href)) {
+          continue;
+        }
+        if (link.href.startsWith("/resources/")) {
           const slug = link.href.replace("/resources/", "");
           expect(getResourceArticle(slug)?.status).toBe("published");
         }
@@ -121,6 +140,31 @@ describe("resource centre content", () => {
 
     for (const article of getIndexableResourceArticles()) {
       expect(article.canonicalUrl).toBe(resourceUrl(article.slug));
+    }
+  });
+
+  it("publishes approved Business Sorted programmatic resources with source-backed HMRC content", () => {
+    const programmaticSlugs = [
+      "mtd-income-tax-deadline-plan-for-sole-traders",
+      "mtd-income-tax-deadline-plan-for-landlords",
+      "sole-trader-deadline-calendar",
+      "vat-registered-business-deadline-calendar",
+      "first-year-sole-trader-compliance-plan",
+      "employer-payroll-deadline-calendar"
+    ];
+
+    for (const slug of programmaticSlugs) {
+      const article = getResourceArticle(slug);
+      expect(article).toBeDefined();
+      expect(article?.category).toBe("hmrc");
+      expect(article?.status).toBe("published");
+      expect(article?.robots).toBe("index");
+      expect(article?.canonicalUrl).toBe(resourceUrl(slug));
+      expect(article?.officialSources.length).toBeGreaterThanOrEqual(2);
+      expect(article?.officialSources.every((source) => source.href.startsWith("https://www.gov.uk/"))).toBe(true);
+      expect(article?.sourceCheckedDate).toBe("2026-08-23");
+      expect(article?.faqs.length).toBeGreaterThanOrEqual(2);
+      expect(article?.internalLinks.some((link) => link.href === resourcePath(slug))).toBe(false);
     }
   });
 

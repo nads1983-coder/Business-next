@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { absoluteUrl } from "@/config/site";
+import { programmaticResourceArticles } from "@/content/programmatic-seo";
 
 const checkedDate = "2026-07-18";
 
@@ -11,6 +12,14 @@ export const resourceCategories = {
       "Guides for UK limited company directors who need to keep Companies House filings visible and source-linked.",
     introduction:
       "Companies House filing dates can sit alongside HMRC tax dates, but they are separate duties. These guides explain common Companies House obligations in plain English and point back to official sources before you act."
+  },
+  hmrc: {
+    slug: "hmrc",
+    label: "HMRC",
+    description:
+      "Source-linked HMRC guides for UK small-business owners planning tax, VAT, PAYE and Making Tax Digital responsibilities.",
+    introduction:
+      "HMRC dates and thresholds can change, so these guides keep Business Sorted planning pages connected to current official sources, visible review dates and practical next steps."
   }
 } as const;
 
@@ -25,6 +34,17 @@ export const businessComplianceHubCategories = [
     destination: "/resources/companies-house",
     ctaLabel: "Explore Companies House guides",
     featuredGuideSlug: "companies-house-deadlines"
+  },
+  {
+    slug: "hmrc",
+    analyticsId: "hmrc",
+    name: "HMRC",
+    description:
+      "Making Tax Digital, Self Assessment, VAT and payroll deadline guides linked to current HMRC and GOV.UK sources.",
+    status: "live",
+    destination: "/resources/hmrc",
+    ctaLabel: "Explore HMRC guides",
+    featuredGuideSlug: "sole-trader-deadline-calendar"
   },
   {
     slug: "corporation-tax",
@@ -139,6 +159,26 @@ export const resourceGroups = {
   "directors-first-year": {
     label: "Directors and first-year requirements",
     description: "Practical Companies House responsibilities for new directors and first-year companies."
+  },
+  "mtd-income-tax": {
+    label: "Making Tax Digital for Income Tax",
+    description: "Scenario-specific guidance for MTD thresholds, digital records and quarterly update planning."
+  },
+  "self-assessment": {
+    label: "Self Assessment",
+    description: "Source-linked Self Assessment dates and sole-trader deadline planning."
+  },
+  "vat-deadlines": {
+    label: "VAT deadlines",
+    description: "VAT registration, return, payment and Making Tax Digital record-keeping reminders."
+  },
+  "first-year-business": {
+    label: "First-year business setup",
+    description: "First-year compliance plans for new UK business owners with conditional tax and admin checks."
+  },
+  "paye-payroll": {
+    label: "PAYE and payroll",
+    description: "Payroll reporting, PAYE payment and workplace pension deadline planning for employers."
   }
 } as const;
 
@@ -208,18 +248,62 @@ export const resourceCtaVariants = {
     primaryLabel: "Start setup",
     secondaryHref: "/resources",
     secondaryLabel: "Browse resources"
+  },
+  "mtd-readiness": {
+    title: "Turn MTD dates into a preparation routine",
+    body:
+      "Use Business Sorted to keep MTD threshold checks, digital-record preparation and quarterly update reminders visible while staying connected to official HMRC guidance.",
+    primaryHref: "/making-tax-digital-checker",
+    primaryLabel: "Use the MTD checker",
+    secondaryHref: "/mtd-starter-pack",
+    secondaryLabel: "View the Starter Pack"
+  },
+  "mtd-setup": {
+    title: "Build the MTD setup before the first update",
+    body:
+      "Business Sorted helps you organise the MTD preparation steps, source checks and reminders that should happen before the first quarterly update is due.",
+    primaryHref: "/making-tax-digital-checker",
+    primaryLabel: "Check MTD timing",
+    secondaryHref: "/mtd-setup-kit",
+    secondaryLabel: "View the Setup Kit"
+  },
+  "business-essentials": {
+    title: "Keep the admin tools connected to the obligation",
+    body:
+      "Business Sorted keeps practical business-admin choices connected to source-linked dates, thresholds and reminders, without replacing HMRC or professional advice.",
+    primaryHref: "/recommended-business-essentials",
+    primaryLabel: "Browse essentials",
+    secondaryHref: "/tools",
+    secondaryLabel: "Use free tools"
   }
 } as const;
 
-const resourceCategorySchema = z.enum(["companies-house"] satisfies [ResourceCategory]);
+const resourceCategorySchema = z.enum(["companies-house", "hmrc"] satisfies [ResourceCategory, ResourceCategory]);
 const resourceGroupSchema = z.enum([
   "confirmation-statements",
   "company-accounts",
   "company-information",
   "authentication-access",
   "dormant-companies",
-  "directors-first-year"
-] satisfies [ResourceGroup, ResourceGroup, ResourceGroup, ResourceGroup, ResourceGroup, ResourceGroup]);
+  "directors-first-year",
+  "mtd-income-tax",
+  "self-assessment",
+  "vat-deadlines",
+  "first-year-business",
+  "paye-payroll"
+] satisfies [
+  ResourceGroup,
+  ResourceGroup,
+  ResourceGroup,
+  ResourceGroup,
+  ResourceGroup,
+  ResourceGroup,
+  ResourceGroup,
+  ResourceGroup,
+  ResourceGroup,
+  ResourceGroup,
+  ResourceGroup
+]);
 const ctaVariantSchema = z.enum([
   "companies-house-obligations",
   "confirmation-statements",
@@ -227,8 +311,14 @@ const ctaVariantSchema = z.enum([
   "company-information",
   "directors-first-year",
   "first-year-company",
-  "deadline-dashboard"
+  "deadline-dashboard",
+  "mtd-readiness",
+  "mtd-setup",
+  "business-essentials"
 ] satisfies [
+  keyof typeof resourceCtaVariants,
+  keyof typeof resourceCtaVariants,
+  keyof typeof resourceCtaVariants,
   keyof typeof resourceCtaVariants,
   keyof typeof resourceCtaVariants,
   keyof typeof resourceCtaVariants,
@@ -443,7 +533,7 @@ const sources = {
   }
 } as const;
 
-export const resourceArticles = [
+const baseResourceArticles = [
   {
     title: "Limited Company Annual Filing Calendar",
     slug: "limited-company-annual-filing-calendar",
@@ -2786,6 +2876,8 @@ export const resourceArticles = [
     ]
   }
 ] as const satisfies readonly ResourceArticle[];
+
+export const resourceArticles = [...baseResourceArticles, ...programmaticResourceArticles] satisfies readonly ResourceArticle[];
 
 resourceArticles.forEach((article) => resourceArticleSchema.parse(article));
 
