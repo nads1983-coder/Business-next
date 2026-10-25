@@ -48,6 +48,11 @@ describe("email and app URL configuration", () => {
     expect(emailConfig.notificationEmail).toBe("owner@example.com");
   });
 
+  it("defaults founder signup notifications to the approved inbox", async () => {
+    const { emailConfig } = await import("./email");
+    expect(emailConfig.notificationEmail).toBe("nads1983@gmail.com");
+  });
+
   it("defaults reply-to to the BusinessSorted support mailbox", async () => {
     const { emailConfig } = await import("./email");
 

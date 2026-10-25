@@ -9,7 +9,7 @@ const configuredAppUrl =
 export const emailConfig = {
   from: process.env.EMAIL_FROM ?? "",
   replyTo: process.env.EMAIL_REPLY_TO ?? productConfig.supportEmail,
-  notificationEmail: process.env.NOTIFICATION_EMAIL ?? "",
+  notificationEmail: process.env.NOTIFICATION_EMAIL?.trim() || "nads1983@gmail.com",
   appUrl:
     billingConfig.plan.stripeMode === "live" && configuredAppUrl === billingConfig.approvedProductionAppUrl
       ? billingConfig.approvedProductionAppUrl
