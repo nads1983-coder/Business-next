@@ -1,20 +1,20 @@
 @import "tailwindcss";
 
 @theme inline {
-  --color-background: oklch(0.985 0.004 95);
+  --color-background: oklch(0.985 0.008 295);
   --color-foreground: oklch(0.21 0.02 260);
   --color-card: oklch(1 0 0);
   --color-card-foreground: oklch(0.21 0.02 260);
   --color-popover: oklch(1 0 0);
   --color-popover-foreground: oklch(0.21 0.02 260);
-  --color-primary: oklch(0.44 0.13 175);
+  --color-primary: oklch(0.48 0.19 295);
   --color-primary-foreground: oklch(0.99 0.003 95);
-  --color-secondary: oklch(0.93 0.025 170);
-  --color-secondary-foreground: oklch(0.24 0.04 175);
+  --color-secondary: oklch(0.94 0.025 295);
+  --color-secondary-foreground: oklch(0.28 0.10 295);
   --color-muted: oklch(0.95 0.01 245);
   --color-muted-foreground: oklch(0.48 0.025 260);
-  --color-accent: oklch(0.93 0.05 80);
-  --color-accent-foreground: oklch(0.25 0.04 70);
+  --color-accent: oklch(0.92 0.045 295);
+  --color-accent-foreground: oklch(0.28 0.10 295);
   --color-destructive: oklch(0.55 0.18 30);
   --color-destructive-foreground: oklch(0.99 0.003 95);
   --color-border: oklch(0.88 0.012 245);
@@ -97,3 +97,8 @@ select,
 textarea {
   font: inherit;
 }
+
+/* PIERNEXA portfolio branding: keep Business Sorted independent while sharing its parent identity. */
+:root { color-scheme: light; }
+::selection { background: oklch(0.83 0.08 295); color: oklch(0.21 0.05 295); }
+:focus-visible { outline-color: var(--color-ring); }
