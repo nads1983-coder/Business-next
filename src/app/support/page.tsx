@@ -29,6 +29,7 @@ export default function SupportPage() {
             Use the support form for account, billing or product questions. Please do not send card details,
             passwords, authentication codes or private tax documents.
           </p>
+          <p>General enquiries: <a href="mailto:hello@businesssorted.uk" className="text-primary hover:underline">hello@businesssorted.uk</a></p>
           <div className="flex flex-col gap-3 sm:flex-row">
             <Button asChild>
               <a href={mailtoHref}>

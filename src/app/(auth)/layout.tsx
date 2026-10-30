@@ -20,6 +20,7 @@ export default function AuthLayout({ children }: { children: React.ReactNode }) 
       <p className="mx-auto max-w-md text-center text-sm leading-6 text-muted-foreground">
         {productConfig.tradingNameDisclosure}
       </p>
+      <footer className="mt-4 text-center text-sm text-muted-foreground"><a href="mailto:hello@businesssorted.uk" className="hover:text-foreground">hello@businesssorted.uk</a></footer>
     </main>
   );
 }

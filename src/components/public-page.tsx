@@ -17,7 +17,7 @@ export function PublicFooter() {
   return (
     <footer className="border-t">
       <div className="mx-auto flex max-w-6xl flex-col gap-4 px-4 py-6 text-sm text-muted-foreground sm:px-6 lg:flex-row lg:items-start lg:justify-between">
-        <div className="max-w-3xl min-w-0 space-y-2 leading-6"><p>{productConfig.tradingNameDisclosure}</p><p><a href="https://piernexa.com" className="font-semibold text-primary hover:underline" rel="noopener noreferrer">A PIERNEXA product</a></p></div>
+        <div className="max-w-3xl min-w-0 space-y-2 leading-6"><p>{productConfig.tradingNameDisclosure}</p><p><a href="mailto:hello@businesssorted.uk" className="hover:text-foreground">hello@businesssorted.uk</a></p><p><a href="https://piernexa.com" className="font-semibold text-primary hover:underline" rel="noopener noreferrer">A PIERNEXA product</a></p></div>
         <nav className="flex min-w-0 max-w-3xl flex-wrap gap-3 sm:gap-4 lg:justify-end" aria-label="Legal">
           <Link href="/resources" className="hover:text-foreground">Resources</Link>
           <Link href="/resources/companies-house" className="hover:text-foreground">Companies House resources</Link>
