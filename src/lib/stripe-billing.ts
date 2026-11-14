@@ -399,30 +399,48 @@ export async function processStripeEvent(event: Stripe.Event) {
     if (subscription) {
       stripeSubscriptionId = subscription.id;
       stripeCustomerId = typeof subscription.customer === "string" ? subscription.customer : subscription.customer.id;
-      userId = await findUserIdFromStripe({
-        customerId: stripeCustomerId,
-        subscriptionId: stripeSubscriptionId,
-        metadataUserId: subscription.metadata?.businessNextUserId
+      // Stripe sends account-wide events, including other products sharing this account.
+      // A customer match alone is not proof that this subscription belongs to this app.
+      const linkedSubscription = await prisma.subscription.findFirst({
+        where: { stripeSubscriptionId: subscription.id },
+        select: { userId: true }
       });
-      if (!userId) throw new Error("Could not associate Stripe subscription with a Business Sorted user.");
+      const hasApprovedItem = subscription.items.data.some(({ price }) => {
+        const productId = typeof price.product === "string" ? price.product : price.product?.id;
+        return isApprovedStripePriceId(price.id) && isApprovedStripeProductId(productId);
+      });
+      const belongsToBusinessSorted = Boolean(
+        subscription.metadata?.businessNextUserId || linkedSubscription || hasApprovedItem
+      );
 
-      const synced = await syncSubscriptionFromStripe({ userId, stripeSubscription: subscription, stripeEventId: event.id });
-      summary = `Subscription reconciled as ${synced.billingStatus}.`;
-      billingEventType =
-        event.type === "customer.subscription.created"
-          ? "SUBSCRIPTION_CREATED"
-          : event.type === "customer.subscription.deleted"
-            ? "SUBSCRIPTION_CANCELLED"
-            : "SUBSCRIPTION_UPDATED";
+      if (!belongsToBusinessSorted) {
+        summary = "Ignored subscription outside Business Sorted.";
+      } else {
+        userId = await findUserIdFromStripe({
+          customerId: stripeCustomerId,
+          subscriptionId: stripeSubscriptionId,
+          metadataUserId: subscription.metadata?.businessNextUserId
+        });
+        if (!userId) throw new Error("Could not associate Stripe subscription with a Business Sorted user.");
 
-      if (synced.billingStatus === "ACTIVE") {
-        await recordAnalyticsEvent({ userId, name: analyticsEvents.subscriptionActivated, path: "/app/billing" });
-      }
-      if (subscription.cancel_at_period_end) {
-        await recordAnalyticsEvent({ userId, name: analyticsEvents.cancellationScheduled, path: "/app/billing" });
-      }
-      if (synced.billingStatus === "CANCELED") {
-        await recordAnalyticsEvent({ userId, name: analyticsEvents.subscriptionEnded, path: "/app/billing" });
+        const synced = await syncSubscriptionFromStripe({ userId, stripeSubscription: subscription, stripeEventId: event.id });
+        summary = `Subscription reconciled as ${synced.billingStatus}.`;
+        billingEventType =
+          event.type === "customer.subscription.created"
+            ? "SUBSCRIPTION_CREATED"
+            : event.type === "customer.subscription.deleted"
+              ? "SUBSCRIPTION_CANCELLED"
+              : "SUBSCRIPTION_UPDATED";
+
+        if (synced.billingStatus === "ACTIVE") {
+          await recordAnalyticsEvent({ userId, name: analyticsEvents.subscriptionActivated, path: "/app/billing" });
+        }
+        if (subscription.cancel_at_period_end) {
+          await recordAnalyticsEvent({ userId, name: analyticsEvents.cancellationScheduled, path: "/app/billing" });
+        }
+        if (synced.billingStatus === "CANCELED") {
+          await recordAnalyticsEvent({ userId, name: analyticsEvents.subscriptionEnded, path: "/app/billing" });
+        }
       }
     }
 

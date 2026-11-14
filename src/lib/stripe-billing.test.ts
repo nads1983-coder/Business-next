@@ -376,7 +376,7 @@ describe("Stripe billing helpers", () => {
   it("updates an existing Stripe customer row when a subscription webhook arrives", async () => {
     process.env.BUSINESS_NEXT_BILLING_ENABLED = "true";
     process.env.STRIPE_TEST_PRICE_ID_MONTHLY = "price_test_monthly";
-    mocks.prisma.subscription.findFirst.mockResolvedValueOnce({ id: "subscription-user_1" });
+    mocks.prisma.subscription.findFirst.mockResolvedValueOnce(null).mockResolvedValueOnce({ id: "subscription-user_1" });
 
     const { processStripeEvent } = await import("./stripe-billing");
 
@@ -506,4 +506,48 @@ describe("Stripe billing helpers", () => {
       data: { status: "INACTIVE", endsAt: expect.any(Date) }
     });
   });
+  it.each(["active", "canceled"] as const)("ignores an unrelated %s subscription without changing access", async (status) => {
+    setLiveBillingEnv();
+    const event = subscriptionEvent({ status, livemode: true, priceId: "price_other", productId: "prod_other" });
+    (event.data.object as Stripe.Subscription).metadata = { user_id: "other-app-user", plan: "pro_creator" };
+    const { processStripeEvent } = await import("./stripe-billing");
+
+    await expect(processStripeEvent(event)).resolves.toEqual({ duplicate: false, summary: "Ignored subscription outside Business Sorted." });
+    expect(mocks.prisma.subscription.findFirst).toHaveBeenCalledTimes(1);
+    expect(mocks.prisma.subscription.findFirst).toHaveBeenCalledWith({ where: { stripeSubscriptionId: "sub_test" }, select: { userId: true } });
+    expect(mocks.prisma.subscription.upsert).not.toHaveBeenCalled();
+    expect(mocks.prisma.userEntitlement.upsert).not.toHaveBeenCalled();
+    expect(mocks.prisma.userEntitlement.updateMany).not.toHaveBeenCalled();
+    expect(mocks.recordAnalyticsEvent).not.toHaveBeenCalled();
+    expect(mocks.recordBillingEvent).toHaveBeenCalledWith(expect.objectContaining({ type: "WEBHOOK_IGNORED", userId: null }));
+  });
+
+  it("recovers previously failed unrelated events as ignored", async () => {
+    setLiveBillingEnv();
+    mocks.prisma.stripeWebhookEvent.findUnique.mockResolvedValue({ processingStatus: "failed" });
+    const event = subscriptionEvent({ status: "canceled", livemode: true, priceId: "price_other", productId: "prod_other" });
+    (event.data.object as Stripe.Subscription).metadata = {};
+    const { processStripeEvent } = await import("./stripe-billing");
+    await processStripeEvent(event);
+    expect(mocks.prisma.stripeWebhookEvent.update).toHaveBeenCalledWith(expect.objectContaining({ data: expect.objectContaining({ processingStatus: "processed", errorMessage: null }) }));
+    expect(mocks.prisma.userEntitlement.updateMany).not.toHaveBeenCalled();
+  });
+
+  it("keeps retrying an approved subscription with no matching user", async () => {
+    setLiveBillingEnv();
+    const event = subscriptionEvent({ status: "canceled", livemode: true, priceId: "price_live_monthly", productId: "prod_live" });
+    (event.data.object as Stripe.Subscription).metadata = {};
+    const { processStripeEvent } = await import("./stripe-billing");
+    await expect(processStripeEvent(event)).rejects.toThrow("Could not associate Stripe subscription");
+  });
+
+  it("does not ignore an existing local subscription when its price is no longer approved", async () => {
+    setLiveBillingEnv();
+    mocks.prisma.subscription.findFirst.mockResolvedValue({ userId: "user_1" });
+    const event = subscriptionEvent({ status: "canceled", livemode: true, priceId: "price_old", productId: "prod_live" });
+    (event.data.object as Stripe.Subscription).metadata = {};
+    const { processStripeEvent } = await import("./stripe-billing");
+    await expect(processStripeEvent(event)).rejects.toThrow("Stripe subscription price is not approved");
+  });
+
 });
